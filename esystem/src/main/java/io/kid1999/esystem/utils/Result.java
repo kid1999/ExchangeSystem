@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Result {
+public class Result<T> {
 	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty("返回值")
@@ -20,7 +20,7 @@ public class Result {
 	@ApiModelProperty("返回信息")
 	private String message;
 	@ApiModelProperty("业务数据")
-	private Object data;
+	private T data;
 
 	public Result() {
 	}
@@ -30,10 +30,47 @@ public class Result {
 		this.message = message;
 	}
 
-	public Result(int code, String message, Object data) {
+	public Result(int code, String message, T data) {
 		this.code = code;
 		this.message = message;
 		this.data = data;
+	}
+
+	public Result success(T data){
+		this.data = data;
+		this.code = 200;
+		this.message = "success";
+		return this;
+	}
+
+	public Result success(){
+		this.code = 200;
+		this.message = "success";
+		return this;
+	}
+
+	public Result failed(){
+		this.code = 400;
+		this.message = "failed";
+		return this;
+	}
+
+	public Result failed(String message){
+		this.code = 400;
+		this.message = message;
+		return this;
+	}
+
+	public Result failedByUnauthorized(){
+		this.code = 401;
+		this.message = "failed";
+		return this;
+	}
+
+	public Result failedByNotFound(){
+		this.code = 403;
+		this.message = "failed";
+		return this;
 	}
 
 	@Override

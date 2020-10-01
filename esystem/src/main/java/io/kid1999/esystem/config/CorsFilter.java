@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * @author kid1999
  * @date 2020/9/30 22:27
- * @title 跨域过滤器
+ * @title 跨域过滤 配置
  */
 
 public class CorsFilter implements Filter {

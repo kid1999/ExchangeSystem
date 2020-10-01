@@ -3,7 +3,16 @@
 server:
   port: 8080
   servlet:
-    context-path: /
+    context-path: /api
+# swagger2 配置
+swagger2:
+  enable: true
+
+# mail 配置
+mail:
+  fromMail:
+    addr: 1447250889@qq.com
+
 
 
 # minio 文件服务器
@@ -38,3 +47,16 @@ spring:
       max-lifetime: 1800000   #控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
       connection-timeout: 30000  #数据库连接超时时间,默认30秒，即30000
       connection-test-query: SELECT 1
+
+  # 邮件服务
+  mail:
+    host: smtp.qq.com
+    username: 1447250889@qq.com # 邮箱账号
+    password: dsadadasdada    # 授权码（在邮箱开启pop3和smtp后会给你）
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true

@@ -1,14 +1,14 @@
 package io.kid1999.esystem.utils;
 
-import io.kid1999.esystem.common.Constants;
 import io.minio.MinioClient;
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.InputStream;
+
+import static io.kid1999.esystem.common.Constants.*;
 
 /**
  * @author kid1999
@@ -20,15 +20,12 @@ import java.io.InputStream;
 @Configuration
 public class FileUtil {
 
-	@Autowired
-	private Constants constants;
-
 	private MinioClient instance;
 
 	@PostConstruct
 	public void init() {
 		try {
-			instance = new MinioClient(constants.MINIO_URL,constants.MINIO_ACCESSKEY,constants.MINIO_SECREKEY);
+			instance = new MinioClient(MINIO_URL,MINIO_ACCESSKEY,MINIO_SECREKEY);
 			log.info("log success");
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -7,4 +7,5 @@ package io.kid1999.esystem.utils;
  */
 
 public class AuthorUtil {
+
 }

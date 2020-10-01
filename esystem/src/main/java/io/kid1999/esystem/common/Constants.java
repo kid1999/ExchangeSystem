@@ -10,8 +10,18 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Constants {
-	public final String MINIO_URL = "http://10.16.66.232:9000";
-	public final String MINIO_ACCESSKEY = "admin";
-	public final String MINIO_SECREKEY = "Root=123";
+	// MINIO 网址
+	public static final String MINIO_URL = "http://10.16.66.232:9000";
+	// MINIO 用户
+	public static final String MINIO_ACCESSKEY = "admin";
+	// MINIO 密码
+	public static final String MINIO_SECREKEY = "Root=123";
+
+	//设置过期时间
+	public static final long TOKEN_EXPIRE_DATE=30*60*100000;
+	//token秘钥
+	public static final String TOKEN_SECRET = "ZCEQIUBFKSJBFJH2020BAWE";
+
+
 
 }

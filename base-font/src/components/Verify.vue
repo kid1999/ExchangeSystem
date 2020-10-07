@@ -10,7 +10,7 @@
     <!--type = 3 滑动-->
     <!--type = 4 滑动拼图-->
     <!--type = 5 选择汉字-->
-    <Verify @success="alert('success')" @error="alert('error')" :showButton="false" :type="5"></Verify>
+    <Verify @success="alert('success')" @error="alert('error')" :showButton="false" :type="3"></Verify>
 </template>
 
 <script>

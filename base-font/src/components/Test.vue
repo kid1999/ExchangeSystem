@@ -1,7 +1,7 @@
 <template>
   <div class="test">
     <h1>This is an about page</h1>
-    <el-button v-on:click="test">an yi xia</el-button>
+    <a-button type="primary" loading> Loading </a-button>
   </div>
 </template>
 

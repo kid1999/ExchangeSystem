@@ -35,7 +35,7 @@ public class UserApi {
     @ApiOperation("登录")
     public Result<Integer> login(@RequestBody Map<String,String> map) {
         String name = map.get("name");
-        String pwd = map.get("pwd");
+        String pwd = map.get("password");
         User userSql = userDao.findUserByName(name);
         if(userSql != null && StrUtil.equals(pwd,userSql.getPwd()))
             return new Result<Integer>().success();

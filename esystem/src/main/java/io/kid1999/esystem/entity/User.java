@@ -3,6 +3,9 @@ package io.kid1999.esystem.entity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.experimental.Accessors;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +20,11 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Table(name = "auth_user")
+@Accessors(chain = true)
+//逻辑删除注解，删除sql变成了update
+@SQLDelete(sql = "update users set deleted = 1 where id = ?")
+//where条件带上了逻辑删除条件
+@Where(clause = "deleted = 0")
 public class User {
     @Id
     @GeneratedValue
@@ -42,6 +50,9 @@ public class User {
     private LocalDateTime lastLoginTime;
     @ApiModelProperty("user login times")
     private Long loginTimes;
+    //逻辑删除（0 未删除、1 删除）
+    private Integer deleted = 0;
+
 
     // OnToOne 维护端
     @OneToOne

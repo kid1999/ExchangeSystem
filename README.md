@@ -45,7 +45,7 @@ docker run -p 9000:9000 \
 * JDK1.8
 ## 项目技术栈
 * 后端 : SpringBoot、SpringMVC、JPA
-* 前端 : Vue.js、Element-UI
+* 前端 : Vue.js、Element-UI、Ant-design
 * 文件存储系统 : MinIO
 * 数据库：Mysql5.7、Redis
 * 网络服务器 : Nginx

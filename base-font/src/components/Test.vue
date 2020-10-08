@@ -2,6 +2,7 @@
   <div class="test">
     <h1>This is an about page</h1>
     <a-button type="primary" loading> Loading </a-button>
+    <a-button v-on:click="test">test</a-button>
   </div>
 </template>
 

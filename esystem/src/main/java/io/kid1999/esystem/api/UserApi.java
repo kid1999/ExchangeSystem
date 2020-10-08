@@ -36,10 +36,40 @@ public class UserApi {
     public Result<Integer> login(@RequestBody Map<String,String> map) {
         String name = map.get("name");
         String pwd = map.get("password");
-        User userSql = userDao.findUserByName(name);
-        if(userSql != null && StrUtil.equals(pwd,userSql.getPwd()))
-            return new Result<Integer>().success();
-        else return new Result<Integer>().failed("账号密码不正确!");
+        return new Result<>().success("login success");
+//        User userSql = userDao.findUserByName(name);
+//        if(userSql != null && StrUtil.equals(pwd,userSql.getPwd()))
+//            return new Result<Integer>().success();
+//        else return new Result<Integer>().failed("账号密码不正确!");
+    }
+
+
+    @PutMapping("/info")
+    @ApiOperation("修改个人信息")
+    public Result<Integer> updateUserInfo(@RequestBody Map<String,String> map) {
+        String name = map.get("name");
+        String pwd = map.get("password");
+        System.out.println(name + " " + pwd);
+        return new Result<>().failed("put info");
+    }
+
+    @GetMapping("/info")
+    @ApiOperation("获取个人信息")
+    public Result<Integer> getUserInfo(@RequestParam String name,
+                                       @RequestParam String password) {
+
+        System.out.println(name + " " + password);
+        return new Result<>().success("success get user info");
+    }
+
+
+    @DeleteMapping("/user")
+    @ApiOperation("删除用户")
+    public Result<Integer> deleteUser(@RequestBody Map<String,String> map) {
+        String name = map.get("name");
+        String pwd = map.get("password");
+        System.out.println(name + " " + pwd);
+        return new Result<>().success();
     }
 
 

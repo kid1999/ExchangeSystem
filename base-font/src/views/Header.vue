@@ -6,8 +6,10 @@
 <template>
     <div>
         <a-menu v-model="current" mode="horizontal">
-            <a-menu-item key="mail">二手交易平台</a-menu-item>
-            <a-menu-item key="app"> <a-icon type="appstore" />Home </a-menu-item>
+
+            <a-menu-item key="mail">ESystem</a-menu-item>
+            <a-menu-item key="buy"> <a-icon type="appstore" />买 </a-menu-item>
+            <a-menu-item key="sell"> <a-icon type="appstore" />卖 </a-menu-item>
             <a-sub-menu>
         <span slot="title" class="submenu-title-wrapper"
         ><a-icon type="setting" />Setting</span>
@@ -32,7 +34,10 @@
                 <a href="#" target="" rel="noopener noreferrer"><a-icon type="github" />Navigation Four - Link</a>
             </a-menu-item>
 
-
+            <a-input-search placeholder="搜索" style="width: 200px" @search="onSearch" />
+            <a-menu-item>
+                <Login></Login>
+            </a-menu-item>
             <a-sub-menu>
                 <span slot="title" class="submenu-title-wrapper">
                     <a-avatar style="backgroundColor:#87d068" icon="user" />
@@ -58,7 +63,7 @@
             <a-menu-item key="user">  </a-menu-item>
 
         </a-menu>
-        <Login></Login>
+
     </div>
 </template>
 

@@ -4,7 +4,11 @@
 * @desciption:  Axios
 */
 <template>
-    <el-button>action</el-button>
+    <div>
+        <el-button v-on:click="getFunc()">get</el-button>
+        <el-button v-on:click="postFunc()">post</el-button>
+    </div>
+
 </template>
 
 <script>
@@ -13,19 +17,31 @@
         name: "Axios",
         data(){
             return{
-
+                params : { name: 'admin', password: '123456'},
             }
         },
-        mounted() {
-            let params = { name: 'admin', password: '123456'}
-            getTest(params).then(res => {
-                console.log(res, '这是get响应的结果')
-            })
-
-            postTest(params).then(res => {
-                console.log(res, '这是post响应的结果')
-            })
-        }
+        methods:{
+            getFunc:function (event) {
+                getTest(this.params).then(res => {
+                    console.log(res, '这是get响应的结果')
+                })
+            },
+            postFunc:function (event) {
+                postTest(this.params).then(res => {
+                    console.log(res, '这是post响应的结果')
+                })
+            },
+        },
+        // mounted() {
+        //     let params = { name: 'admin', password: '123456'}
+        //     getTest(params).then(res => {
+        //         console.log(res, '这是get响应的结果')
+        //     })
+        //
+        //     postTest(params).then(res => {
+        //         console.log(res, '这是post响应的结果')
+        //     })
+        // }
     }
 </script>
 

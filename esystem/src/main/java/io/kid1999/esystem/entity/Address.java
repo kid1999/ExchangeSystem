@@ -1,24 +1,21 @@
 package io.kid1999.esystem.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * @author kid1999
  * @create 2020-10-01 9:49
  * @description 地址信息
  **/
-@Entity
+
 @Data
-@Table(name = "address")
+@TableName("address")
 public class Address {
 
-    @Id
-    @GeneratedValue  // 指定主键生成策略，默认自增长
+    @TableId(type = IdType.AUTO) // 指定主键生成策略，默认自增长
     private Long id;
     
     private String province;

@@ -132,3 +132,20 @@ export const put = (url, data, config = {}) => {
         })
     })
 };
+
+
+/* 统一封装put请求  */
+export const deleted = (url, data, config = {}) => {
+    return new Promise((resolve, reject) => {
+        instance({
+            method: 'delete',
+            url,
+            data,
+            ...config
+        }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+};

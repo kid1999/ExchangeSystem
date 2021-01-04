@@ -5,84 +5,62 @@
 */
 <template>
     <div>
-        <a-menu v-model="current" mode="horizontal">
-
-            <a-menu-item key="mail">ESystem</a-menu-item>
-            <a-menu-item key="buy"> <a-icon type="appstore" />买 </a-menu-item>
-            <a-menu-item key="sell"> <a-icon type="appstore" />卖 </a-menu-item>
-            <a-sub-menu>
-        <span slot="title" class="submenu-title-wrapper"
-        ><a-icon type="setting" />Setting</span>
-                <a-menu-item-group title="Item 1">
-                    <a-menu-item key="setting:1">
-                        Option 1
-                    </a-menu-item>
-                    <a-menu-item key="setting:2">
-                        Option 2
-                    </a-menu-item>
-                </a-menu-item-group>
-                <a-menu-item-group title="Item 2">
-                    <a-menu-item key="setting:3">
-                        Option 3
-                    </a-menu-item>
-                    <a-menu-item key="setting:4">
-                        Option 4
-                    </a-menu-item>
-                </a-menu-item-group>
-            </a-sub-menu>
-            <a-menu-item key="alipay">
-                <a href="#" target="" rel="noopener noreferrer"><a-icon type="github" />Navigation Four - Link</a>
-            </a-menu-item>
-
-            <a-input-search placeholder="搜索" style="width: 200px" @search="onSearch" />
-            <a-menu-item>
-                <Login></Login>
-            </a-menu-item>
-            <a-sub-menu>
-                <span slot="title" class="submenu-title-wrapper">
-                    <a-avatar style="backgroundColor:#87d068" icon="user" />
-                </span>
-                        <a-menu-item-group title="Item 1">
-                            <a-menu-item key="setting:1">
-                                个人资料
-                            </a-menu-item>
-                            <a-menu-item key="setting:2">
-                                Option 2
-                            </a-menu-item>
-                        </a-menu-item-group>
-                        <a-menu-item-group title="Item 2">
-                            <a-menu-item key="setting:3">
-                                Option 3
-                            </a-menu-item>
-                            <a-menu-item key="setting:4">
-                                退出
-                            </a-menu-item>
-                    </a-menu-item-group>
-            </a-sub-menu>
-
-            <a-menu-item key="user">  </a-menu-item>
-
-        </a-menu>
-
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
+            <el-menu-item index="/">Esystem</el-menu-item>
+            <el-menu-item index="/message">消息中心</el-menu-item>
+            <el-menu-item index="/trans_record">交易记录</el-menu-item>
+            <el-menu-item index="/demand">收藏夹</el-menu-item>
+            <el-menu-item index="/leaving_comment">留言板块</el-menu-item>
+            <el-menu-item index="/comment">评论板块</el-menu-item>
+            <el-menu-item index="#">
+                <el-input v-model="search_context" placeholder="请输入内容"></el-input>
+            </el-menu-item>
+            <el-submenu index="#">
+                <template slot="title">
+                    <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                </template>
+                <el-menu-item index="user">用户信息</el-menu-item>
+                <el-menu-item index="login">登录</el-menu-item>
+                <el-menu-item index="register">注册</el-menu-item>
+                <el-menu-item index="userInfo">信息中心</el-menu-item>
+                <el-menu-item index="logout">退出</el-menu-item>
+            </el-submenu>
+        </el-menu>
     </div>
 </template>
 
 <script>
-    import Login from "../components/Login";
     export default {
         name: "Header",
         data(){
             return{
-                current: ['mail'],
-                is_login: false,
+                activeIndex:'/',
+                search_context:'',
+                current:['main'],
+                isLogin:false,//登录状态
+                btnState:'',//判断点击登录还是注册
+                notice:0,//通知数
+                url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
             }
         },
-        components: {
-           Login
+        methods:{
+            handleSelect(key, keyPath) {
+                console.log(key, keyPath);
+            }
         }
     }
 </script>
 
-<style scoped>
+<style>
 
+
+    #components-form-demo-normal-login .login-form {
+        max-width: 300px;
+    }
+    #components-form-demo-normal-login .login-form-forgot {
+        float: right;
+    }
+    #components-form-demo-normal-login .login-form-button {
+        width: 100%;
+    }
 </style>

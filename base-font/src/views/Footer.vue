@@ -4,7 +4,9 @@
 * @desciption:  Footer
 */
 <template>
-    $END$
+    <div>
+        <h1>页脚</h1>
+    </div>
 </template>
 
 <script>

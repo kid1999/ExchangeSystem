@@ -1,5 +1,6 @@
 package io.kid1999.esystem.api;
 
+import io.kid1999.esystem.dao.UserDao;
 import io.kid1999.esystem.utils.FileUtil;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,17 @@ public class TestApi {
 	@Autowired
 	private FileUtil fileUtil;
 
+	@Autowired
+	private UserDao userDao;
 
 	@GetMapping("/getPath")
 	public String getFileName(){
 		System.out.println(fileUtil.bucketExists("images"));
 		return "success";
+	}
+
+	@GetMapping("/test")
+	public Object test(){
+		return userDao.selectById(1);
 	}
 }

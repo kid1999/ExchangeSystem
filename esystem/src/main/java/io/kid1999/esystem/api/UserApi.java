@@ -1,14 +1,18 @@
 package io.kid1999.esystem.api;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.kid1999.esystem.dao.UserDao;
+import io.kid1999.esystem.entity.Address;
 import io.kid1999.esystem.entity.User;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,58 +24,82 @@ import java.util.Map;
 @RestController @RequestMapping("/user")
 @Api(tags = "用户管理操作")
 public class UserApi {
-    @Resource
+
+    @Autowired
     private UserDao userDao;
 
     @PostMapping("/register")
     @ApiOperation("注册新用户")
-    public Result<Integer> register(@RequestParam(value = "id") int integer) {
-        System.out.println(integer);
-        return new Result<Integer>().success(integer);
+    public Result register(@RequestBody HashMap<String,String> map) {
+       User user = new User();
+       user.setCreateTime(LocalDateTime.now());
+       user.setLastLoginTime(LocalDateTime.now());
+       user.setLoginTimes(0L);
+       userDao.insert(user);
+       return new Result<>().success("注册成功！");
     }
 
 
     @PostMapping("/login")
     @ApiOperation("登录")
-    public Result<Integer> login(@RequestBody Map<String,String> map) {
-        String name = map.get("name");
-        String pwd = map.get("password");
-        return new Result<>().success("login success");
-//        User userSql = userDao.findUserByName(name);
-//        if(userSql != null && StrUtil.equals(pwd,userSql.getPwd()))
-//            return new Result<Integer>().success();
-//        else return new Result<Integer>().failed("账号密码不正确!");
+    public Result login(@RequestBody Map<String,String> map) {
+        String userName = map.get("userName");
+        String userPwd = map.get("userPwd");
+        QueryWrapper<User> wrapper = new QueryWrapper();
+        wrapper.eq("user_name",userName);
+        User user = userDao.selectOne(wrapper);
+        if(user != null && StrUtil.equals(userPwd,user.getUserPwd())){
+            return new Result().success("登录成功！");
+        }else {
+            return new Result().failed("账号密码不正确!");
+        }
     }
 
 
-    @PutMapping("/info")
+    @PutMapping("")
     @ApiOperation("修改个人信息")
-    public Result<Integer> updateUserInfo(@RequestBody Map<String,String> map) {
+    public Result updateUserInfo(@RequestBody Map<String,String> map) {
         String name = map.get("name");
         String pwd = map.get("password");
-        System.out.println(name + " " + pwd);
-        return new Result<>().failed("put info");
+        User user = new User();
+        Address address = new Address();
+        userDao.updateById(user);
+        return new Result(200,"修改成功！");
     }
 
-    @GetMapping("/info")
+    @GetMapping("/{id}")
     @ApiOperation("获取个人信息")
-    public Result<Integer> getUserInfo(@RequestParam String name,
-                                       @RequestParam String password) {
-
-        System.out.println(name + " " + password);
-        return new Result<>().success("success get user info");
+    public Result<User> getUser(@PathVariable int id) {
+        User user = userDao.selectById(id);
+        if(user == null) {
+            return new Result<>().failed("用户不存在！");
+        } else {
+            return new Result<>(200,"获取数据成功！",user);
+        }
     }
 
 
-    @DeleteMapping("/user")
+    @DeleteMapping("/{id}")
     @ApiOperation("删除用户")
-    public Result<Integer> deleteUser(@RequestBody Map<String,String> map) {
-        String name = map.get("name");
-        String pwd = map.get("password");
-        System.out.println(name + " " + pwd);
-        return new Result<>().success();
+    public Result deleteUser(@PathVariable int id) {
+        userDao.deleteById(id);
+        return new Result().success("删除成功！");
     }
 
 
+    @PostMapping("/checkName")
+    @ApiOperation("检查用户名是否使用")
+    Result checkNameUsed(@RequestBody HashMap<String,String> map) {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_name",map.get("userName"));
+        User user = userDao.selectOne(wrapper);
+        System.out.println(user);
+        if(user == null) {
+            return new Result().success();
+        }
+        else{
+            return new Result().failed("该用户名已被占用");
+        }
+    }
 
 }

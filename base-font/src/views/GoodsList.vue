@@ -4,12 +4,20 @@
 * @desciption:  GoodsList
 */
 <template>
-    $END$
+    <div>
+        <h1>商品列表</h1>
+    </div>
 </template>
 
 <script>
     export default {
-        name: "GoodsList"
+        name: "GoodsList",
+        data() {
+            return {
+
+            }
+        },
+
     }
 </script>
 

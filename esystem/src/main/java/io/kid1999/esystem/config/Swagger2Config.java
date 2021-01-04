@@ -34,13 +34,13 @@ public class Swagger2Config {
                 .enable(enable);
     }
 
-    @Bean("CustomApis")
+    @Bean("allApis")
     public Docket customApis() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("客户模块")
+                .groupName("所有模块")
                 .select()
                 .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
-                .paths(PathSelectors.regex("/custom.*"))
+                .paths(PathSelectors.regex("/.*"))
                 .build()
                 .apiInfo(apiInfo())
                 .enable(enable);

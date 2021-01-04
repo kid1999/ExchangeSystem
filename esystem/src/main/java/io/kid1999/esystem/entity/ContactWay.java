@@ -1,11 +1,10 @@
 package io.kid1999.esystem.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * @author kid1999
@@ -14,11 +13,9 @@ import javax.persistence.Table;
  **/
 
 @Data
-@Table(name = "contact_way")
-@Entity
+@TableName("contact_way")
 public class ContactWay {
-    @Id
-    @GeneratedValue  // 指定主键生成策略，默认自增长
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     private String phone;

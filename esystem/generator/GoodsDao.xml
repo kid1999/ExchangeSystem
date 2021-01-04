@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.kid1999.esystem.dao.GoodsDao">
+  <resultMap id="BaseResultMap" type="io.kid1999.esystem.entity.Goods">
+    <!--@mbg.generated-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="goods_condition" jdbcType="VARCHAR" property="goodsCondition" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="want" jdbcType="VARCHAR" property="want" />
+    <result column="exchange_addr" jdbcType="VARCHAR" property="exchangeAddr" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="goods_status" jdbcType="INTEGER" property="goodsStatus" />
+    <result column="number_of_clicked" jdbcType="INTEGER" property="numberOfClicked" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="deleted" jdbcType="TINYINT" property="deleted" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, user_id, goods_name, img_url, goods_condition, description, want, exchange_addr, 
+    remarks, goods_status, number_of_clicked, create_date, deleted, price
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from goods
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from goods
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="io.kid1999.esystem.entity.Goods" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into goods (user_id, goods_name, img_url, 
+      goods_condition, description, want, 
+      exchange_addr, remarks, goods_status, 
+      number_of_clicked, create_date, deleted, 
+      price)
+    values (#{userId,jdbcType=BIGINT}, #{goodsName,jdbcType=VARCHAR}, #{imgUrl,jdbcType=VARCHAR}, 
+      #{goodsCondition,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{want,jdbcType=VARCHAR}, 
+      #{exchangeAddr,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{goodsStatus,jdbcType=INTEGER}, 
+      #{numberOfClicked,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{deleted,jdbcType=TINYINT}, 
+      #{price,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="io.kid1999.esystem.entity.Goods" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into goods
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="goodsName != null">
+        goods_name,
+      </if>
+      <if test="imgUrl != null">
+        img_url,
+      </if>
+      <if test="goodsCondition != null">
+        goods_condition,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="want != null">
+        want,
+      </if>
+      <if test="exchangeAddr != null">
+        exchange_addr,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="goodsStatus != null">
+        goods_status,
+      </if>
+      <if test="numberOfClicked != null">
+        number_of_clicked,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="goodsName != null">
+        #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="imgUrl != null">
+        #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsCondition != null">
+        #{goodsCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="want != null">
+        #{want,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeAddr != null">
+        #{exchangeAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsStatus != null">
+        #{goodsStatus,jdbcType=INTEGER},
+      </if>
+      <if test="numberOfClicked != null">
+        #{numberOfClicked,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=TINYINT},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.kid1999.esystem.entity.Goods">
+    <!--@mbg.generated-->
+    update goods
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="goodsName != null">
+        goods_name = #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="imgUrl != null">
+        img_url = #{imgUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsCondition != null">
+        goods_condition = #{goodsCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="want != null">
+        want = #{want,jdbcType=VARCHAR},
+      </if>
+      <if test="exchangeAddr != null">
+        exchange_addr = #{exchangeAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsStatus != null">
+        goods_status = #{goodsStatus,jdbcType=INTEGER},
+      </if>
+      <if test="numberOfClicked != null">
+        number_of_clicked = #{numberOfClicked,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=TINYINT},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.kid1999.esystem.entity.Goods">
+    <!--@mbg.generated-->
+    update goods
+    set user_id = #{userId,jdbcType=BIGINT},
+      goods_name = #{goodsName,jdbcType=VARCHAR},
+      img_url = #{imgUrl,jdbcType=VARCHAR},
+      goods_condition = #{goodsCondition,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      want = #{want,jdbcType=VARCHAR},
+      exchange_addr = #{exchangeAddr,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      goods_status = #{goodsStatus,jdbcType=INTEGER},
+      number_of_clicked = #{numberOfClicked,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      deleted = #{deleted,jdbcType=TINYINT},
+      price = #{price,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

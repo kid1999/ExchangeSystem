@@ -4,9 +4,12 @@ server:
   port: 8080
   servlet:
     context-path: /api
+
+
 # swagger2 配置
 swagger2:
   enable: true
+
 
 # mail 配置
 mail:
@@ -14,12 +17,20 @@ mail:
     addr: 1447250889@qq.com
 
 
-
 # minio 文件服务器
 minio:
-  url: 10.16.66.232:9000
-  accessKey: admin
-  secretKey: Root=123
+  url: 159.75.6.26:9000
+  accessKey: kid1999
+  secretKey: pass=kid1999
+
+
+# mybatis-plus配置
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: flag  # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
 
 
 
@@ -27,15 +38,15 @@ spring:
   # mysql 配置：
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://10.16.66.232:3306/ESystem?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    url: jdbc:mysql://159.75.6.26:3306/ESystem?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
     username: root
-    password: Root=123
-  jpa:
-    hibernate:
-      ddl-auto: update
-      show-sql: true
-      database-platform: org.hibernate.dialect.MySQL5InnoDBDialect  #不加这句则默认为myisam引擎
-      open-in-view: true
+    password: pass=kid1999
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#      show-sql: true
+#      database-platform: org.hibernate.dialect.MySQL5InnoDBDialect  #不加这句则默认为myisam引擎
+#      open-in-view: true
 
     #Hikari 连接池配置
     hikari:

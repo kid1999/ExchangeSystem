@@ -10,22 +10,52 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Constants {
-	// MINIO 网址
+	/**
+	 * MINIO 网址
+	 */
 	public static final String MINIO_URL = "http://159.75.6.26:9000";
-	// MINIO 用户
+	/**
+	 * MINIO 用户
+	 */
 	public static final String MINIO_ACCESSKEY = "kid1999";
-	// MINIO 密码
+	/**
+	 * MINIO 密码
+	 */
 	public static final String MINIO_SECREKEY = "pass=kid1999";
 
-	//设置过期时间
+	/**
+	 * 设置过期时间
+	 */
 	public static final long TOKEN_EXPIRE_DATE=30*60*100000;
-	//token秘钥
+	/**
+	 * token秘钥
+	 */
 	public static final String TOKEN_SECRET = "ZCEQIUBFKSJBFJH2020BAWE";
 
-	//github oauth
+	/**
+	 * github oauth
+	 */
 	public static final String GITHUB_CLIENT_ID = "a6fd02d5fee1728dfee2";
 	public static final String GITHUB_CLIENT_SECRET = "60752c69673019967d49819fc2c353cc31f5199a";
 	public static final String GITHUB_CALLBACK_URL = "https://kid1999.top/oauth/callback/github";
 
+	/**
+	 * minio 桶
+	 */
+	public static final String IMG_BUCKET = "images";
+	/**
+	 * minio 分块容量
+	 */
+	public static final long MULTIPART_SIZE = 5242880;
+
+	/**
+	 * 默认头像地址
+	 */
+	public static final String DEFAULT_AVATAR_URL = "http://kid1999.top:9000/default/avatar.png";
+
+	/**
+	 * redis 内存保存时间（过期时间） 1 day
+	 */
+	public static final long REDIS_EXPIRE_DATE = 24*60*60;
 
 }

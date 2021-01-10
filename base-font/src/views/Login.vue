@@ -30,15 +30,9 @@
                 if (value.length <= 2) {
                     callback(new Error('用户名长度必须大于2'));
                 }
-                // await post('/user/checkName', {userName : value})
-                //     .then(res => {
-                //         if(res['data'] != null){
-                //             callback(new Error('用户名已存在'));
-                //         }
-                //     });
                 callback();
             };
-            var validatePass = (rule, value, callback) => {
+            const validatePass = (rule, value, callback) => {
                 if (value === '') {
                     callback(new Error('请输入密码'));
                 } else if(value.length < 4){
@@ -49,15 +43,15 @@
             };
             return {
                 ruleForm: {
-                    userPwd: '',
-                    userName: ''
+                    userPwd: '1111',
+                    userName: '111'
                 },
                 rules: {
                     userPwd: [
-                        { validator: validatePass, trigger: 'blur' }
+                        { required: true, validator: validatePass, trigger: 'blur' }
                     ],
                     userName: [
-                        { validator: checkName, trigger: 'blur' }
+                        { required: true, validator: checkName, trigger: 'blur' }
                     ]
                 }
             };
@@ -69,10 +63,13 @@
                         post('/user/login', this.ruleForm).then(res => {
                             if(res['status'] === 200) {
                                 this.$message.success("登录成功！");
+                                this.$store.commit('$_setStorage', {user: res['data']});
+                                this.$router.push({name: 'GoodsList'});
+                                console.info(this.$store.getters.getUserId['user']);
                             }
                         });
                     } else {
-                        console.log('error submit!!');
+                        this.$message.error("登录失败，请重试！");
                         return false;
                     }
                 });

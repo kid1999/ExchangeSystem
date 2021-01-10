@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * @author kid1999
  * @date 2020/9/30 20:34
@@ -12,7 +14,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Result<T> {
+public class Result<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty("返回值")

@@ -1,15 +1,19 @@
 package io.kid1999.esystem.api;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.kid1999.esystem.dao.TransRecordDao;
 import io.kid1999.esystem.entity.TransRecord;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -27,8 +31,13 @@ public class TransRecordApi {
 
     @PostMapping("")
     @ApiOperation("创建交易信息")
-    Result insertTransRecord(TransRecord transRecord){
-        transRecord.setCreateDate(LocalDateTime.now());
+    @CachePut(value = "transRecord",key = "#transRecord.goodsId-#transRecord.user1Id-#transRecord.user2Id")
+    public Result insertTransRecord(@RequestBody TransRecord transRecord){
+        LocalDateTime time = transRecord.getDetailedDatetime();
+        if(time.isBefore(LocalDateTime.now())){
+            return new Result<>(201,"交易时间已过");
+        }
+        transRecord.setCreateTime(LocalDateTime.now());
         transRecordDao.insert(transRecord);
         return new Result().success();
     }
@@ -36,25 +45,32 @@ public class TransRecordApi {
 
     @PutMapping("")
     @ApiOperation("修改交易信息")
-    Result updateTransRecord(TransRecord transRecord){
-        transRecord.setCreateDate(LocalDateTime.now());
+    @CachePut(value = "transRecord",key = "#transRecord.id")
+    public Result updateTransRecord(@RequestBody TransRecord transRecord){
+        transRecord.setCreateTime(LocalDateTime.now());
         transRecordDao.updateById(transRecord);
         return new Result().success();
     }
 
     @GetMapping("/{id}")
     @ApiOperation("查询交易信息")
-    Result getTransRecord(@PathVariable int id){
+    @Cacheable(value = "transRecord",key = "#transRecord.id")
+    public Result getTransRecord(@PathVariable int id){
         TransRecord record = transRecordDao.selectById(id);
         return new Result(200,"查询成功！",record);
     }
 
     @GetMapping("")
     @ApiOperation("查询所有交易信息")
-    Result getAllTransRecord(){
+    @Cacheable(value = "transRecord",key = "#currentPage")
+    public Result getAllTransRecord(@RequestParam(value = "page_size") int pageSize,
+                                    @RequestParam(value = "current_page") int currentPage){
+        Page<TransRecord> page = new Page<>();
+        page.setSize(pageSize);
+        page.setCurrent(currentPage);
         QueryWrapper<TransRecord> wrapper = new QueryWrapper<>();
         wrapper.select("*");
-        List<TransRecord> records = transRecordDao.selectList(wrapper);
+        Page<TransRecord> records = transRecordDao.selectPage(page,wrapper);
         return new Result(200,"查询成功！",records);
     }
 

@@ -4,54 +4,49 @@
   <resultMap id="BaseResultMap" type="io.kid1999.esystem.entity.TransRecord">
     <!--@mbg.generated-->
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="user1_id" jdbcType="BIGINT" property="user1Id" />
     <result column="user2_id" jdbcType="BIGINT" property="user2Id" />
     <result column="goods_id" jdbcType="BIGINT" property="goodsId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="detailed_address" jdbcType="VARCHAR" property="detailedAddress" />
+    <result column="detailed_datetime" jdbcType="TIMESTAMP" property="detailedDatetime" />
     <result column="deleted" jdbcType="TINYINT" property="deleted" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, create_date, `status`, remark, user1_id, user2_id, goods_id, deleted
+    id, `status`, remark, user1_id, user2_id, goods_id, create_time, end_time, detailed_address, 
+    detailed_datetime, deleted
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     <!--@mbg.generated-->
     select 
     <include refid="Base_Column_List" />
-    from `trans_
-
-record`
+    from trans_record
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     <!--@mbg.generated-->
-    delete from `trans_
-
-record`
+    delete from trans_record
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="io.kid1999.esystem.entity.TransRecord" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert into `trans_
-
-record` (create_date, `status`, remark, 
-      user1_id, user2_id, goods_id, 
+    insert into trans_record (`status`, remark, user1_id, 
+      user2_id, goods_id, create_time, 
+      end_time, detailed_address, detailed_datetime, 
       deleted)
-    values (#{createDate,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, 
-      #{user1Id,jdbcType=BIGINT}, #{user2Id,jdbcType=BIGINT}, #{goodsId,jdbcType=BIGINT}, 
+    values (#{status,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, #{user1Id,jdbcType=BIGINT}, 
+      #{user2Id,jdbcType=BIGINT}, #{goodsId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{detailedAddress,jdbcType=VARCHAR}, #{detailedDatetime,jdbcType=TIMESTAMP}, 
       #{deleted,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="io.kid1999.esystem.entity.TransRecord" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert into `trans_
-
-record`
+    insert into trans_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="createDate != null">
-        create_date,
-      </if>
       <if test="status != null">
         `status`,
       </if>
@@ -67,14 +62,23 @@ record`
       <if test="goodsId != null">
         goods_id,
       </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="detailedAddress != null">
+        detailed_address,
+      </if>
+      <if test="detailedDatetime != null">
+        detailed_datetime,
+      </if>
       <if test="deleted != null">
         deleted,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
       <if test="status != null">
         #{status,jdbcType=TINYINT},
       </if>
@@ -90,6 +94,18 @@ record`
       <if test="goodsId != null">
         #{goodsId,jdbcType=BIGINT},
       </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="detailedAddress != null">
+        #{detailedAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="detailedDatetime != null">
+        #{detailedDatetime,jdbcType=TIMESTAMP},
+      </if>
       <if test="deleted != null">
         #{deleted,jdbcType=TINYINT},
       </if>
@@ -97,13 +113,8 @@ record`
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="io.kid1999.esystem.entity.TransRecord">
     <!--@mbg.generated-->
-    update `trans_
-
-record`
+    update trans_record
     <set>
-      <if test="createDate != null">
-        create_date = #{createDate,jdbcType=TIMESTAMP},
-      </if>
       <if test="status != null">
         `status` = #{status,jdbcType=TINYINT},
       </if>
@@ -119,6 +130,18 @@ record`
       <if test="goodsId != null">
         goods_id = #{goodsId,jdbcType=BIGINT},
       </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="detailedAddress != null">
+        detailed_address = #{detailedAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="detailedDatetime != null">
+        detailed_datetime = #{detailedDatetime,jdbcType=TIMESTAMP},
+      </if>
       <if test="deleted != null">
         deleted = #{deleted,jdbcType=TINYINT},
       </if>
@@ -127,15 +150,16 @@ record`
   </update>
   <update id="updateByPrimaryKey" parameterType="io.kid1999.esystem.entity.TransRecord">
     <!--@mbg.generated-->
-    update `trans_
-
-record`
-    set create_date = #{createDate,jdbcType=TIMESTAMP},
-      `status` = #{status,jdbcType=TINYINT},
+    update trans_record
+    set `status` = #{status,jdbcType=TINYINT},
       remark = #{remark,jdbcType=VARCHAR},
       user1_id = #{user1Id,jdbcType=BIGINT},
       user2_id = #{user2Id,jdbcType=BIGINT},
       goods_id = #{goodsId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      detailed_address = #{detailedAddress,jdbcType=VARCHAR},
+      detailed_datetime = #{detailedDatetime,jdbcType=TIMESTAMP},
       deleted = #{deleted,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>

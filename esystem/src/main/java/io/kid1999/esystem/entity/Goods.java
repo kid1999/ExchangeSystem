@@ -58,11 +58,11 @@ public class Goods implements Serializable {
     private String description;
 
     /**
-     * 期望交换物品
+     * 期望交换物品id
      *
      * @mbg.generated Sun Jan 03 17:10:59 CST 2021
      */
-    private String want;
+    private Long wantGoodsId;
 
     /**
      * 交易地点

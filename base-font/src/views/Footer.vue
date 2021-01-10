@@ -5,7 +5,11 @@
 */
 <template>
     <div>
-        <h1>页脚</h1>
+        <div class="wrapper">
+            <div class="footer">
+                <p class="copy">© 2021 · kid1999 · All Rights Reserved</p>
+            </div>
+        </div>
     </div>
 </template>
 

@@ -15,16 +15,16 @@
             <el-form-item label="确认密码" prop="userPwd2">
                 <el-input type="password" v-model="ruleForm.userPwd2" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="确认密码" prop="userPwd2">
-                <el-input type="password" v-model="ruleForm.userPwd2" autocomplete="off"></el-input>
+            <el-form-item label="签名" prop="signature">
+                <el-input type="text" v-model="ruleForm.signature" autocomplete="off"></el-input>
             </el-form-item>
 
-            <el-form-item label="所在地区">
+            <el-form-item label="所在地区" prop="address">
                 <el-col :span="6">
                 <el-cascader
                         size="large"
                         :options="options"
-                        v-model="selectedOptions">
+                        v-model="addressOptions">
                 </el-cascader>
                 </el-col>
             </el-form-item>
@@ -44,13 +44,14 @@
             </el-form-item>
 
 
-
             <el-form-item label="用户头像" prop="avatarUrl">
                 <el-upload
-                        action="#"
+                        action="/api/file"
                         list-type="picture-card"
                         :limit="1"
-                        :auto-upload="false"
+                        :auto-upload="true"
+                        :on-success="uploadImgSuccess"
+                        :before-upload="beforeAvatarUpload"
                         :on-preview="handlePictureCardPreview"
                         :on-remove="handleRemove">
                     <i class="el-icon-plus"></i>
@@ -61,9 +62,6 @@
 
             </el-form-item>
 
-
-
-
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">注册</el-button>
             </el-form-item>
@@ -72,7 +70,7 @@
 </template>
 <script>
     import { get, post,put,deleted } from '../utils/request'
-    import { regionData } from 'element-china-area-data'
+    import { regionData,CodeToText } from 'element-china-area-data'
     export default {
         name: "Register",
         data() {
@@ -122,22 +120,31 @@
                     }
                 }
             };
+            const validateAddr = (rule, value, callback) => {
+                if (value === '') {
+                    callback(new Error('请输入所在区域'));
+                } callback();
+            };
             return {
                 dialogImageUrl: '',
                 dialogVisible: false,
 
                 options: regionData,
-                selectedOptions: [],
+                addressOptions: [],
                 email:'',
                 ruleForm: {
                     userName: '',
                     userPwd: '',
                     userPwd2:'',
+                    signature:'',
                     avatarUrl:'',
                     phone:'',
                     email:'',
                     qq:'',
-
+                    address:'',
+                    province:'',
+                    city:'',
+                    area:'',
                 },
                 rules: {
                     userName: [
@@ -152,11 +159,25 @@
                     phone: [
                         { required: true, validator: validatePhone, trigger: 'blur' }
                     ],
+                    address: [
+                        { required: true, validator: validateAddr, trigger: 'blur' }
+                    ],
                 }
             };
         },
+        watch : {
+            addressOptions:function(val) {
+                this.ruleForm.province = CodeToText[val[0]];
+                this.ruleForm.city = CodeToText[val[1]];
+                this.ruleForm.area = CodeToText[val[2]];
+                this.ruleForm.address = this.ruleForm.province + this.ruleForm.city +this.ruleForm.area;
+                console.info(this.ruleForm);
+            },
+        },
         methods: {
             submitForm(formName) {
+                let data = this.ruleForm;
+                console.info(data);
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         post('/user/register', this.ruleForm).then(res => {
@@ -176,6 +197,18 @@
             handlePictureCardPreview(file) {
                 this.dialogImageUrl = file.url;
                 this.dialogVisible = true;
+            },
+            beforeAvatarUpload(file) {
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isLt2M;
+            },
+            uploadImgSuccess(response, file, fileList){
+                this.$message.success("图片上传成功！");
+                this.ruleForm.avatarUrl = response['data']['fileName'];
+                console.info(this.ruleForm);
             }
         }
     }

@@ -52,7 +52,7 @@ instance.interceptors.request.use(config => {
 /** 添加响应拦截器  **/
 instance.interceptors.response.use(response => {
     loadingInstance.close()
-    if (response.data.status === 200) {     // 响应结果里的status: ok是我与后台的约定，大家可以根据实际情况去做对应的判断
+    if (response.data.status === 200 || response.data.status === 201 || response.data.status === 202 || response.data.status === 203) {     // 响应结果里的status: ok是我与后台的约定，大家可以根据实际情况去做对应的判断
         return Promise.resolve(response.data)
     } else {
         Message({

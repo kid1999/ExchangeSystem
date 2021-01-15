@@ -22,7 +22,7 @@ import java.util.List;
  * @description 交易记录管理操作
  **/
 @RestController
-@RequestMapping("trans_record")
+@RequestMapping("transRecord")
 @Api(tags = "交易记录管理操作")
 public class TransRecordApi {
 
@@ -55,7 +55,7 @@ public class TransRecordApi {
     @GetMapping("/{id}")
     @ApiOperation("查询交易信息")
     @Cacheable(value = "transRecord",key = "#transRecord.id")
-    public Result getTransRecord(@PathVariable int id){
+    public Result getTransRecord(@PathVariable Long id){
         TransRecord record = transRecordDao.selectById(id);
         return new Result(200,"查询成功！",record);
     }
@@ -74,18 +74,25 @@ public class TransRecordApi {
         return new Result(200,"查询成功！",records);
     }
 
-    @GetMapping("/user/{id}")
-    @ApiOperation("查询user交易信息")
-    Result getTransRecordByUserId(@PathVariable int id){
+    @GetMapping("/me/{id}")
+    @ApiOperation("查询user申请的交易信息")
+    Result getMinsTransRecordByUserId(@PathVariable Long id){ ;
+        List<HashMap<String, String>> records = transRecordDao.findAllByUser1Id(id);
+        return new Result(200,"查询成功！",records);
+    }
+
+    @GetMapping("/otherToMe/{id}")
+    @ApiOperation("查询user申请的交易信息")
+    Result getOthersTransRecordByUserId(@PathVariable Long id){
         QueryWrapper<TransRecord> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_id",id);
+        wrapper.eq("user2_id",id);
         List<TransRecord> records = transRecordDao.selectList(wrapper);
         return new Result(200,"查询成功！",records);
     }
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除交易信息")
-    Result deleteTransRecord(@PathVariable int id){
+    Result deleteTransRecord(@PathVariable Long id){
         transRecordDao.deleteById(id);
         return new Result(200,"删除成功！");
     }

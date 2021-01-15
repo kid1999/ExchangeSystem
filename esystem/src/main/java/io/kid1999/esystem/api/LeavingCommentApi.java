@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ import java.util.List;
  * @create 2021-01-04 11:44
  * @description 留言管理操作
  **/
-@RestController @RequestMapping("/leaving_comment")
+@RestController @RequestMapping("/leavingComment")
 @Api(tags = "留言管理操作")
 public class LeavingCommentApi {
 
@@ -42,22 +43,22 @@ public class LeavingCommentApi {
 
     @GetMapping("/{id}")
     @ApiOperation("根据id获取留言")
-    Result getLivingCommentById(@PathVariable int id){
+    Result getLivingCommentById(@PathVariable Long id){
         LeavingComment comment = leavingCommentDao.selectById(id);
         return new Result(200,"获取留言成功！",comment);
     }
 
-    @GetMapping("/{user}/{userId}")
-    @ApiOperation("获取留言者所有留言")
-    Result getLivingCommentByUserId(@PathVariable int user,
-                                    @PathVariable int userId){
-        QueryWrapper<LeavingComment> wrapper = new QueryWrapper<>();
-        if(user == 1){
-            wrapper.eq("user1_id",userId);
-        }else {
-            wrapper.eq("user2_id",userId);
-        }
-        List<LeavingComment> comments = leavingCommentDao.selectList(wrapper);
+    @GetMapping("/me/{userId}")
+    @ApiOperation("获取我写的所有留言")
+    Result getLivingCommentByMeId(@PathVariable Long userId){
+        List<HashMap<String, String>> comments = leavingCommentDao.findAllByUser1Id(userId);
+        return new Result(200,"获取留言成功！",comments);
+    }
+
+    @GetMapping("/othersToMe/{userId}")
+    @ApiOperation("获取写给我的所有留言")
+    Result getLivingCommentByUserId(@PathVariable Long userId){
+        List<HashMap<String, String>> comments = leavingCommentDao.findAllByUser2Id(userId);
         return new Result(200,"获取留言成功！",comments);
     }
 
@@ -73,7 +74,7 @@ public class LeavingCommentApi {
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除留言信息")
-    Result deleteLivingComment(@PathVariable int id){
+    Result deleteLivingComment(@PathVariable Long id){
         leavingCommentDao.deleteById(id);
         return new Result().success("删除留言成功！");
     }

@@ -18,7 +18,7 @@
                                 fit="fit"></el-image>
                     </div>
                 </el-form-item>
-            <el-form-item label="用户头像" prop="img_url" v-else="canChangeable" :rules="[{ required: true, message: '头像不能为空'}]">
+            <el-form-item label="商品图片" prop="img_url" v-else="canChangeable" :rules="[{ required: true, message: '图片不能为空'}]">
                 <el-upload
                         action="/api/file"
                         list-type="picture-card"
@@ -67,12 +67,15 @@
                     </el-option>
                 </el-select>
             </el-form-item>
+            <el-form-item label="估值" prop="price">
+                <el-input type="text" v-model="goods.price" autocomplete="off" :disabled="canChangeable"></el-input>
+            </el-form-item>
             <el-form-item label="商品所有者" prop="user_name">
                 <el-input type="text" v-model="goods.user_name" autocomplete="off" disabled></el-input>
             </el-form-item>
-                <el-form-item label="上架时间" prop="create_date">
-                    <el-input type="text" v-model="formatCreateTime" autocomplete="off" :disabled="canChangeable"></el-input>
-                </el-form-item>
+            <el-form-item label="上架时间" prop="create_date">
+                <el-input type="text" v-model="formatCreateTime" autocomplete="off" disabled></el-input>
+            </el-form-item>
             <el-form-item label="商品访问量" prop="number_of_clicked">
                 <el-input type="text" v-model="goods.number_of_clicked" autocomplete="off" disabled></el-input>
             </el-form-item>
@@ -214,7 +217,7 @@
             beforeAvatarUpload(file) {
                 const isLt2M = file.size / 1024 / 1024 < 2;
                 if (!isLt2M) {
-                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                    this.$message.error('上传图片大小不能超过 2MB!');
                 }
                 return isLt2M;
             },

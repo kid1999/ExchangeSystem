@@ -13,25 +13,35 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login.vue')
+    component: () => import('../views/Login')
   },
   {
     path: '/register',
     name: 'Register',
-    component: () => import('../views/Register.vue')
+    component: () => import('../views/Register')
   },
   {
     path: '/goods/detail/:id',
     name: 'goodsDetail',
-    component: () => import('../views/GoodsDetail.vue')
+    component: () => import('../views/GoodsDetail')
+  },
+  {
+    path: '/userInfo/:id',
+    name: 'userInfo',
+    component: () => import('../views/UserInfo')
+  },
+  {
+    path: '/transRecord',
+    name: 'transRecord',
+    component: () => import('../views/TransRecords')
   },
   {
     path: '/test',
     name: 'Test',
-    component: () => import('../components/Test.vue')
+    component: () => import('../components/Test')
   },
   {
-    path: '/axios', name: 'TestApi', component: () => import('../views/TestApi.vue')
+    path: '/axios', name: 'TestApi', component: () => import('../views/TestApi')
   }
 ];
 

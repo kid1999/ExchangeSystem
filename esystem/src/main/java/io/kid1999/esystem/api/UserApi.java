@@ -8,10 +8,13 @@ import io.kid1999.esystem.dao.UserDao;
 import io.kid1999.esystem.entity.Address;
 import io.kid1999.esystem.entity.ContactWay;
 import io.kid1999.esystem.entity.User;
+import io.kid1999.esystem.utils.RedisUtil;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -38,6 +41,9 @@ public class UserApi {
 
     @Autowired
     private ContactWayDao contactWayDao;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @PostMapping("/register")
     @ApiOperation("注册新用户")
@@ -73,10 +79,9 @@ public class UserApi {
         wrapper.eq("user_name",userName);
         User user = userDao.selectOne(wrapper);
         if(user != null && StrUtil.equals(userPwd,user.getUserPwd())){
-            HashMap<String,String> res = new HashMap<>();
-            res.put("userId","" + user.getId());
-            res.put("userName",user.getUserName());
-            return new Result(200,"登录成功！",res);
+            user.setUserPwd("");
+            redisUtil.incr("userLoginTimes::" + user.getId());
+            return new Result(200,"登录成功！",user);
         }else {
             return new Result().failed("账号密码不正确!");
         }
@@ -101,6 +106,7 @@ public class UserApi {
         if(user == null) {
             return new Result<>().failed("用户不存在！");
         } else {
+            user.setUserPwd("");
             return new Result<>(200,"获取数据成功！",user);
         }
     }
@@ -111,6 +117,18 @@ public class UserApi {
     public Result deleteUser(@PathVariable int id) {
         userDao.deleteById(id);
         return new Result().success("删除成功！");
+    }
+
+    @GetMapping("/loginTimes/{id}")
+    @ApiOperation("获取用户登录次数")
+    @Cacheable(value="userLoginTimes",key="#id")
+    public Result getUserLoginTimes(@PathVariable int id) {
+        User user = userDao.selectById(id);
+        if(user == null) {
+            return new Result().failed("用户不存在！");
+        } else {
+            return new Result(200,"获取数据成功！",user.getLoginTimes());
+        }
     }
 
 

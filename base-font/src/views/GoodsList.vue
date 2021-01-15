@@ -63,6 +63,12 @@
                                     <p>
                                         <span>点击量 </span><i class="el-icon-s-promotion el-icon--left"></i>：  <strong>{{goods.number_of_clicked }}</strong>
                                     </p>
+                                    <p>
+                                        所有者<i class="el-icon-s-custom el-icon--right"></i>：
+                                        <el-link :underline="false" :href="'/userInfo/' + goods.user_id">
+                                            <strong>{{goods.user_name }}</strong>
+                                        </el-link>
+                                    </p>
                                 </div>
                                 <div id="buy">
                                     <el-button type="success" size="mini" round  @click="applyExchange(goods.id)">申请交易</el-button>
@@ -106,7 +112,13 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item
-                        label="详细地址"
+                        label="补差价"
+                        prop="price"
+                        :rules="[{pattern: /^-?\d+\.?\d*$/, message: '请输入正确数据', trigger: 'blur'}]">
+                    <el-input type="price" v-model="applyValidateForm.price" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item
+                        label="交易地址"
                         prop="detailedAddress"
                         :rules="[{ required: true, message: '详细地址不能为空'}]">
                     <el-input type="detailedAddress" v-model="applyValidateForm.detailedAddress" autocomplete="off"></el-input>
@@ -120,6 +132,12 @@
                             type="datetime"
                             placeholder="选择日期时间">
                     </el-date-picker>
+                </el-form-item>
+                <el-form-item
+                        label="联系方式"
+                        prop="phone"
+                        :rules="[{ required: true, message: '请输入手机号', trigger: 'blur' }, { pattern: /^((0\d{2,3}-\d{7,8})|(1[3456789]\d{9}))$/, message: '请输入合法手机号/电话号', trigger: 'blur' }]">
+                    <el-input type="phone" v-model="applyValidateForm.phone" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item
                         label="备注"
@@ -184,6 +202,8 @@
                     user2Id:'',
                     remark:'',
                     goodsId:'',
+                    price:'',
+                    phone:'',
                     exchangeGoodsId:'',
                     detailedAddress:'',
                     detailedDatetime:'',
@@ -244,7 +264,7 @@
                 console.info(this.applyValidateForm);
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        post('/trans_record', this.applyValidateForm).then(res => {
+                        post('/transRecord', this.applyValidateForm).then(res => {
                             if(res['status'] === 200) {
                                 this.$message.success("申请成功！");
                                 console.info(res);

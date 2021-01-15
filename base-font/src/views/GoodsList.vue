@@ -28,8 +28,9 @@
                             <el-card class="box-card">
                                 <div slot="header" id="header-font">
                                     <span>
-                                        <el-link :underline="false">
-                                            <h2>{{goods.goods_name}}</h2></el-link>
+                                        <el-link :underline="false" :href="'/goods/detail/' + goods.id">
+                                            <h2>{{goods.goods_name}}</h2>
+                                        </el-link>
                                     </span>
                                 </div>
 
@@ -54,7 +55,10 @@
 
                                 <div id="goods_context">
                                     <p>
-                                        期望交换<i class="el-icon-s-goods el-icon--right"></i>： <el-link :underline="false"><strong>{{goods.want_goods_name }}</strong> </el-link>
+                                        期望交换<i class="el-icon-s-goods el-icon--right"></i>：
+                                        <el-link :underline="false" :href="'/goods/detail/' + goods.want_goods_id">
+                                            <strong>{{goods.want_goods_name }}</strong>
+                                        </el-link>
                                     </p>
                                     <p>
                                         <span>点击量 </span><i class="el-icon-s-promotion el-icon--left"></i>：  <strong>{{goods.number_of_clicked }}</strong>
@@ -62,9 +66,9 @@
                                 </div>
                                 <div id="buy">
                                     <el-button type="success" size="mini" round  @click="applyExchange(goods.id)">申请交易</el-button>
-                                    <router-link :to="'/goods/detail/' + goods.id">
-                                        <el-button type="info" size="mini" round @click="toGoodsDetail(goods.id)">查看详情</el-button>
-                                    </router-link>
+                                    <el-link :underline="false" :href="'/goods/detail/' + goods.id">
+                                        <el-button type="info" size="mini" round >查看详情</el-button>
+                                    </el-link>
                                 </div>
                             </el-card>
                         </div>
@@ -89,9 +93,17 @@
         <el-dialog title="申请交易" :visible.sync="buyVisible">
             <el-form :model="applyValidateForm" ref="applyValidateForm" class="demo-ruleForm">
                 <el-form-item
-                        label="备注"
-                        prop="remark">
-                    <el-input type="remark" v-model="applyValidateForm.remark" autocomplete="off"></el-input>
+                        label="交换物品"
+                        prop="exchangeGoodsId"
+                        :rules="[{ required: true, message: '交换物品不能为空'}]">
+                    <el-select v-model="applyValidateForm.exchangeGoodsId" filterable type="exchangeGoodsId"  placeholder="请选择交换物品">
+                        <el-option
+                                v-for="goods in userGoods"
+                                :key="goods.id"
+                                :label="goods.goodsName"
+                                :value="goods.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item
                         label="详细地址"
@@ -108,6 +120,11 @@
                             type="datetime"
                             placeholder="选择日期时间">
                     </el-date-picker>
+                </el-form-item>
+                <el-form-item
+                        label="备注"
+                        prop="remark">
+                    <el-input type="remark" v-model="applyValidateForm.remark" autocomplete="off"></el-input>
                 </el-form-item>
             </el-form>
         <div slot="footer" class="dialog-footer">
@@ -128,6 +145,16 @@
             return {
                 buyVisible: false,
                 search_context:'',
+                userGoods:[{
+                    id: '1',
+                    goodsName: '黄金糕'
+                },{
+                    id: '2',
+                    goodsName: '索尼爱立信'
+                },{
+                    id: '3',
+                    goodsName: 'iphone'
+                }],
                 goods_list:[{
                     "goods_status": 0,
                     "goods_name": "手机",
@@ -157,6 +184,7 @@
                     user2Id:'',
                     remark:'',
                     goodsId:'',
+                    exchangeGoodsId:'',
                     detailedAddress:'',
                     detailedDatetime:'',
                 },
@@ -181,15 +209,18 @@
                     this.pageSize = res['data']['size'];
                     console.info(this.goods_list);
                 });
+
+            // 获取user的物品
+            let userId = this.$store.getters.getUser['user']['userId'];
+            get('/goods/user',{'userId':userId})
+                .then(res => {
+                    this.userGoods = res['data'];
+                });
         },
         methods:{
-            // 详情页
-            toGoodsDetail(goods_id){
-                this.$router.push({path: '/goods/detail', query: {id: goods_id}});
-            },
             // 收藏
             collectionGoods(goods_id){
-                post('/collection', {goodsId:goods_id,userId:this.$store.getters.getUserId['user']}).then(res => {
+                post('/collection', {goodsId:goods_id,userId:this.$store.getters.getUser['user']['userId']}).then(res => {
                     if(res['status'] === 200) {
                         this.$message.success("收藏成功");
                     }else {
@@ -207,7 +238,7 @@
             // 申请交换 到 远程
             submitForm(formName) {
                 this.buyVisible = false;
-                this.applyValidateForm.user2Id = this.$store.getters.getUserId['user'];
+                this.applyValidateForm.user2Id = this.$store.getters.getUser['user']['userId'];
                 this.applyValidateForm.user1Id = this.goods_list[this.transaction_goods_id]['user_id'];
                 this.applyValidateForm.goodsId = this.transaction_goods_id;
                 console.info(this.applyValidateForm);

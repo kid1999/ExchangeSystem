@@ -59,11 +59,20 @@ public class TransRecord implements Serializable {
     private Long user2Id;
 
     /**
-     * 货物
+     * 被交换的物品
      *
      * @mbg.generated Thu Jan 07 13:09:51 CST 2021
      */
     private Long goodsId;
+
+
+
+    /**
+     * 交换的物品
+     *
+     * @mbg.generated Thu Jan 07 13:09:51 CST 2021
+     */
+    private Long exchangeGoodsId;
 
     /**
      * 

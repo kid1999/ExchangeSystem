@@ -63,9 +63,10 @@
                         post('/user/login', this.ruleForm).then(res => {
                             if(res['status'] === 200) {
                                 this.$message.success("登录成功！");
-                                this.$store.commit('$_setStorage', {user: res['data']});
+                                console.info(res['data']);
+                                this.$store.commit('$_setUser', {user: res['data']});
                                 this.$router.push({name: 'GoodsList'});
-                                console.info(this.$store.getters.getUserId['user']);
+                                console.info(this.$store.getters.getUser['user']);
                             }
                         });
                     } else {

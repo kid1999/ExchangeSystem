@@ -7,26 +7,26 @@ const key = 'user_id';
 const store = new Vuex.Store({
   state () {
     return {
-      user_id: null
+      user: null,
     }
   },
   getters: {
-    getUserId: function (state) {
-      if (!state.user_id) {
-        state.user_id = JSON.parse(localStorage.getItem(key))
+    getUser: function (state) {
+      if (!state.user) {
+        state.user = JSON.parse(localStorage.getItem(key))
       }
-      return state.user_id
+      return state.user
     }
   },
   mutations: {
-    $_setStorage (state, value) {
-      state.user_id = value;
+    $_setUser (state, value) {
+      state.user = value;
       localStorage.setItem(key, JSON.stringify(value))
     },
-    $_removeStorage (state) {
-      state.user_id = null;
+    $_removeUser (state) {
+      state.user = null;
       localStorage.removeItem(key)
-    }
+    },
   }
 })
 

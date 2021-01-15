@@ -15,15 +15,15 @@
             <el-menu-item index="#">
                 <el-input v-model="search_context" placeholder="请输入内容"></el-input>
             </el-menu-item>
-            <el-submenu index="#">
+            <el-submenu index="#" style="float: right; padding: 3px 0">
                 <template slot="title">
                     <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
                 </template>
-                <el-menu-item index="user">用户信息</el-menu-item>
-                <el-menu-item index="login">登录</el-menu-item>
-                <el-menu-item index="register">注册</el-menu-item>
-                <el-menu-item index="userInfo">信息中心</el-menu-item>
-                <el-menu-item index="logout">退出</el-menu-item>
+                <el-menu-item index="/user">用户信息</el-menu-item>
+                <el-menu-item index="/login">登录</el-menu-item>
+                <el-menu-item index="/register">注册</el-menu-item>
+                <el-menu-item index="/userInfo">信息中心</el-menu-item>
+                <el-menu-item index="/logout">退出</el-menu-item>
             </el-submenu>
         </el-menu>
     </div>

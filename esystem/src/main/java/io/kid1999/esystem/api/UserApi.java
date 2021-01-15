@@ -73,7 +73,10 @@ public class UserApi {
         wrapper.eq("user_name",userName);
         User user = userDao.selectOne(wrapper);
         if(user != null && StrUtil.equals(userPwd,user.getUserPwd())){
-            return new Result(200,"登录成功！",user.getId());
+            HashMap<String,String> res = new HashMap<>();
+            res.put("userId","" + user.getId());
+            res.put("userName",user.getUserName());
+            return new Result(200,"登录成功！",res);
         }else {
             return new Result().failed("账号密码不正确!");
         }

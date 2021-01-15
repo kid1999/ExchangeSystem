@@ -1,5 +1,6 @@
 package io.kid1999.esystem.api;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.kid1999.esystem.dao.GoodsDao;
@@ -13,6 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author kid1999
@@ -27,6 +29,9 @@ public class GoodsApi {
 
     @Autowired
     private GoodsDao goodsDao;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @PostMapping("")
     @ApiOperation("创建货物信息")
@@ -55,8 +60,8 @@ public class GoodsApi {
     @ApiOperation("获取货物信息")
     Result getGoods(@PathVariable Long id){
         // 点击量 + 定时刷新到数据库
-        RedisUtil.incr("goodsView::" + id);
-        Goods data = goodsDao.selectById(id);
+        redisUtil.incr("goodsView::" + id);
+        HashMap<String,String> data = goodsDao.findGoodsById(id);
         return new Result(200,"获取数据成功！",data);
     }
 
@@ -70,6 +75,15 @@ public class GoodsApi {
         page.setSize(pageSize);
         page.setCurrent(currentPage);
         IPage<HashMap<String, String>> goods = goodsDao.findGoodsByNameAndPage(page,goodsName);
+        return new Result(200,"查询成功！",goods);
+    }
+
+    @GetMapping("/user")
+    @ApiOperation("通过userId查找货物信息")
+    Result getGoodsByGoodsName(@RequestParam(value = "userId") long userId){
+        QueryWrapper<Goods> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id",userId);
+        List<Goods> goods = goodsDao.selectList(wrapper);
         return new Result(200,"查询成功！",goods);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,6 +30,7 @@ public class CommentApi {
     @ApiOperation("新建评论")
     Result insertComment(@RequestBody Comment comment){
         comment.setDate(LocalDateTime.now());
+        comment.setStatus((byte) 0);
         commentDao.insert(comment);
         return new Result().success();
     }
@@ -47,6 +49,13 @@ public class CommentApi {
         QueryWrapper<Comment> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id",userId);
         List<Comment> comments = commentDao.selectList(wrapper);
+        return new Result(200,"查询成功！",comments);
+    }
+
+    @GetMapping("/goods/{goodsId}")
+    @ApiOperation("根据user_id获取评论")
+    Result selectGoodsComment(@PathVariable Long goodsId){
+        List<HashMap<String, String>> comments = commentDao.findAllByGoodsId(goodsId);
         return new Result(200,"查询成功！",comments);
     }
 

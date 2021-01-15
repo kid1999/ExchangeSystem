@@ -22,15 +22,14 @@ import static io.kid1999.esystem.common.Constants.REDIS_EXPIRE_DATE;
 public class RedisUtil {
 
     @Autowired
-    private static RedisTemplate redisTemplate;
+    private  RedisTemplate redisTemplate;
 
-    public static Long incr(String key) {
+    public void incr(String key) {
         RedisAtomicLong entityIdCounter = new RedisAtomicLong(key, redisTemplate.getConnectionFactory());
         Long increment = entityIdCounter.getAndIncrement();
-        if ((null == increment || increment.longValue() == 0) && REDIS_EXPIRE_DATE > 0) {//初始设置过期时间
+        if ((null == increment || increment.longValue() == 0) && REDIS_EXPIRE_DATE > 0) {
             entityIdCounter.expire(REDIS_EXPIRE_DATE, TimeUnit.SECONDS);
         }
-        return increment;
     }
 
 }

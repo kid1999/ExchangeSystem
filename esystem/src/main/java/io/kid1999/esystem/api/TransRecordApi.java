@@ -31,7 +31,7 @@ public class TransRecordApi {
 
     @PostMapping("")
     @ApiOperation("创建交易信息")
-    @CachePut(value = "transRecord",key = "#transRecord.goodsId-#transRecord.user1Id-#transRecord.user2Id")
+    @CachePut(value = "transRecord",key = "#transRecord.goodsId-#transRecord.exchangeGoodsId")
     public Result insertTransRecord(@RequestBody TransRecord transRecord){
         LocalDateTime time = transRecord.getDetailedDatetime();
         if(time.isBefore(LocalDateTime.now())){

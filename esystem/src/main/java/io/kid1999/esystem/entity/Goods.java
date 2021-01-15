@@ -1,13 +1,13 @@
 package io.kid1999.esystem.entity;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @TableName goods
@@ -69,7 +69,7 @@ public class Goods implements Serializable {
      *
      * @mbg.generated Sun Jan 03 17:10:59 CST 2021
      */
-    private String exchangeAddr;
+    private Long addressId;
 
     /**
      * 备注
@@ -97,7 +97,7 @@ public class Goods implements Serializable {
      *
      * @mbg.generated Sun Jan 03 17:10:59 CST 2021
      */
-    private Date createDate;
+    private LocalDateTime createDate;
 
     /**
      * 

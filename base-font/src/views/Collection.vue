@@ -1,15 +1,11 @@
 /**
 * @auther: kid1999
-* @date: 2021/1/4 19:39
-* @desciption:  GoodsList
-*
-* 期望交换 ： goods_id ->
-* 收藏情况 ： goods_id -> collection_id -> user_id
+* @date: 2021/1/16 12:18
+* @desciption:  Collection
 */
 <template>
     <div>
-        <h1>商品列表</h1>
-
+        <h1>商品收藏</h1>
         <div id="search">
             <el-row>
                 <el-input placeholder="请输入内容搜索" v-model="search_context" class="input-with-select">
@@ -17,7 +13,6 @@
                 </el-input>
             </el-row>
         </div>
-
 
         <div id="list">
             <el-row>
@@ -152,10 +147,10 @@
                     <el-input type="remark" v-model="applyValidateForm.remark" autocomplete="off"></el-input>
                 </el-form-item>
             </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="submitForm('applyValidateForm')">确 定</el-button>
-            <el-button @click="buyVisible = false">取 消</el-button>
-        </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitForm('applyValidateForm')">确 定</el-button>
+                <el-button @click="buyVisible = false">取 消</el-button>
+            </div>
         </el-dialog>
 
     </div>
@@ -165,7 +160,7 @@
     import { get, post,put,deleted } from '../utils/request'
     let moment = require('moment');
     export default {
-        name: "GoodsList",
+        name: "Collection",
         data() {
             return {
                 buyVisible: false,
@@ -226,12 +221,15 @@
             let _this = this;
             let user = this.$store.getters.getUser['user'];
             const data = {"current_page":_this.currentPage,"page_size":_this.pageSize,userId:user['id']};
-            get('/goods', data)
+            // 获取user收藏的所有的物品
+            get('/goods/collection', data)
                 .then(res => {
+                    console.info(res);
                     this.goods_list = res['data']['records'];
                     this.total = res['data']['total'];
                     this.currentPage = res['data']['current'];
                     this.pageSize = res['data']['size'];
+                    this.userId = user['id'];
                     console.info(this.goods_list);
                 });
 
@@ -243,14 +241,14 @@
         },
         methods:{
             // 收藏
-            collectionGoods(goods_id,deleted){
+            collectionGoods(goods_id,cdeleted){
                 post('/collection', {goodsId:goods_id,userId:this.$store.getters.getUser['user']['id']}).then(res => {
                     if(res['status'] === 200) {
                         this.$message.success(res['message']);
-                        deleted = deleted === 0 ? 1 : 0;
+                        let goods_cdeleted = cdeleted == 0 ? 1 : 0;
                         for (var goods of this.goods_list) {
                             if(goods.id === goods_id){
-                                goods.cdeleted = deleted;
+                                goods.cdeleted = goods_cdeleted;
                             }
                         }
                     }
@@ -298,35 +296,9 @@
                     });
             },
         }
-
     }
 </script>
 
-<style>
-
-    #pagination{
-        margin-top: 18px;
-    }
-
-    .el-card__header{
-        padding: 0 !important;
-    }
-
-    .text{
-        font-size: 13px;
-    }
-
-    #list{
-        margin-top: 18px;
-    }
-
-    #buy{
-        margin-top: 18px;
-    }
-
-    #goods{
-        margin-top: 18px;
-        margin-left: 10px;
-    }
+<style scoped>
 
 </style>

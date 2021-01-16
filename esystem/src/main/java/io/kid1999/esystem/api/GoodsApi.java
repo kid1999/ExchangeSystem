@@ -78,25 +78,38 @@ public class GoodsApi {
         return new Result(200,"查询成功！",goods);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/user/{userId}")
     @ApiOperation("通过userId查找货物信息")
-    Result getGoodsByGoodsName(@RequestParam(value = "userId") long userId){
+    Result getGoodsByUserId(@PathVariable long userId){
         QueryWrapper<Goods> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id",userId);
         List<Goods> goods = goodsDao.selectList(wrapper);
         return new Result(200,"查询成功！",goods);
     }
 
-
-    @GetMapping("")
-    @ApiOperation("获取所有货物信息")
-    @Cacheable(value="goodsList",key="#currentPage")
-    public Result getAllGoods(@RequestParam(value = "page_size") int pageSize,
-                       @RequestParam(value = "current_page") int currentPage){
+    @GetMapping("/collection")
+    @ApiOperation("查询user收藏的goods")
+    Result getGoodsByGoodsName(@RequestParam(value = "page_size") int pageSize,
+                               @RequestParam(value = "current_page") int currentPage,
+                               @RequestParam(value = "userId") Long userId){
         Page<HashMap<String,String>> page = new Page<>();
         page.setSize(pageSize);
         page.setCurrent(currentPage);
-        IPage<HashMap<String, String>> data = goodsDao.findAllByPage(page);
+        IPage<HashMap<String, String>> data = goodsDao.findGoodsAndCollectionByUserId(page, userId);
+        return new Result(200,"查询成功！",data);
+    }
+
+
+    @GetMapping("")
+    @ApiOperation("获取所有货物信息")
+//    @Cacheable(value="goodsList",key="#currentPage-#userId")
+    public Result getAllGoods(@RequestParam(value = "page_size") int pageSize,
+                              @RequestParam(value = "current_page") int currentPage,
+                              @RequestParam(value = "userId") Long userId){
+        Page<HashMap<String,String>> page = new Page<>();
+        page.setSize(pageSize);
+        page.setCurrent(currentPage);
+        IPage<HashMap<String, String>> data = goodsDao.findAllByPage(page,userId);
         return new Result(200,"获取数据成功！",data);
     }
 

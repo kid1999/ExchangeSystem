@@ -69,7 +69,7 @@ spring:
     host: 159.75.6.26
     port: 6379
     database: 0
-    timeout: 5000ms
+    timeout: 5000
     password: pass=kid1999
     jedis:
       pool:

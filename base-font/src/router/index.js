@@ -36,6 +36,16 @@ const routes = [
     component: () => import('../views/TransRecords')
   },
   {
+    path: '/message',
+    name: 'message',
+    component: () => import('../views/Message')
+  },
+  {
+    path: '/collection',
+    name: 'collection',
+    component: () => import('../views/Collection')
+  },
+  {
     path: '/test',
     name: 'Test',
     component: () => import('../components/Test')

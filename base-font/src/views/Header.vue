@@ -9,7 +9,7 @@
             <el-menu-item index="/">Esystem</el-menu-item>
             <el-menu-item index="/message">消息中心</el-menu-item>
             <el-menu-item index="/transRecord">交易记录</el-menu-item>
-            <el-menu-item index="/demand">收藏夹</el-menu-item>
+            <el-menu-item index="/collection">收藏夹</el-menu-item>
             <el-menu-item index="/leavingComment">留言板块</el-menu-item>
             <el-menu-item index="/comment">评论板块</el-menu-item>
             <el-menu-item index="#">

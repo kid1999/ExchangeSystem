@@ -109,7 +109,7 @@
         },
         created() {
             this.id = this.$route.params.id;
-            this.userId = this.$store.getters.getUser['user']['userId'];
+            this.userId = this.$store.getters.getUser['user']['id'];
             get('/user/' + this.id, {})
                 .then(res => {
                     this.user = res['data'];

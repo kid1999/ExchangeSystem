@@ -1,65 +1,76 @@
 /**
 * @auther: kid1999
-* @date: 2021/1/15 16:47
-* @desciption:  TransRecords
+* @date: 2021/1/16 10:34
+* @desciption:  Message
 */
 <template>
     <div>
         <el-card class="box-card">
             <div slot="header" class="clearfix">
-                <h2>交易请求记录</h2>
+                <h2>交易请求消息</h2>
             </div>
-        <el-table
-                :data="tableData"
-                style="width: 100%">
-            <el-table-column
-                    label="交易日期"
-                    width="180">
-                <template slot-scope="scope">
-                    <i class="el-icon-time"></i>
-                    <span style="margin-left: 10px">{{ scope.row.detailed_datetime | timeFormat }}</span>
-                </template>
-            </el-table-column>
-            <el-table-column
-                    prop="detailed_address"
-                    label="交易详细地址"
-                    width="180">
-            </el-table-column>
-            <el-table-column
-                    prop="goods_name"
-                    label="商品">
-            </el-table-column>
-            <el-table-column
-                    prop="user_name"
-                    label="卖家">
-            </el-table-column>
-            <el-table-column
-                    prop="remark"
-                    label="备注">
-            </el-table-column>
-            <el-table-column
-                    prop="status"
-                    label="状态"
-                    width="100"
-                    :filters="[{ text: '申请中', value: 0 }, { text: '交易中', value: 1 }, { text: '交易完成', value: 2 }, { text: '交易失败', value: 3 }, { text: '交易取消', value: 4 }]"
-                    :filter-method="filterStatus"
-                    filter-placement="bottom-end">
-                <template slot-scope="scope">
-                    <el-tag
-                            :type="filterTag(scope.row.status)"
-                            disable-transitions>{{statusData[scope.row.status]}}</el-tag>
-                </template>
-            </el-table-column>
-            <el-table-column
-                    fixed="right"
-                    label="操作"
-                    width="100">
-                <template slot-scope="scope">
-                    <el-button @click="viewClick(scope.row)" type="text" size="small">查看</el-button>
-                    <el-button @click="deleteClick(scope.row)" type="text" size="small">取消</el-button>
-                </template>
-            </el-table-column>
-        </el-table>
+            <el-table
+                    :data="tableData"
+                    style="width: 100%">
+                <el-table-column
+                        label="交易日期"
+                        width="180">
+                    <template slot-scope="scope">
+                        <i class="el-icon-time"></i>
+                        <span style="margin-left: 10px">{{ scope.row.detailed_datetime | timeFormat }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="detailed_address"
+                        label="交易详细地址"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="goods_name"
+                        label="商品">
+                    <template slot-scope="scope">
+                        <el-link :href="'/goods/detail/' + scope.row.id" :underline="false">
+                            <span>{{ scope.row.goods_name }}</span>
+                        </el-link>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="user_name"
+                        label="买家">
+                    <template slot-scope="scope">
+                        <el-link :href="'/userInfo/' + scope.row.user1_id" :underline="false">
+                            <span>{{ scope.row.user_name }}</span>
+                        </el-link>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="remark"
+                        label="备注">
+                </el-table-column>
+                <el-table-column
+                        prop="status"
+                        label="状态"
+                        width="100"
+                        :filters="[{ text: '申请中', value: 0 }, { text: '交易中', value: 1 }, { text: '交易完成', value: 2 }, { text: '交易失败', value: 3 }, { text: '交易取消', value: 4 }]"
+                        :filter-method="filterStatus"
+                        filter-placement="bottom-end">
+                    <template slot-scope="scope">
+                        <el-tag
+                                :type="filterTag(scope.row.status)"
+                                disable-transitions>{{statusData[scope.row.status]}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        fixed="right"
+                        label="操作"
+                        width="120">
+                    <template slot-scope="scope">
+                        <el-button @click="viewClick(scope.row)" type="text" size="small">查看</el-button>
+                        <el-button @click="acceptClick(scope.row)" type="text" size="small">允许</el-button>
+                        <el-button @click="deleteClick(scope.row)" type="text" size="small">取消</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
         </el-card>
 
         <el-dialog title="交易详情" :visible.sync="dialogTableVisible">
@@ -116,16 +127,15 @@
                 </li>
             </ul>
         </el-dialog>
-
-
     </div>
 </template>
 
 <script>
     import {get, put} from "../utils/request";
     import moment from 'moment'
+
     export default {
-        name: "TransRecords",
+        name: "Message",
         data(){
             return{
                 dialogTableVisible:false,
@@ -142,10 +152,10 @@
         },
         created() {
             this.userId = this.$store.getters.getUser['user']['id'];
-            get('/transRecord/me/' + this.userId, {})
+            get('/transRecord/otherToMe/' + this.userId, {})
                 .then(res => {
                     this.tableData = res['data'];
-                    console.info(res)
+                    console.info(this.tableData)
                 });
         },
         methods:{
@@ -164,6 +174,23 @@
             viewClick(data){
                 this.dialogTableVisible = true;
                 this.viewTableData = data;
+            },
+            acceptClick(data){
+                if(data['status'] >= 1){
+                    this.$notify.error({
+                        title: '错误',
+                        message: '该申请已被接受或拒绝！'
+                    });
+                    return;
+                }
+                data['status'] = 1;
+                put('/transRecord', data)
+                    .then(res => {
+                        this.$notify.success({
+                            title: '成功',
+                            message: '此交易申请已被接受！'
+                        });
+                    });
             },
             deleteClick(data){
                 if(data['status'] >= 3){

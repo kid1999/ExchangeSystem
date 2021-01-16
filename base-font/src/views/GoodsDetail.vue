@@ -10,7 +10,7 @@
                 <h2>商品详情页</h2>
             </div>
             <el-form :model="goods" status-icon ref="goods" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="用户头像" prop="img_url" v-if="canChangeable">
+                <el-form-item label="商品图片" prop="img_url" v-if="canChangeable">
                     <div class="block" >
                         <el-image
                                 style="width: 100px; height: 100px"

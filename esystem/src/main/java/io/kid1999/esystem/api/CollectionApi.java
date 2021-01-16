@@ -30,11 +30,12 @@ public class CollectionApi {
     Result insertCollection(@RequestBody HashMap<String,Long> map){
         Long goodsId = map.get("goodsId");
         Long userId = map.get("userId");
+        if(goodsId == null || userId == null){
+            return new Result().failed("收藏失败");
+        }
         QueryWrapper<Collection> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id",userId).eq("goods_id",goodsId);
         Collection one = collectionDao.selectOne(wrapper);
-        System.out.println(one);
-        System.out.println(one.getDeleted() == 0);
         if(one == null){
             Collection collection = new Collection();
             collection.setUserId(userId);
@@ -47,7 +48,7 @@ public class CollectionApi {
             if(one.getDeleted() == 0){
                 one.setDeleted((byte) 1);
                 collectionDao.updateById(one);
-                return new Result(201,"取消收藏成功");
+                return new Result(200,"取消收藏成功");
             }
             else{
                 one.setDeleted((byte) 0);

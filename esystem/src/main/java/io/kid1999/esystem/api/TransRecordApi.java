@@ -82,11 +82,9 @@ public class TransRecordApi {
     }
 
     @GetMapping("/otherToMe/{id}")
-    @ApiOperation("查询user申请的交易信息")
+    @ApiOperation("查询user收到的交易信息")
     Result getOthersTransRecordByUserId(@PathVariable Long id){
-        QueryWrapper<TransRecord> wrapper = new QueryWrapper<>();
-        wrapper.eq("user2_id",id);
-        List<TransRecord> records = transRecordDao.selectList(wrapper);
+        List<HashMap<String, String>> records = transRecordDao.findAllByUser2Id(id);
         return new Result(200,"查询成功！",records);
     }
 

@@ -10,21 +10,25 @@
             <el-menu-item index="/message">消息中心</el-menu-item>
             <el-menu-item index="/transRecord">交易记录</el-menu-item>
             <el-menu-item index="/collection">收藏夹</el-menu-item>
-            <el-menu-item index="/leavingComment">留言板块</el-menu-item>
-            <el-menu-item index="/comment">评论板块</el-menu-item>
+            <el-menu-item index="/comments">留言评论</el-menu-item>
             <el-menu-item index="#">
                 <el-input v-model="search_context" placeholder="请输入内容"></el-input>
             </el-menu-item>
-            <el-submenu index="#" style="float: right; padding: 3px 0">
+            <el-submenu index="#" style="float: right; padding: 3px 0" v-if="isLogin">
                 <template slot="title">
-                    <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+                    <el-avatar :src="userInfo.avatarUrl"></el-avatar>
                 </template>
-                <el-menu-item index="/user">用户信息</el-menu-item>
+                <el-menu-item :index="'/userInfo/' + this.userInfo['id']">用户信息</el-menu-item>
                 <el-menu-item index="/login">登录</el-menu-item>
                 <el-menu-item index="/register">注册</el-menu-item>
-                <el-menu-item index="/userInfo">信息中心</el-menu-item>
-                <el-menu-item index="/logout">退出</el-menu-item>
+                <el-menu-item  @click="logout">退出</el-menu-item>
             </el-submenu>
+
+            <el-menu-item index="/register" style="float: right; padding: 3px 0"  v-if="!isLogin">
+                <i class="el-icon-user-solid"></i>注册</el-menu-item>
+            <el-menu-item index="/login" style="float: right; padding: 3px 0" v-if="!isLogin">
+                <i class="el-icon-user"></i>登录</el-menu-item>
+
         </el-menu>
     </div>
 </template>
@@ -34,19 +38,30 @@
         name: "Header",
         data(){
             return{
+                userInfo:{},
+                isLogin:false,
                 activeIndex:'/',
                 search_context:'',
                 current:['main'],
                 isLogin:false,//登录状态
                 btnState:'',//判断点击登录还是注册
                 notice:0,//通知数
-                url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
             }
+        },
+        created() {
+            this.userInfo = this.$store.getters.getUser['user'];
+            if(Object.keys(this.userInfo).length == 0) this.isLogin = false;
+            else this.isLogin = true;
         },
         methods:{
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);
-            }
+            },
+            logout(){
+                this.$store.commit('$_removeUser', {});
+                this.$router.push({name: 'Login'});
+                this.isLogin = false;
+            },
         }
     }
 </script>

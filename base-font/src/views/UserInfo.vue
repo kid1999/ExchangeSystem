@@ -137,8 +137,8 @@
         },
         methods:{
             pushComment(){
-                const data = {user1Id:this.userId,goodsId:this.id,context:this.newComment}
-                post('/leavingComment', data)
+                const data = {user1Id:this.userId,user2Id:this.id,context:this.newComment}
+                post('/comment', data)
                     .then(res => {
                         this.$message.success("发布留言成功");
                         res['userName'] =

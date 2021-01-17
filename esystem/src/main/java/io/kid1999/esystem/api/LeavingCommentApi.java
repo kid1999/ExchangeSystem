@@ -18,6 +18,7 @@ import java.util.List;
  * @create 2021-01-04 11:44
  * @description 留言管理操作
  **/
+@Deprecated
 @RestController @RequestMapping("/leavingComment")
 @Api(tags = "留言管理操作")
 public class LeavingCommentApi {

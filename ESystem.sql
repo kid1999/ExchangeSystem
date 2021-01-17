@@ -11,7 +11,7 @@
  Target Server Version : 50732
  File Encoding         : 65001
 
- Date: 05/01/2021 17:42:53
+ Date: 17/01/2021 19:15:40
 */
 
 SET NAMES utf8mb4;
@@ -70,13 +70,18 @@ CREATE TABLE `collection`  (
   `create_date` datetime(0) NULL DEFAULT NULL,
   `deleted` tinyint(255) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 45 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of collection
 -- ----------------------------
 INSERT INTO `collection` VALUES (1, 1, 1, '2021-01-28 19:51:17', 0);
 INSERT INTO `collection` VALUES (2, 1, 0, '2021-01-03 07:07:20', 0);
+INSERT INTO `collection` VALUES (18, 5, 1, '2020-12-27 13:40:05', 0);
+INSERT INTO `collection` VALUES (26, 5, 5, '2020-12-14 21:39:07', 0);
+INSERT INTO `collection` VALUES (41, 5, 3, '2021-01-10 04:12:21', 1);
+INSERT INTO `collection` VALUES (42, 5, 4, '2021-01-07 06:12:34', 1);
+INSERT INTO `collection` VALUES (44, 5, 2, '2021-01-09 15:56:03', 1);
 
 -- ----------------------------
 -- Table structure for comment
@@ -84,20 +89,29 @@ INSERT INTO `collection` VALUES (2, 1, 0, '2021-01-03 07:07:20', 0);
 DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment`  (
   `id` bigint(11) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(11) NULL DEFAULT NULL,
-  `goods_id` bigint(11) UNSIGNED NULL DEFAULT NULL,
+  `user1_id` bigint(11) NOT NULL COMMENT '发信人',
+  `goods_id` bigint(11) UNSIGNED NULL DEFAULT 1 COMMENT '商品id 可无',
+  `user2_id` bigint(11) NULL DEFAULT NULL COMMENT '收信人',
   `date` datetime(0) NULL DEFAULT NULL,
   `context` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '内容',
   `status` tinyint(4) NULL DEFAULT 0 COMMENT '状态',
   `deleted` tinyint(4) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `user_id`(`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+  INDEX `user_id`(`user1_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of comment
 -- ----------------------------
-INSERT INTO `comment` VALUES (1, 1, 1, '2021-01-04 11:15:00', '55555', 0, 0);
+INSERT INTO `comment` VALUES (1, 1, 1, 1, '2021-01-04 11:15:00', '55555', 0, 0);
+INSERT INTO `comment` VALUES (2, 5, 1, 5, '2021-01-13 23:58:32', 'thanks for your generous help.', 1, 0);
+INSERT INTO `comment` VALUES (3, 2, 5, 5, '2021-01-14 00:03:20', 'aaaaa', 1, 0);
+INSERT INTO `comment` VALUES (4, 5, 5, 5, '2021-01-17 01:44:08', 'ok get your reply.', 1, 0);
+INSERT INTO `comment` VALUES (5, 5, 6, 3, '2021-01-17 02:17:58', 'ok ?', 0, 0);
+INSERT INTO `comment` VALUES (6, 5, 1, 5, '2021-01-17 02:20:35', 'ok????', 1, 0);
+INSERT INTO `comment` VALUES (7, 5, 0, 5, '2021-01-17 02:27:20', 'just do it.', 1, 0);
+INSERT INTO `comment` VALUES (9, 5, 0, 5, '2021-01-17 02:50:14', 'test', 0, 0);
+INSERT INTO `comment` VALUES (10, 5, 1, 5, '2021-01-17 03:19:44', '', 0, 0);
 
 -- ----------------------------
 -- Table structure for contact_way
@@ -119,21 +133,6 @@ CREATE TABLE `contact_way`  (
 INSERT INTO `contact_way` VALUES (1, '', NULL, '13211112222', '', NULL);
 
 -- ----------------------------
--- Table structure for demand
--- ----------------------------
-DROP TABLE IF EXISTS `demand`;
-CREATE TABLE `demand`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `decription` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `img_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
-  `status` tinyint(4) NULL DEFAULT 0,
-  `deleted` tinyint(4) NULL DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
 -- Table structure for goods
 -- ----------------------------
 DROP TABLE IF EXISTS `goods`;
@@ -144,8 +143,8 @@ CREATE TABLE `goods`  (
   `img_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `goods_condition` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '成色',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '描述',
-  `want` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '期望交换物品',
-  `exchange_addr` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '交易地点',
+  `want_goods_id` bigint(20) NULL DEFAULT NULL COMMENT '期望交换物品id',
+  `address_id` bigint(20) NULL DEFAULT NULL COMMENT '所在地区',
   `remarks` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
   `goods_status` int(11) NULL DEFAULT NULL COMMENT '状态',
   `number_of_clicked` int(11) NULL DEFAULT NULL COMMENT '被点击次数',
@@ -154,16 +153,17 @@ CREATE TABLE `goods`  (
   `price` decimal(10, 2) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_id`(`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of goods
 -- ----------------------------
-INSERT INTO `goods` VALUES (1, 1, '手机', 'http://kid1999.top:9000/default/avatar.png', 'aaaaaaa', 'sad', '苹果', 'f', 'sd', 0, 666, '2021-01-20 16:59:58', 0, 11111.00);
-INSERT INTO `goods` VALUES (2, 2, '电脑', 'http://kid1999.top:9000/default/avatar.png', 'string', 'string', '香蕉', 'string', '不要放辣椒', 0, 0, '2021-01-03 03:15:28', 0, 0.00);
-INSERT INTO `goods` VALUES (3, 2, '手表', 'http://kid1999.top:9000/default/avatar.png', 'good', '描述信息', '手机', 'addr', 'ss', 0, 0, '2021-01-12 16:55:47', 0, 0.00);
-INSERT INTO `goods` VALUES (4, 4, '羽绒服', 'http://kid1999.top:9000/default/avatar.png', 'dasdasd', 'asda', 'phone', 'dasd', 'asdasd', 0, 0, '2021-01-20 16:58:05', 0, 0.00);
-INSERT INTO `goods` VALUES (5, 5, '羽绒服', 'http://kid1999.top:9000/default/avatar.png', 'dasdasd', 'dasdasd', 'dasdasd', 'dasdasd', 'dasdasd', 0, 0, '2021-01-26 16:59:22', 0, 0.00);
+INSERT INTO `goods` VALUES (1, 1, '无', 'http://kid1999.top:9000/default/avatar.png', '九成新', '描述信息', 2, 1, '11111', 0, 0, '2021-01-20 16:59:58', 0, 0.00);
+INSERT INTO `goods` VALUES (2, 2, '电脑', 'http://kid1999.top:9000/default/avatar.png', '九成新', 'string', 2, 1, '不要放辣椒', 0, 0, '2021-01-03 03:15:28', 0, 0.00);
+INSERT INTO `goods` VALUES (3, 2, '手表', 'http://kid1999.top:9000/default/avatar.png', '九成新', '描述信息', 3, 1, 'ss', 0, 0, '2021-01-12 16:55:47', 0, 0.00);
+INSERT INTO `goods` VALUES (4, 4, '羽绒服', 'http://kid1999.top:9000/default/avatar.png', '全新', 'asda', 4, 1, 'asdasd', 0, 0, '2021-01-20 16:58:05', 0, 0.00);
+INSERT INTO `goods` VALUES (5, 5, '羽绒服', 'http://kid1999.top:9000/default/avatar.png', '七成新', 'dasdasd', 6, 1, 'dasdasd', 0, 0, '2021-01-26 16:59:22', 0, 0.00);
+INSERT INTO `goods` VALUES (6, 1, '手机', 'http://kid1999.top:9000/default/avatar.png', '全新', 'sad', 2, 1, 'sd', 0, 22, '2021-01-29 16:40:12', 0, 0.00);
 
 -- ----------------------------
 -- Table structure for leaving_comment
@@ -192,21 +192,31 @@ INSERT INTO `leaving_comment` VALUES (1, 1, 2, '2021-01-13 11:58:50', '111112222
 DROP TABLE IF EXISTS `trans_record`;
 CREATE TABLE `trans_record`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `create_date` datetime(0) NULL DEFAULT NULL,
-  `status` tinyint(4) NULL DEFAULT 0 COMMENT '交易状态',
+  `status` tinyint(4) NULL DEFAULT 0 COMMENT '交易状态\r\n0 申请\r\n1 接受申请\r\n2 完成交易\r\n\r\n11 拒绝申请\r\n12 交易失败\r\n\r\n20 客服介入',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
   `user1_id` bigint(20) NULL DEFAULT NULL COMMENT '卖家',
   `user2_id` bigint(20) NULL DEFAULT NULL COMMENT '买家',
-  `goods_id` bigint(20) NULL DEFAULT NULL COMMENT '货物',
+  `goods_id` bigint(20) NOT NULL COMMENT '货物',
+  `create_time` datetime(0) NULL DEFAULT NULL,
+  `end_time` datetime(0) NULL DEFAULT NULL,
+  `detailed_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `detailed_datetime` datetime(0) NULL DEFAULT NULL,
   `deleted` tinyint(4) NULL DEFAULT 0,
-  PRIMARY KEY (`id`) USING BTREE,
+  `exchange_goods_Id` bigint(20) NULL DEFAULT NULL,
+  `price` decimal(10, 2) NULL DEFAULT NULL,
+  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`, `goods_id`) USING BTREE,
   INDEX `goods_id`(`goods_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of trans_record
 -- ----------------------------
-INSERT INTO `trans_record` VALUES (1, '2021-01-14 18:21:07', 0, '666', 1, 2, 1, 0);
+INSERT INTO `trans_record` VALUES (1, 0, '666', 1, 2, 1, '2021-01-14 18:21:07', '2021-01-06 17:51:28', NULL, NULL, 0, 2, NULL, '17377433406');
+INSERT INTO `trans_record` VALUES (5, 4, 'dasd', 2, 5, 1, '2021-01-15 22:10:33', NULL, 'sadadas', '2021-01-06 15:26:39', 0, 3, NULL, '17377433406');
+INSERT INTO `trans_record` VALUES (6, 1, '666', 1, 5, 2, '2021-01-15 21:59:41', NULL, '天安门', '2021-01-09 15:17:44', 0, 5, NULL, '17377433406');
+INSERT INTO `trans_record` VALUES (7, 4, '666', 5, 5, 1, '2021-01-15 21:14:46', NULL, '44444', '2021-01-10 01:35:43', 0, 1, NULL, '17377433406');
+INSERT INTO `trans_record` VALUES (8, 4, '留言如下', 2, 2, 1, '2021-01-15 07:19:56', NULL, '七星公园303户', '2021-01-28 02:00:00', 0, 5, 100.00, '17377433406');
 
 -- ----------------------------
 -- Table structure for user
@@ -231,8 +241,8 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 1, 'aaa', 1, '2020-12-30 09:15:53.000000', '2021-01-05 22:09:53.000000', 1, 'kid', 'asdasda', 'hahhahhhh', 0);
-INSERT INTO `user` VALUES (2, 1, 'asda', 1, '2021-01-16 11:57:26.000000', '2021-01-29 11:57:22.000000', 1, '123', 'aaaa', 'aaaaaa', 0);
+INSERT INTO `user` VALUES (1, 1, 'http://kid1999.top:9000/default/avatar.png', 1, '2020-12-30 09:15:53.000000', '2021-01-05 22:09:53.000000', 1, 'kid', 'asdasda', 'hahhahhhh', 0);
+INSERT INTO `user` VALUES (2, 1, 'http://kid1999.top:9000/default/avatar.png', 1, '2021-01-16 11:57:26.000000', '2021-01-29 11:57:22.000000', 1, '123', 'aaaa', 'aaaaaa', 0);
 INSERT INTO `user` VALUES (5, 1, 'http://kid1999.top:9000/default/avatar.png', 1, '2021-01-04 23:35:26.845446', '2021-01-04 23:35:26.845446', 0, '111', '1111', '', 0);
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -28,10 +28,20 @@
             <el-table-column
                     prop="goods_name"
                     label="商品">
+                <template slot-scope="scope">
+                    <el-link :href="'/goods/detail/' + scope.row.id" :underline="false">
+                        <span>{{ scope.row.goods_name }}</span>
+                    </el-link>
+                </template>
             </el-table-column>
             <el-table-column
                     prop="user_name"
                     label="卖家">
+                <template slot-scope="scope">
+                    <el-link :href="'/userInfo/' + scope.row.user1_id" :underline="false">
+                        <span>{{ scope.row.user_name }}</span>
+                    </el-link>
+                </template>
             </el-table-column>
             <el-table-column
                     prop="remark"

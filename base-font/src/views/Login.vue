@@ -80,7 +80,7 @@
                                 console.info(res['data']);
                                 this.$store.commit('$_setUser', {user: res['data']});
                                 this.$router.push({name: 'GoodsList'});
-                                console.info(this.$store.getters.getUser['user']);
+                                location.reload();
                             }
                         });
                     } else {

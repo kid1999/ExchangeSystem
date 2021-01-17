@@ -26,7 +26,15 @@ public class Comment implements Serializable {
      *
      * @mbg.generated Mon Jan 04 11:17:25 CST 2021
      */
-    private Long userId;
+    private Long user1Id;
+
+    /**
+     *
+     *
+     * @mbg.generated Mon Jan 04 11:17:25 CST 2021
+     */
+    private Long user2Id;
+
 
     /**
      * 

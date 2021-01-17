@@ -1,6 +1,7 @@
 package io.kid1999.esystem.api;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import io.kid1999.esystem.dao.CommentDao;
 import io.kid1999.esystem.entity.Comment;
 import io.kid1999.esystem.utils.Result;
@@ -43,19 +44,48 @@ public class CommentApi {
         return new Result().success();
     }
 
+    @PutMapping("/read/{id}")
+    @ApiOperation("修改一条评论已读")
+    Result updateComment(@PathVariable Long id){
+        UpdateWrapper<Comment> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id",id);
+        Comment comment = new Comment();
+        comment.setStatus((byte) 1);
+        commentDao.update(comment, updateWrapper);
+        return new Result().success();
+    }
+
+    @PutMapping("/read")
+    @ApiOperation("修改所有评论已读")
+    Result updateComment(@RequestBody HashMap<String,List<Long>> map){
+        UpdateWrapper<Comment> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.in("id",map.get("ids"));
+        Comment comment = new Comment();
+        comment.setStatus((byte) 1);
+        commentDao.update(comment, updateWrapper);
+        return new Result().success();
+    }
+
     @GetMapping("/{userId}")
-    @ApiOperation("根据user_id获取评论")
+    @ApiOperation("根据user1_id获取评论")
     Result selectComment(@PathVariable int userId){
         QueryWrapper<Comment> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_id",userId);
+        wrapper.eq("user1_id",userId);
         List<Comment> comments = commentDao.selectList(wrapper);
         return new Result(200,"查询成功！",comments);
     }
 
     @GetMapping("/goods/{goodsId}")
-    @ApiOperation("根据user_id获取评论")
+    @ApiOperation("根据goods_id获取评论")
     Result selectGoodsComment(@PathVariable Long goodsId){
         List<HashMap<String, String>> comments = commentDao.findAllByGoodsId(goodsId);
+        return new Result(200,"查询成功！",comments);
+    }
+
+    @GetMapping("/user/{userId}")
+    @ApiOperation("获取user所有的goods的评论")
+    Result selectAllCommentByUserId(@PathVariable Long userId){
+        List<HashMap<String, String>> comments = commentDao.findAllByUserId(userId);
         return new Result(200,"查询成功！",comments);
     }
 

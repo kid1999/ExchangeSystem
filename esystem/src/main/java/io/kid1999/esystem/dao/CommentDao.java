@@ -24,7 +24,8 @@ public interface CommentDao extends BaseMapper<Comment> {
      */
     @Select("SELECT\n" +
             "`comment`.id,\n" +
-            "`comment`.user_id,\n" +
+            "`comment`.user1_id,\n" +
+            "`comment`.user2_id,\n" +
             "`comment`.goods_id,\n" +
             "`comment`.date,\n" +
             "`comment`.context,\n" +
@@ -36,6 +37,41 @@ public interface CommentDao extends BaseMapper<Comment> {
             "`comment` ,\n" +
             "`user`\n" +
             "WHERE\n" +
-            "`comment`.user_id = `user`.id and comment.goods_id = #{goodsId}")
+            "`comment`.user1_id = `user`.id and comment.goods_id = #{goodsId} and `comment`.deleted = 0")
     List<HashMap<String,String>> findAllByGoodsId(Long goodsId);
+
+
+    /**
+     * 查询所有user的goods的comment
+     * @param userId
+     * @return
+     */
+    @Select("\n" +
+            "\n" +
+            "SELECT\n" +
+            "`comment`.id,\n" +
+            "`comment`.user1_id,\n" +
+            "`comment`.user2_id,\n" +
+            "`comment`.goods_id,\n" +
+            "`comment`.date,\n" +
+            "`comment`.context,\n" +
+            "`comment`.`status`,\n" +
+            "`comment`.deleted,\n" +
+            "`user`.user_name,\n" +
+            "goods.goods_name,\n" +
+            "`user`.avatar_url,\n" +
+            "`user`.address_id,\n" +
+            "address.address\n" +
+            "FROM\n" +
+            "`comment` ,\n" +
+            "goods ,\n" +
+            "`user` ,\n" +
+            "address\n" +
+            "WHERE\n" +
+            "`comment`.user2_id = #{userId} AND\n" +
+            "`comment`.user1_id = `user`.id AND\n" +
+            "`comment`.goods_id = goods.id AND\n" +
+            "`comment`.deleted = 0 AND\n" +
+            "`user`.address_id = address.id\n")
+    List<HashMap<String,String>> findAllByUserId(Long userId);
 }

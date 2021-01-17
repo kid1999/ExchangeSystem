@@ -150,7 +150,7 @@
                 }
             });
             // 获取user的物品
-            this.userId = this.$store.getters.getUser['user']['userId'];
+            this.userId = this.$store.getters.getUser['user']['id'];
             this.userName = this.$store.getters.getUser['user']['userName'];
             get('/goods/search', {"goodsName" : this.search_context,current_page: 0,page_size: 25})
                 .then(res => {
@@ -186,11 +186,11 @@
         },
         methods:{
             pushComment(){
-                const data = {userId:this.userId,goodsId:this.id,context:this.newComment}
+                console.info(this.goods['user_id'])
+                const data = {user1Id:this.userId,user2Id:this.goods['user_id'],goodsId:this.id,context:this.newComment};
                 post('/comment', data)
                     .then(res => {
                         this.$message.success("发布留言成功");
-                        res['userName'] =
                         this.goodsComment.push(data);
                     });
             },

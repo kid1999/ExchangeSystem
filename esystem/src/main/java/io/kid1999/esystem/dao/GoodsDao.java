@@ -74,10 +74,12 @@ public interface GoodsDao extends BaseMapper<Goods> {
             "u.user_name,\n" +
             "a.address,\n" +
             "g.address_id,\n" +
+            "g2.goods_name AS want_goods_name,\n" +
             "(SELECT collection.deleted FROM collection,goods WHERE collection.goods_id = goods.id and collection.user_id = #{userId} and goods.id = g.id LIMIT 1) as cdeleted\n" +
             "FROM\n" +
             "goods AS g\n" +
             "LEFT JOIN `user` AS u ON u.id = g.user_id\n" +
+            "LEFT JOIN goods AS g2 ON g.want_goods_id = g2.id\n" +
             "LEFT JOIN address AS a ON a.id = g.address_id")
     IPage<HashMap<String,String>> findAllByPage(Page<?> page,Long userId);
 
@@ -166,6 +168,7 @@ public interface GoodsDao extends BaseMapper<Goods> {
             "g.goods_status,\n" +
             "g.number_of_clicked,\n" +
             "g.create_date,\n" +
+            "g2.goods_name AS want_goods_name,\n" +
             "g.deleted,\n" +
             "g.price,\n" +
             "c.goods_id,\n" +
@@ -178,6 +181,7 @@ public interface GoodsDao extends BaseMapper<Goods> {
             "collection as c LEFT JOIN goods as g ON c.goods_id = g.id \n" +
             "LEFT JOIN `user` as u ON u.id = g.user_id \n" +
             "JOIN address as a ON a.id = g.address_id\n" +
+            "LEFT JOIN goods AS g2 ON g.want_goods_id = g2.id\n" +
             "WHERE c.user_id = #{id} and c.deleted = 0\n")
     IPage<HashMap<String,String>> findGoodsAndCollectionByUserId(Page<?> page,Long id);
 

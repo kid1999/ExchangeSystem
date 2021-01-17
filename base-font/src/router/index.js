@@ -46,12 +46,14 @@ const routes = [
     component: () => import('../views/Collection')
   },
   {
+    path: '/comments',
+    name: 'comments',
+    component: () => import('../views/Comments')
+  },
+  {
     path: '/test',
     name: 'Test',
     component: () => import('../components/Test')
-  },
-  {
-    path: '/axios', name: 'TestApi', component: () => import('../views/TestApi')
   }
 ];
 

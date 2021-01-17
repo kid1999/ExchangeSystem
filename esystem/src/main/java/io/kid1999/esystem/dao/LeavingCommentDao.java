@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * @Entity io.kid1999.esystem.entity.LeavingComment
  */
+@Deprecated
 @Mapper
 @Repository
 public interface LeavingCommentDao extends BaseMapper<LeavingComment> {

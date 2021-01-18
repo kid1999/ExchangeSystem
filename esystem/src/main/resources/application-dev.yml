@@ -21,7 +21,7 @@ mail:
 minio:
   url: 159.75.6.26:9000
   accessKey: kid1999
-  secretKey: pass=kid1999
+  secretKey: Xyq_pass=kid1999
 
 
 # mybatis-plus配置
@@ -45,7 +45,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://159.75.6.26:3306/ESystem?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
     username: root
-    password: pass=kid1999
+    password: Xyq_pass=kid1999
 #  jpa:
 #    hibernate:
 #      ddl-auto: update
@@ -70,7 +70,7 @@ spring:
     port: 6379
     database: 0
     timeout: 5000
-    password: pass=kid1999
+    password: Xyq_pass=kid1999
     jedis:
       pool:
         max-active: 8
@@ -98,7 +98,7 @@ spring:
     host: 159.75.6.26
     port: 5672
     username: kid1999
-    password: pass=kid1999
+    password: Xyq_pass=kid1999
     publisher-confirms: true
     publisher-returns: true
     template:

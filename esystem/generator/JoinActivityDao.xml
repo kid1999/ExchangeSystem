@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.kid1999.esystem.dao.JoinActivityDao">
+  <resultMap id="BaseResultMap" type="io.kid1999.esystem.entity.JoinActivity">
+    <!--@mbg.generated-->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="activity_id" jdbcType="INTEGER" property="activityId" />
+    <result column="join_time" jdbcType="TIMESTAMP" property="joinTime" />
+    <result column="deleted" jdbcType="VARCHAR" property="deleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, user_id, activity_id, join_time, deleted
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from join_activity
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from join_activity
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="io.kid1999.esystem.entity.JoinActivity" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into join_activity (user_id, activity_id, join_time, 
+      deleted)
+    values (#{userId,jdbcType=INTEGER}, #{activityId,jdbcType=INTEGER}, #{joinTime,jdbcType=TIMESTAMP}, 
+      #{deleted,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="io.kid1999.esystem.entity.JoinActivity" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into join_activity
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="activityId != null">
+        activity_id,
+      </if>
+      <if test="joinTime != null">
+        join_time,
+      </if>
+      <if test="deleted != null">
+        deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="activityId != null">
+        #{activityId,jdbcType=INTEGER},
+      </if>
+      <if test="joinTime != null">
+        #{joinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        #{deleted,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="io.kid1999.esystem.entity.JoinActivity">
+    <!--@mbg.generated-->
+    update join_activity
+    <set>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="activityId != null">
+        activity_id = #{activityId,jdbcType=INTEGER},
+      </if>
+      <if test="joinTime != null">
+        join_time = #{joinTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleted != null">
+        deleted = #{deleted,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="io.kid1999.esystem.entity.JoinActivity">
+    <!--@mbg.generated-->
+    update join_activity
+    set user_id = #{userId,jdbcType=INTEGER},
+      activity_id = #{activityId,jdbcType=INTEGER},
+      join_time = #{joinTime,jdbcType=TIMESTAMP},
+      deleted = #{deleted,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

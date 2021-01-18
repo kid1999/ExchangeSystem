@@ -16,8 +16,8 @@
       </div>
     </el-backtop>
 
-    <el-row :gutter="20">
-      <el-col :span="16" :offset="3">
+    <el-row :gutter="24">
+      <el-col :span="18" :offset="3">
         <el-container id="container">
           <el-header>
             <Header></Header>

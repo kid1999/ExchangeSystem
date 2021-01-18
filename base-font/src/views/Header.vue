@@ -11,14 +11,18 @@
             <el-menu-item index="/transRecord">交易记录</el-menu-item>
             <el-menu-item index="/collection">收藏夹</el-menu-item>
             <el-menu-item index="/comments">留言评论</el-menu-item>
+            <el-menu-item index="/activity">同城活动</el-menu-item>
             <el-menu-item index="#">
-                <el-input v-model="search_context" placeholder="请输入内容"></el-input>
+                <el-input placeholder="请输入内容" v-model="search_context">
+                    <el-button slot="append" size="mini"  icon="el-icon-search"></el-button>
+                </el-input>
             </el-menu-item>
             <el-submenu index="#" style="float: right; padding: 3px 0" v-if="isLogin">
                 <template slot="title">
                     <el-avatar :src="userInfo.avatarUrl"></el-avatar>
                 </template>
                 <el-menu-item :index="'/userInfo/' + this.userInfo['id']">用户信息</el-menu-item>
+                <el-menu-item index="/MyActivity">我的活动</el-menu-item>
                 <el-menu-item index="/login">登录</el-menu-item>
                 <el-menu-item index="/register">注册</el-menu-item>
                 <el-menu-item  @click="logout">退出</el-menu-item>

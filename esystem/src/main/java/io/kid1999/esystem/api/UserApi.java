@@ -8,6 +8,7 @@ import io.kid1999.esystem.dao.UserDao;
 import io.kid1999.esystem.entity.Address;
 import io.kid1999.esystem.entity.ContactWay;
 import io.kid1999.esystem.entity.User;
+import io.kid1999.esystem.utils.AddressAndContactWayUtil;
 import io.kid1999.esystem.utils.RedisUtil;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
@@ -37,20 +38,17 @@ public class UserApi {
     private UserDao userDao;
 
     @Autowired
-    private AddressDao addressDao;
-
-    @Autowired
-    private ContactWayDao contactWayDao;
-
-    @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private AddressAndContactWayUtil addressUtil;
 
     @PostMapping("/register")
     @ApiOperation("注册新用户")
     public Result register(@RequestBody HashMap<String,String> map) {
         System.out.println(map);
-        Long addressId = checkAndSaveAddress(map);
-        Long contactWayId = saveContactWay(map);
+        Long addressId = addressUtil.checkAndSaveAddress(map);
+        Long contactWayId = addressUtil.saveContactWay(map);
         String avatarUrl = map.get("avatarUrl");
         if(StrUtil.isEmpty(avatarUrl)){
             avatarUrl = DEFAULT_AVATAR_URL;
@@ -146,49 +144,5 @@ public class UserApi {
         }
     }
 
-    /**
-     * 核查 保存 地址信息
-     */
-    private Long checkAndSaveAddress(HashMap<String,String> map){
-        String address = map.get("address");
-        String province = map.get("province");
-        String city = map.get("city");
-        String area = map.get("area");
-        QueryWrapper<Address> wrapper = new QueryWrapper<>();
-        wrapper.eq("address",address);
-        Address one = addressDao.selectOne(wrapper);
-        if(StrUtil.isEmpty(address)){
-            return 0L;
-        }else if(one != null){
-            return one.getId();
-        }else {
-            Address obj = new Address();
-            obj.setAddress(address);
-            obj.setProvince(province);
-            obj.setCity(city);
-            obj.setArea(area);
-            addressDao.insert(obj);
-            return obj.getId();
-        }
-    }
-
-    /**
-     * 保存联系方式
-     */
-    private Long saveContactWay(HashMap<String,String> map){
-        String email = map.get("email");
-        String phone = map.get("phone");
-        String qq = map.get("email");
-        if(StrUtil.isEmpty(phone)){
-            return 0L;
-        }{
-            ContactWay obj = new ContactWay();
-            obj.setEmail(email);
-            obj.setPhone(phone);
-            obj.setQq(qq);
-            contactWayDao.insert(obj);
-            return obj.getId();
-        }
-    }
 
 }

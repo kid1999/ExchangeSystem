@@ -1,0 +1,43 @@
+package io.kid1999.esystem.api;
+
+import io.kid1999.esystem.dao.JoinActivityDao;
+import io.kid1999.esystem.entity.JoinActivity;
+import io.kid1999.esystem.utils.Result;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+
+/**
+ * @author kid1999
+ * @create 2021-01-18 18:14
+ * @description TODO
+ **/
+@RestController
+@RequestMapping("/joinActivity")
+@Api(tags = "活动管理操作")
+public class JoinActivityApi {
+    @Autowired
+    private JoinActivityDao joinActivityDao;
+
+    @PostMapping("")
+    @ApiOperation("加入活动")
+    Result insertActivity(@RequestBody HashMap<String,Long> map){
+        JoinActivity joinActivity = new JoinActivity();
+        joinActivity.setJoinTime(LocalDateTime.now());
+        joinActivity.setUserId(map.get("userId"));
+        joinActivity.setActivityId(map.get("activityId"));
+        joinActivityDao.insert(joinActivity);
+        return new Result().success();
+    }
+
+    @DeleteMapping("/{id}")
+    @ApiOperation("退出活动")
+    Result insertActivity(@PathVariable Long id){
+        joinActivityDao.deleteById(id);
+        return new Result().success();
+    }
+}

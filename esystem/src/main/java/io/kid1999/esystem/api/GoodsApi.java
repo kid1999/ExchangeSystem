@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -21,7 +22,6 @@ import java.util.List;
  * @create 2021-01-03 16:12
  * @description 货物接口
  **/
-
 @RestController
 @RequestMapping("/goods")
 @Api(tags = "货物管理操作")
@@ -54,7 +54,6 @@ public class GoodsApi {
         int status = goodsDao.updateById(goods);
         return new Result(status,"");
     }
-
 
     @GetMapping("/{id}")
     @ApiOperation("获取货物信息")

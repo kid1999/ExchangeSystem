@@ -73,7 +73,7 @@
                                     <p>
                                         所有者<i class="el-icon-s-custom el-icon--right"></i>：
                                         <el-link :underline="false" :href="'/userInfo/' + goods.user_id">
-                                            <strong>{{goods.user_name }}</strong>
+                                            <strong>{{goods.username }}</strong>
                                         </el-link>
                                     </p>
                                 </div>
@@ -186,7 +186,7 @@
                     "address": "北京市市辖区东城区",
                     "want_goods_name": "手机",
                     "want_goods_id": 1,
-                    "user_name": "kid",
+                    "username": "kid",
                     "number_of_clicked": 666,
                     "address_id": 1,
                     "description": "sad",

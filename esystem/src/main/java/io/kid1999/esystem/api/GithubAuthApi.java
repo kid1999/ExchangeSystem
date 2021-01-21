@@ -1,14 +1,23 @@
 package io.kid1999.esystem.api;
 
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import io.kid1999.esystem.dao.UserDao;
+import io.kid1999.esystem.utils.AddressAndContactWayUtil;
 import lombok.extern.java.Log;
 import me.zhyd.oauth.config.AuthConfig;
 import me.zhyd.oauth.model.AuthCallback;
+import me.zhyd.oauth.model.AuthResponse;
+import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthGithubRequest;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -24,6 +33,12 @@ import static io.kid1999.esystem.common.Constants.*;
 @RequestMapping("/oauth")
 public class GithubAuthApi {
 
+    @Autowired
+    private UserDao userDao;
+
+    @Resource
+    private AddressAndContactWayUtil contactWayUtilUtil;
+
     @RequestMapping("/login/github")
     public void renderAuth(HttpServletResponse response) throws IOException {
         AuthRequest authRequest = getAuthRequest();
@@ -33,8 +48,19 @@ public class GithubAuthApi {
     @RequestMapping("/callback")
     public Object login(AuthCallback callback) {
         AuthRequest authRequest = getAuthRequest();
-        return authRequest.login(callback);
+        AuthResponse<AuthUser> response = authRequest.login(callback);
+        JSONObject jsonObject = JSONUtil.parseObj(response.getData(), false);
+        // 生成随机用户
+        contactWayUtilUtil.findGithubOrSave(jsonObject);
+        return response;
     }
+
+
+    @RequestMapping("/test")
+    public Object Test(Authentication authentication) {
+        return authentication.getDetails();
+    }
+
 
     // 创建Request
     private AuthRequest getAuthRequest() {

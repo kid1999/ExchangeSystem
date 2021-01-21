@@ -12,8 +12,11 @@
     "core-js": "^3.6.5",
     "element-china-area-data": "^5.0.2",
     "element-ui": "^2.13.2",
+    "js-base64": "^3.6.0",
+    "jsonwebtoken": "^8.5.1",
     "mdui": "^1.0.1",
     "moment": "^2.29.1",
+    "qs": "^6.9.6",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vue2-verify": "^1.1.5",
@@ -26,6 +29,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
+    "qs": "^6.9.6",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {

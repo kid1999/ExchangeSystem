@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import el from "element-ui/src/locale/lang/el";
 
 Vue.use(Vuex);
-const key = 'user_id';
+const key = 'user';
 
 const store = new Vuex.Store({
   state () {

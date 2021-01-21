@@ -26,18 +26,29 @@ public class Constants {
 	/**
 	 * 设置过期时间
 	 */
-	public static final long TOKEN_EXPIRE_DATE=30*60*100000;
+	public static final int TOKEN_EXPIRE_DATE=30*60*100000;
 	/**
 	 * token秘钥
 	 */
 	public static final String TOKEN_SECRET = "ZCEQIUBFKSJBFJH2020BAWE";
 
 	/**
+	 * JWT 的 client-id
+	 */
+	public static final String  CLIENT_ID = "admin";
+
+	/**
+	 * JWT 的 client-secret
+	 */
+	public static final String  CLIENT_SECRET = "123";
+
+
+	/**
 	 * github oauth
 	 */
 	public static final String GITHUB_CLIENT_ID = "a6fd02d5fee1728dfee2";
 	public static final String GITHUB_CLIENT_SECRET = "60752c69673019967d49819fc2c353cc31f5199a";
-	public static final String GITHUB_CALLBACK_URL = "https://kid1999.top/oauth/callback/github";
+	public static final String GITHUB_CALLBACK_URL = "http://localhost:8080/api/oauth/callback";
 
 	/**
 	 * minio 桶

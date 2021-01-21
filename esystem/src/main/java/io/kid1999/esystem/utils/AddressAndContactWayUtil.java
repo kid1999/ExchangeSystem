@@ -1,6 +1,7 @@
 package io.kid1999.esystem.utils;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.kid1999.esystem.dao.AddressDao;
 import io.kid1999.esystem.dao.ContactWayDao;
@@ -71,6 +72,17 @@ public class AddressAndContactWayUtil {
             contactWayDao.insert(obj);
             return obj.getId();
         }
+    }
+
+
+    /**
+     *
+     */
+    public Long findGithubOrSave(JSONObject jsonObject){
+
+        System.out.println(jsonObject.get("avatar"));
+        System.out.println(jsonObject.get("uuid"));
+        return 0L;
     }
 
 

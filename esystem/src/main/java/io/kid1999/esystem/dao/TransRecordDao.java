@@ -37,7 +37,7 @@ public interface TransRecordDao extends BaseMapper<TransRecord> {
             "t.phone,\n" +
             "t.exchange_goods_Id,\n" +
             "t.price,\n" +
-            "u.user_name,\n" +
+            "u.username,\n" +
             "g.goods_name,\n" +
             "(select goods_name FROM goods WHERE goods.id = exchange_goods_Id) as exchange_goods_name\n" +
             "FROM\n" +
@@ -66,7 +66,7 @@ public interface TransRecordDao extends BaseMapper<TransRecord> {
             "t.exchange_goods_Id,\n" +
             "t.price,\n" +
             "t.phone,\n" +
-            "u.user_name,\n" +
+            "u.username,\n" +
             "g.goods_name,\n" +
             "(select goods_name FROM goods WHERE goods.id = exchange_goods_Id) as exchange_goods_name\n" +
             "FROM\n" +

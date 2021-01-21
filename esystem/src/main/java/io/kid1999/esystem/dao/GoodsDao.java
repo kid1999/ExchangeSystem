@@ -28,7 +28,7 @@ public interface GoodsDao extends BaseMapper<Goods> {
     @Select("SELECT\n" +
             "g.id,\n" +
             "g.user_id,\n" +
-            "u.user_name,\n" +
+            "u.username,\n" +
             "g.goods_name,\n" +
             "g.img_url,\n" +
             "g.want_goods_id,\n" +
@@ -71,7 +71,7 @@ public interface GoodsDao extends BaseMapper<Goods> {
             "g.create_date,\n" +
             "g.deleted,\n" +
             "g.price,\n" +
-            "u.user_name,\n" +
+            "u.username,\n" +
             "a.address,\n" +
             "g.address_id,\n" +
             "g2.goods_name AS want_goods_name,\n" +
@@ -93,7 +93,7 @@ public interface GoodsDao extends BaseMapper<Goods> {
     @Select("SELECT\n" +
             "g.id,\n" +
             "g.user_id,\n" +
-            "u.user_name,\n" +
+            "u.username,\n" +
             "g.goods_name,\n" +
             "g.img_url,\n" +
             "g.want_goods_id,\n" +
@@ -125,7 +125,7 @@ public interface GoodsDao extends BaseMapper<Goods> {
     @Select("SELECT\n" +
             "g.id,\n" +
             "g.user_id,\n" +
-            "u.user_name,\n" +
+            "u.username,\n" +
             "g.goods_name,\n" +
             "g.img_url,\n" +
             "g.want_goods_id,\n" +
@@ -174,7 +174,7 @@ public interface GoodsDao extends BaseMapper<Goods> {
             "c.goods_id,\n" +
             "c.id as cid,\n" +
             "c.deleted as cdeleted,\n" +
-            "u.user_name,\n" +
+            "u.username,\n" +
             "u.address_id,\n" +
             "a.address\n" +
             "FROM\n" +

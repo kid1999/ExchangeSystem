@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * @Entity io.kid1999.esystem.entity.LeavingComment
  */
-@Deprecated
 @Mapper
 @Repository
 public interface LeavingCommentDao extends BaseMapper<LeavingComment> {
@@ -30,7 +29,7 @@ public interface LeavingCommentDao extends BaseMapper<LeavingComment> {
             "leaving_comment.context,\n" +
             "leaving_comment.`status`,\n" +
             "leaving_comment.deleted,\n" +
-            "`user`.user_name,\n" +
+            "`user`.username,\n" +
             "`user`.avatar_url\n" +
             "FROM\n" +
             "leaving_comment ,\n" +
@@ -53,7 +52,7 @@ public interface LeavingCommentDao extends BaseMapper<LeavingComment> {
             "leaving_comment.context,\n" +
             "leaving_comment.`status`,\n" +
             "leaving_comment.deleted,\n" +
-            "`user`.user_name,\n" +
+            "`user`.username,\n" +
             "`user`.avatar_url\n" +
             "FROM\n" +
             "leaving_comment ,\n" +

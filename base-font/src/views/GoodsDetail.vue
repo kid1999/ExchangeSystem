@@ -71,7 +71,7 @@
                 <el-input type="text" v-model="goods.price" autocomplete="off" :disabled="canChangeable"></el-input>
             </el-form-item>
             <el-form-item label="商品所有者" prop="user_name">
-                <el-input type="text" v-model="goods.user_name" autocomplete="off" disabled></el-input>
+                <el-input type="text" v-model="goods.username" autocomplete="off" disabled></el-input>
             </el-form-item>
             <el-form-item label="上架时间" prop="create_date">
                 <el-input type="text" v-model="formatCreateTime" autocomplete="off" disabled></el-input>
@@ -130,7 +130,7 @@
             return {
                 newComment:'',
                 userId:'',
-                userName:'',
+                username:'',
                 search_context:'',
                 canChangeable:true,
                 id:'',
@@ -151,7 +151,7 @@
             });
             // 获取user的物品
             this.userId = this.$store.getters.getUser['user']['id'];
-            this.userName = this.$store.getters.getUser['user']['userName'];
+            this.username = this.$store.getters.getUser['user']['username'];
             get('/goods/search', {"goodsName" : this.search_context,current_page: 0,page_size: 25})
                 .then(res => {
                     this.remoteGoods = res['data']['records'];

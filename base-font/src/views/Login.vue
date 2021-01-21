@@ -4,27 +4,45 @@
 * @desciption:  Login
 */
 <template>
-    <div>
-        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="账户" prop="userName">
-                <el-input type="text" v-model="ruleForm.userName" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="密码" prop="userPwd">
-                <el-input type="password" v-model="ruleForm.userPwd" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
-                <el-link @click="postGithub" :underline="false">
-                    <svg t="1610765696151" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="947" width="32" height="32"><path d="M512 64C264.6 64 64 269.8 64 523.4c0 203 128.4 375 306.4 435.8 2.8 0.6 5.2 0.8 7.6 0.8 16.6 0 23-12.2 23-22.8 0-11-0.4-39.8-0.6-78.2-16.8 3.8-31.8 5.4-45.2 5.4-86.2 0-105.8-67-105.8-67-20.4-53-49.8-67.2-49.8-67.2-39-27.4-0.2-28.2 2.8-28.2h0.2c45 4 68.6 47.6 68.6 47.6 22.4 39.2 52.4 50.2 79.2 50.2 21 0 40-6.8 51.2-12 4-29.6 15.6-49.8 28.4-61.4-99.4-11.6-204-51-204-227 0-50.2 17.4-91.2 46-123.2-4.6-11.6-20-58.4 4.4-121.6 0 0 3.2-1 10-1 16.2 0 52.8 6.2 113.2 48.2 35.8-10.2 74-15.2 112.2-15.4 38 0.2 76.4 5.2 112.2 15.4 60.4-42 97-48.2 113.2-48.2 6.8 0 10 1 10 1 24.4 63.2 9 110 4.4 121.6 28.6 32.2 46 73.2 46 123.2 0 176.4-104.8 215.2-204.6 226.6 16 14.2 30.4 42.2 30.4 85 0 61.4-0.6 111-0.6 126 0 10.8 6.2 23 22.8 23 2.4 0 5.2-0.2 8-0.8C831.8 898.4 960 726.2 960 523.4 960 269.8 759.4 64 512 64z" p-id="948"></path></svg>
-                </el-link>
-            </el-form-item>
-        </el-form>
-    </div>
+    <el-row :gutter="20">
+        <el-col :span="12" :offset="4">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <h2>登 录</h2>
+                </div>
+                <div>
+                    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="70px" class="demo-ruleForm">
+                        <el-form-item label="账户" prop="username">
+                            <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="密码" prop="password">
+                            <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="验证码" >
+                            <Verify :type="3" :showButton="false" @success="verifyed"></Verify>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button> |
+                            <el-button @click="postGithub">Github登录</el-button> |
+                            <el-link href="/forgetPass" :underline="false">
+                                忘记密码？
+                            </el-link>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </el-card>
+        </el-col>
+    </el-row>
+
 </template>
 <script>
     import { get, post,put,deleted } from '@/utils/request'
+    import Verify from 'vue2-verify'
+    import qs from 'qs';
+    import jwt from 'jsonwebtoken'
     export default {
         name: "Login",
+        components: {Verify},
         data() {
             const checkName = async (rule, value, callback) => {
                 if (!value) {
@@ -45,21 +63,28 @@
                 }
             };
             return {
+                isVerify:false,
                 ruleForm: {
-                    userPwd: '1111',
-                    userName: '111'
+                    username: '1111',
+                    password: '1111',
+                    grant_type:'password',
+                    scope:'all'
                 },
                 rules: {
-                    userPwd: [
+                    username: [
                         { required: true, validator: validatePass, trigger: 'blur' }
                     ],
-                    userName: [
+                    password: [
                         { required: true, validator: checkName, trigger: 'blur' }
                     ]
                 }
             };
         },
         methods: {
+           verifyed() {
+                this.isVerify = true;
+                this.$message.success("验证成功")
+            },
             postGithub(){
                 post('/oauth/login/github', this.ruleForm).then(res => {
                     if(res['status'] === 200) {
@@ -67,22 +92,66 @@
                         console.info(res['data']);
                         this.$store.commit('$_setUser', {user: res['data']});
                         this.$router.push({name: 'GoodsList'});
-                        console.info(this.$store.getters.getUser['user']);
                     }
                 });
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        post('/user/login', this.ruleForm).then(res => {
-                            if(res['status'] === 200) {
-                                this.$message.success("登录成功！");
-                                console.info(res['data']);
-                                this.$store.commit('$_setUser', {user: res['data']});
-                                this.$router.push({name: 'GoodsList'});
-                                location.reload();
+                        if(!this.isVerify){
+                            this.$message.error("请输入验证码重试！");
+                            return false;
+                        }
+                        let store = this.$store.getters.getUser;
+                        let token = localStorage.getItem("access_token");
+                        if(token == null || store == null){
+                            // 'Content-Type': 'application/x-www-form-urlencoded'
+                            // 先获取Token
+                            post('/oauth/token', qs.stringify(this.ruleForm)).then(res => {
+                                localStorage.setItem("access_token",res.access_token);
+                                localStorage.setItem("refresh_token",res.refresh_token);
+                                let name = jwt.decode(res.access_token).user_name;
+                                // 再请求数据
+                                get('/user/name/' + name, {}).then(res => {
+                                    if(res['status'] === 200) {
+                                        this.$message.success("登录成功！");
+                                        console.info(res['data']);
+                                        this.$store.commit('$_setUser', {user: res['data']});
+                                        this.$router.push({name: 'GoodsList'});
+                                        location.reload();
+                                    }
+                                });
+                            }).catch(e =>{
+                                console.info(e);
+                                this.$message.error("登录失败，请重试！");
+                            });
+                        } else {
+                            let name = jwt.decode(token).user_name;
+                            if(store.user.username === name){
+                                this.$message.error("该用户已登录，请勿再次尝试！");
+                                return false;
                             }
-                        });
+                            post('/oauth/token', qs.stringify(this.ruleForm)).then(res => {
+                                localStorage.setItem("access_token",res.access_token);
+                                localStorage.setItem("refresh_token",res.refresh_token);
+                                let name = jwt.decode(token).user_name;
+                                console.info(name);
+                                // 再请求数据
+                                get('/user/name/' + name, {}).then(res => {
+                                    if(res['status'] === 200) {
+                                        this.$message.success("登录成功！");
+                                        console.info(res['data']);
+                                        this.$store.commit('$_setUser', {user: res['data']});
+                                        this.$router.push({name: 'GoodsList'});
+                                        location.reload();
+                                    }
+                                });
+                            }).catch(e =>{
+                                console.info(e);
+                                this.$message.error("登录失败，请重试！");
+                            });
+                        }
+
                     } else {
                         this.$message.error("登录失败，请重试！");
                         return false;

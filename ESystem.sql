@@ -11,7 +11,7 @@
  Target Server Version : 50732
  File Encoding         : 65001
 
- Date: 17/01/2021 19:15:40
+ Date: 21/01/2021 23:59:52
 */
 
 SET NAMES utf8mb4;
@@ -23,23 +23,28 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `activity`;
 CREATE TABLE `activity`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `activity_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `activity_context` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `activity_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `activity_description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `address_id` bigint(20) NULL DEFAULT NULL,
+  `detail_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `create_user_id` bigint(20) NULL DEFAULT NULL,
-  `create_time` datetime(0) NULL DEFAULT NULL,
+  `start_time` datetime(0) NULL DEFAULT NULL,
   `end_time` datetime(0) NULL DEFAULT NULL,
   `deleted` tinyint(4) NULL DEFAULT 0,
+  `number_of_join` bigint(20) NULL DEFAULT 0,
+  `status` tinyint(4) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `activity_user`(`create_user_id`) USING BTREE,
   INDEX `address_id`(`address_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of activity
 -- ----------------------------
-INSERT INTO `activity` VALUES (1, 'hahaha', 'sssss', 'wwww', 1, 1, '2021-01-19 15:32:03', '2021-02-16 15:32:06', 0);
+INSERT INTO `activity` VALUES (1, 'hahaha', 'sssss', 'wwww', 1, '成都市成华大道', 1, '2021-01-12 15:32:03', '2021-02-27 15:32:06', 0, 0, 0);
+INSERT INTO `activity` VALUES (2, 'dsadasd', 'aaaaa', 'ffffff', 14, '泸州老窖大厦', 5, '2021-01-17 14:59:45', '2021-01-15 05:45:40', 0, 0, 0);
+INSERT INTO `activity` VALUES (3, '吃喝玩乐', '捡破烂小分队', NULL, 15, '泸州老窖大厦101室', 5, '2021-01-17 14:59:45', '2021-01-15 05:45:40', 0, 0, 0);
 
 -- ----------------------------
 -- Table structure for address
@@ -52,12 +57,26 @@ CREATE TABLE `address`  (
   `city` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `area` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of address
 -- ----------------------------
 INSERT INTO `address` VALUES (1, '北京市市辖区东城区', '北京市', '市辖区', '东城区');
+INSERT INTO `address` VALUES (2, '天津市市辖区河西区', '天津市', '市辖区', '河西区');
+INSERT INTO `address` VALUES (3, '河北省唐山市路南区', '河北省', '唐山市', '路南区');
+INSERT INTO `address` VALUES (4, '北京市市辖区西城区', '北京市', '市辖区', '西城区');
+INSERT INTO `address` VALUES (5, '北京市市辖区朝阳区', '北京市', '市辖区', '朝阳区');
+INSERT INTO `address` VALUES (6, '河北省秦皇岛市山海关区', '河北省', '秦皇岛市', '山海关区');
+INSERT INTO `address` VALUES (7, '山西省阳泉市矿区', '山西省', '阳泉市', '矿区');
+INSERT INTO `address` VALUES (8, '山西省阳泉市城区', '山西省', '阳泉市', '城区');
+INSERT INTO `address` VALUES (9, '山西省阳泉市市辖区', '山西省', '阳泉市', '市辖区');
+INSERT INTO `address` VALUES (10, '山西省阳泉市郊区', '山西省', '阳泉市', '郊区');
+INSERT INTO `address` VALUES (11, '山西省阳泉市平定县', '山西省', '阳泉市', '平定县');
+INSERT INTO `address` VALUES (12, '山西省大同市新荣区', '山西省', '大同市', '新荣区');
+INSERT INTO `address` VALUES (13, '天津市市辖区河北区', '天津市', '市辖区', '河北区');
+INSERT INTO `address` VALUES (14, '山西省长治市屯留区', '山西省', '长治市', '屯留区');
+INSERT INTO `address` VALUES (15, '四川省泸州市泸县', '四川省', '泸州市', '泸县');
 
 -- ----------------------------
 -- Table structure for collection
@@ -108,7 +127,7 @@ INSERT INTO `comment` VALUES (2, 5, 1, 5, '2021-01-13 23:58:32', 'thanks for you
 INSERT INTO `comment` VALUES (3, 2, 5, 5, '2021-01-14 00:03:20', 'aaaaa', 1, 0);
 INSERT INTO `comment` VALUES (4, 5, 5, 5, '2021-01-17 01:44:08', 'ok get your reply.', 1, 0);
 INSERT INTO `comment` VALUES (5, 5, 6, 3, '2021-01-17 02:17:58', 'ok ?', 0, 0);
-INSERT INTO `comment` VALUES (6, 5, 1, 5, '2021-01-17 02:20:35', 'ok????', 1, 0);
+INSERT INTO `comment` VALUES (6, 5, 1, 5, '2021-01-17 02:20:35', 'ok????', 1, 1);
 INSERT INTO `comment` VALUES (7, 5, 0, 5, '2021-01-17 02:27:20', 'just do it.', 1, 0);
 INSERT INTO `comment` VALUES (9, 5, 0, 5, '2021-01-17 02:50:14', 'test', 0, 0);
 INSERT INTO `comment` VALUES (10, 5, 1, 5, '2021-01-17 03:19:44', '', 0, 0);
@@ -166,6 +185,25 @@ INSERT INTO `goods` VALUES (5, 5, '羽绒服', 'http://kid1999.top:9000/default/
 INSERT INTO `goods` VALUES (6, 1, '手机', 'http://kid1999.top:9000/default/avatar.png', '全新', 'sad', 2, 1, 'sd', 0, 22, '2021-01-29 16:40:12', 0, 0.00);
 
 -- ----------------------------
+-- Table structure for join_activity
+-- ----------------------------
+DROP TABLE IF EXISTS `join_activity`;
+CREATE TABLE `join_activity`  (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(11) NULL DEFAULT NULL,
+  `activity_id` bigint(11) NULL DEFAULT NULL,
+  `join_time` datetime(0) NULL DEFAULT NULL,
+  `deleted` tinyint(4) NULL DEFAULT 0,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of join_activity
+-- ----------------------------
+INSERT INTO `join_activity` VALUES (1, 5, 1, '2021-01-28 17:11:10', 1);
+INSERT INTO `join_activity` VALUES (3, 5, 1, '2021-01-18 05:09:02', 0);
+
+-- ----------------------------
 -- Table structure for leaving_comment
 -- ----------------------------
 DROP TABLE IF EXISTS `leaving_comment`;
@@ -185,6 +223,23 @@ CREATE TABLE `leaving_comment`  (
 -- Records of leaving_comment
 -- ----------------------------
 INSERT INTO `leaving_comment` VALUES (1, 1, 2, '2021-01-13 11:58:50', '1111122222', 0, 0);
+
+-- ----------------------------
+-- Table structure for persistent_logins
+-- ----------------------------
+DROP TABLE IF EXISTS `persistent_logins`;
+CREATE TABLE `persistent_logins`  (
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `series` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `token` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `last_used` timestamp(0) NOT NULL,
+  PRIMARY KEY (`series`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of persistent_logins
+-- ----------------------------
+INSERT INTO `persistent_logins` VALUES ('kid', 'bQmvyAjfVLA3nkPqOK0GgA==', '5zhaIuEqkzFf3DxT/Hn26w==', '2021-01-19 07:19:12');
 
 -- ----------------------------
 -- Table structure for trans_record
@@ -212,7 +267,7 @@ CREATE TABLE `trans_record`  (
 -- ----------------------------
 -- Records of trans_record
 -- ----------------------------
-INSERT INTO `trans_record` VALUES (1, 0, '666', 1, 2, 1, '2021-01-14 18:21:07', '2021-01-06 17:51:28', NULL, NULL, 0, 2, NULL, '17377433406');
+INSERT INTO `trans_record` VALUES (1, 0, '666', 1, 2, 1, '2021-01-18 02:41:16', '2021-02-16 01:32:06', NULL, NULL, 0, 2, NULL, '17377433406');
 INSERT INTO `trans_record` VALUES (5, 4, 'dasd', 2, 5, 1, '2021-01-15 22:10:33', NULL, 'sadadas', '2021-01-06 15:26:39', 0, 3, NULL, '17377433406');
 INSERT INTO `trans_record` VALUES (6, 1, '666', 1, 5, 2, '2021-01-15 21:59:41', NULL, '天安门', '2021-01-09 15:17:44', 0, 5, NULL, '17377433406');
 INSERT INTO `trans_record` VALUES (7, 4, '666', 5, 5, 1, '2021-01-15 21:14:46', NULL, '44444', '2021-01-10 01:35:43', 0, 1, NULL, '17377433406');
@@ -230,8 +285,8 @@ CREATE TABLE `user`  (
   `create_time` datetime(6) NULL DEFAULT NULL,
   `last_login_time` datetime(6) NULL DEFAULT NULL,
   `login_times` bigint(20) NULL DEFAULT NULL,
-  `user_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `user_pwd` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `signature` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `deleted` tinyint(4) NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE,
@@ -243,6 +298,6 @@ CREATE TABLE `user`  (
 -- ----------------------------
 INSERT INTO `user` VALUES (1, 1, 'http://kid1999.top:9000/default/avatar.png', 1, '2020-12-30 09:15:53.000000', '2021-01-05 22:09:53.000000', 1, 'kid', 'asdasda', 'hahhahhhh', 0);
 INSERT INTO `user` VALUES (2, 1, 'http://kid1999.top:9000/default/avatar.png', 1, '2021-01-16 11:57:26.000000', '2021-01-29 11:57:22.000000', 1, '123', 'aaaa', 'aaaaaa', 0);
-INSERT INTO `user` VALUES (5, 1, 'http://kid1999.top:9000/default/avatar.png', 1, '2021-01-04 23:35:26.845446', '2021-01-04 23:35:26.845446', 0, '111', '1111', '', 0);
+INSERT INTO `user` VALUES (5, 1, 'http://kid1999.top:9000/default/avatar.png', 1, '2021-01-04 23:35:26.845446', '2021-01-04 23:35:26.845446', 0, '1111', '1111', '', 0);
 
 SET FOREIGN_KEY_CHECKS = 1;

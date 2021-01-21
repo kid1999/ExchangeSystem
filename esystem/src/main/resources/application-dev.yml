@@ -14,7 +14,7 @@ swagger2:
 # mail 配置
 mail:
   fromMail:
-    addr: 1447250889@qq.com
+    addr: kid19992021@163.com
 
 
 # minio 文件服务器
@@ -40,18 +40,14 @@ logging:
 
 
 spring:
+  application:
+    name: oauth2-client
   # mysql 配置：
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://159.75.6.26:3306/ESystem?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
     username: root
     password: Xyq_pass=kid1999
-#  jpa:
-#    hibernate:
-#      ddl-auto: update
-#      show-sql: true
-#      database-platform: org.hibernate.dialect.MySQL5InnoDBDialect  #不加这句则默认为myisam引擎
-#      open-in-view: true
 
     #Hikari 连接池配置
     hikari:
@@ -79,12 +75,12 @@ spring:
         min-idle: 0
 
 
-
   # 邮件服务
   mail:
-    host: smtp.qq.com
-    username: 1447250889@qq.com # 邮箱账号
-    password: dsadadasdada    # 授权码（在邮箱开启pop3和smtp后会给你）
+    host: smtp.163.com
+    port: 25
+    username: kid19992021@163.com # 邮箱账号
+    password: OZJTINRPORNGYEET    # 授权码（在邮箱开启pop3和smtp后会给你）
     properties:
       mail:
         smtp:
@@ -93,11 +89,12 @@ spring:
             enable: true
             required: true
 
+
   # rabbitmq 配置
   rabbitmq:
     host: 159.75.6.26
     port: 5672
-    username: kid1999
+    username: root
     password: Xyq_pass=kid1999
     publisher-confirms: true
     publisher-returns: true
@@ -105,3 +102,15 @@ spring:
       mandatory: true
     connection-timeout: 1000ms
 
+# 授权服务器配置
+security:
+  oauth2:
+    client:
+#      client-id: user-client
+#      client-secret: user-secret-8888
+      user-authorization-uri: http://localhost:8080/oauth/authorize
+      access-token-uri: http://localhost:8080/oauth/token
+    resource:
+      jwt:
+        key-uri: http://localhost:8080/oauth/token_key
+        key-value: dev

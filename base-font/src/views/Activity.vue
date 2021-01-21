@@ -114,7 +114,7 @@
                 <li class="mdui-list-item mdui-ripple">
                     <i class="mdui-icon material-icons">&#xe87c;</i>
                     <h4>活动发起人</h4>
-                    <div class="mdui-list-item-content">{{viewTableData.userName}}</div>
+                    <div class="mdui-list-item-content">{{viewTableData.username}}</div>
                 </li>
                 <li class="mdui-list-item mdui-ripple">
                     <i class="mdui-icon material-icons">&#xe7ee;</i>
@@ -208,7 +208,7 @@
                 this.viewTableData = data;
                 get('/user/' + data.createUserId, {})
                     .then( res => {
-                        this.viewTableData.userName = res['data']['userName'];
+                        this.viewTableData.username = res['data']['username'];
                         get('/address/' + data.addressId, {})
                             .then( res => {
                                 this.viewTableData.address  = res['data']['address'];

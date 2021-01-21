@@ -68,12 +68,23 @@ public class CommentApi {
 
     @GetMapping("/{userId}")
     @ApiOperation("根据user1_id获取评论")
-    Result selectComment(@PathVariable int userId){
+    Result selectComment(@PathVariable Long userId){
         QueryWrapper<Comment> wrapper = new QueryWrapper<>();
         wrapper.eq("user1_id",userId);
         List<Comment> comments = commentDao.selectList(wrapper);
         return new Result(200,"查询成功！",comments);
     }
+
+    @GetMapping("/toMe/{userId}")
+    @ApiOperation("根据user2_id获取评论")
+    Result selectCommentToMe(@PathVariable Long userId){
+        QueryWrapper<Comment> wrapper = new QueryWrapper<>();
+        wrapper.eq("user2_id",userId);
+        List<Comment> comments = commentDao.selectList(wrapper);
+        return new Result(200,"查询成功！",comments);
+    }
+
+
 
     @GetMapping("/goods/{goodsId}")
     @ApiOperation("根据goods_id获取评论")
@@ -99,7 +110,7 @@ public class CommentApi {
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除评论")
-    Result deleteComment(@PathVariable int id){
+    Result deleteComment(@PathVariable Long id){
         commentDao.deleteById(id);
         return new Result().success("删除评论成功！");
     }

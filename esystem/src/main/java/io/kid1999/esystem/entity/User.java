@@ -1,19 +1,21 @@
 package io.kid1999.esystem.entity;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Collection;
 
 /**
  * @TableName user
  */
 @Data
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
     /**
      * 
      *
@@ -69,14 +71,14 @@ public class User implements Serializable {
      *
      * @mbg.generated Sun Jan 03 22:00:27 CST 2021
      */
-    private String userName;
+    private String username;
 
     /**
      * 
      *
      * @mbg.generated Sun Jan 03 22:00:27 CST 2021
      */
-    private String userPwd;
+    private String password;
 
     /**
      * 
@@ -100,4 +102,43 @@ public class User implements Serializable {
      * @mbg.generated Sun Jan 03 22:00:27 CST 2021
      */
     private static final long serialVersionUID = 1L;
+
+
+
+    // 实现UserDetail的验证方法
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 }

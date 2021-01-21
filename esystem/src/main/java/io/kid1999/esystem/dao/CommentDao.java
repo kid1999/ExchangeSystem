@@ -31,7 +31,7 @@ public interface CommentDao extends BaseMapper<Comment> {
             "`comment`.context,\n" +
             "`comment`.`status`,\n" +
             "`comment`.deleted,\n" +
-            "`user`.user_name,\n" +
+            "`user`.username,\n" +
             "`user`.avatar_url\n" +
             "FROM\n" +
             "`comment` ,\n" +
@@ -57,7 +57,7 @@ public interface CommentDao extends BaseMapper<Comment> {
             "`comment`.context,\n" +
             "`comment`.`status`,\n" +
             "`comment`.deleted,\n" +
-            "`user`.user_name,\n" +
+            "`user`.username,\n" +
             "goods.goods_name,\n" +
             "`user`.avatar_url,\n" +
             "`user`.address_id,\n" +

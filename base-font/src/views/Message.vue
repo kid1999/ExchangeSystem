@@ -35,11 +35,11 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                        prop="user_name"
+                        prop="username"
                         label="买家">
                     <template slot-scope="scope">
                         <el-link :href="'/userInfo/' + scope.row.user1_id" :underline="false">
-                            <span>{{ scope.row.user_name }}</span>
+                            <span>{{ scope.row.username }}</span>
                         </el-link>
                     </template>
                 </el-table-column>
@@ -83,7 +83,7 @@
                 <li class="mdui-list-item mdui-ripple">
                     <i class="mdui-icon material-icons">&#xe87c;</i>
                     <h4>卖 家</h4>
-                    <div class="mdui-list-item-content">{{viewTableData.user_name}}</div>
+                    <div class="mdui-list-item-content">{{viewTableData.username}}</div>
                 </li>
                 <li class="mdui-list-item mdui-ripple">
                     <i class="mdui-icon material-icons">&#xe863;</i>

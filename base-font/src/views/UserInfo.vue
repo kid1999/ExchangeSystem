@@ -35,8 +35,8 @@
                     </el-dialog>
                 </el-form-item>
 
-                <el-form-item label="用户名" prop="userName" :rules="[{ required: true, message: '用户名不能为空'}]">
-                    <el-input type="text" v-model="user.userName" autocomplete="off" :disabled="canChangeable"></el-input>
+                <el-form-item label="用户名" prop="username" :rules="[{ required: true, message: '用户名不能为空'}]">
+                    <el-input type="text" v-model="user.username" autocomplete="off" :disabled="canChangeable"></el-input>
                 </el-form-item>
                 <el-form-item label="签名" prop="signature">
                     <el-input type="text" v-model="user.signature" autocomplete="off" :disabled="canChangeable"></el-input>
@@ -75,7 +75,7 @@
                 </div>
                 <el-collapse-item v-if="leavingComment.length !== 0" v-for="comment in leavingComment">
                     <template slot="title"  >
-                        <el-link :underline="false" :href="'/user/' + comment.user_id"><h3>{{comment.user_name}}</h3></el-link> - {{comment.date | timeFormat}}<i class="header-icon el-icon-info"></i>
+                        <el-link :underline="false" :href="'/user/' + comment.user_id"><h3>{{comment.username}}</h3></el-link> - {{comment.date | timeFormat}}<i class="header-icon el-icon-info"></i>
                     </template>
                     <div>{{comment.context}}</div>
                 </el-collapse-item>
@@ -141,8 +141,7 @@
                 post('/comment', data)
                     .then(res => {
                         this.$message.success("发布留言成功");
-                        res['userName'] =
-                            this.goodsComment.push(data);
+                        res['username'] = this.goodsComment.push(data);
                     });
             },
             updateUser(){

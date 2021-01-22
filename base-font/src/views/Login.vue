@@ -24,9 +24,11 @@
                         <el-form-item>
                             <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button> |
                             <el-button @click="postGithub">Github登录</el-button> |
+                            <router-link to="ChangePassword">
                             <el-link href="/forgetPass" :underline="false">
                                 忘记密码？
                             </el-link>
+                            </router-link>
                         </el-form-item>
                     </el-form>
                 </div>
@@ -72,10 +74,10 @@
                 },
                 rules: {
                     username: [
-                        { required: true, validator: validatePass, trigger: 'blur' }
+                        { required: true, validator: checkName, trigger: 'blur' }
                     ],
                     password: [
-                        { required: true, validator: checkName, trigger: 'blur' }
+                        { required: true, validator: validatePass, trigger: 'blur' }
                     ]
                 }
             };

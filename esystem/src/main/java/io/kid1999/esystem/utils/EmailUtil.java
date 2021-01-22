@@ -154,7 +154,7 @@ public class EmailUtil {
 
         String content="<html>\n" +
                 "<body>\n" +
-                "    <h3>你的验证码是："+ mailCode +"</h3>\n" +
+                "    <h3>您的验证码是："+ mailCode +"</h3>\n" +
                 "</body>\n" +
                 "</html>";
 

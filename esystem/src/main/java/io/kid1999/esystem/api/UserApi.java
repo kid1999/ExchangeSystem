@@ -1,11 +1,14 @@
 package io.kid1999.esystem.api;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import io.kid1999.esystem.dao.UserDao;
 import io.kid1999.esystem.entity.Address;
 import io.kid1999.esystem.entity.User;
 import io.kid1999.esystem.utils.AddressAndContactWayUtil;
+import io.kid1999.esystem.utils.EmailUtil;
 import io.kid1999.esystem.utils.RedisUtil;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
@@ -35,6 +38,9 @@ public class UserApi {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private EmailUtil emailUtil;
 
     @Autowired
     private AddressAndContactWayUtil addressUtil;
@@ -155,5 +161,41 @@ public class UserApi {
         }
     }
 
+    // 验证码失效时间
+    private final Long CHECKCODE_EXPIRE_DATE = 15*60L;
+
+    @PostMapping("/sendCheckCode")
+    @ApiOperation("获取邮件验证码")
+    Result sendCheckCode(@RequestBody HashMap<String,String> map) {
+        String username = map.get("username");
+        HashMap<String,String> usermap = userDao.findUserAndContactWayByName(username);
+        String email = usermap.get("email");
+        if(StrUtil.equals("",email)){
+            return new Result().failed("该账户未绑定邮箱，无法修改密码！");
+        }else{
+            String checkCode = RandomUtil.randomString(6);
+            redisUtil.setKey("CheckCode::" + username,checkCode,CHECKCODE_EXPIRE_DATE);
+            emailUtil.sendMailCode(email,"Esystem的验证码",checkCode);
+            return new Result().success();
+        }
+    }
+
+    @PostMapping("/changePassword")
+    @ApiOperation("修改密码")
+    Result changeUserPassword(@RequestBody HashMap<String,String> map) {
+        String username = map.get("username");
+        String checkCode = map.get("checkCode");
+        String value = (String) redisUtil.getValue("CheckCode::" + username);
+        if(StrUtil.equals(value,checkCode)){
+            UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+            wrapper.eq("username",username);
+            wrapper.set("password",map.get("password"));
+            userDao.update(new User(),wrapper);
+            redisUtil.setKey(username,"",1);
+            return new Result().success();
+        }else{
+            return new Result().failed("验证码错误");
+        }
+    }
 
 }

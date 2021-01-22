@@ -61,6 +61,11 @@ const routes = [
     component: () => import('../views/MyActivity')
   },
   {
+    path: '/ChangePassword',
+    name: 'ChangePassword',
+    component: () => import('../views/ChangePassword')
+  },
+  {
     path: '/test',
     name: 'Test',
     component: () => import('../components/Test')

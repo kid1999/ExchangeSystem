@@ -11,7 +11,7 @@
                     <h2>登 录</h2>
                 </div>
                 <div>
-                    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="70px" class="demo-ruleForm">
+                    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="60px" class="demo-ruleForm">
                         <el-form-item label="账户" prop="username">
                             <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
                         </el-form-item>
@@ -33,13 +33,13 @@
             </el-card>
         </el-col>
     </el-row>
-
 </template>
 <script>
-    import { get, post,put,deleted } from '@/utils/request'
+    import { get, post,put,getToken } from '@/utils/request'
     import Verify from 'vue2-verify'
     import qs from 'qs';
-    import jwt from 'jsonwebtoken'
+    import jwt from 'jsonwebtoken';
+    import { globalBus } from '@/utils/globalBus';
     export default {
         name: "Login",
         components: {Verify},
@@ -105,9 +105,29 @@
                         let store = this.$store.getters.getUser;
                         let token = localStorage.getItem("access_token");
                         if(token == null || store == null){
-                            // 'Content-Type': 'application/x-www-form-urlencoded'
-                            // 先获取Token
-                            post('/oauth/token', qs.stringify(this.ruleForm)).then(res => {
+                            getToken(qs.stringify(this.ruleForm)).then(res => {
+                                localStorage.setItem("access_token",res.access_token);
+                                localStorage.setItem("refresh_token",res.refresh_token);
+                                let name = jwt.decode(res.access_token).user_name;
+                                // 再请求数据
+                                get('/user/name/' + name, {headers:{Authorization:'bearer ' + res.access_token}}).then(res => {
+                                    this.$message.success("登录成功！");
+                                    this.$store.commit('$_setUser', {user: res['data']});
+                                    this.$router.push({name: 'GoodsList'});
+                                    this.$options.methods.RefreshUser(res['data']);
+                                }).catch(e =>{
+                                    console.info("test")
+                                })
+                            }).catch(e =>{
+                                this.$message.error("登录失败，请重试！");
+                            });
+                        } else {
+                            let name = jwt.decode(token).user_name;
+                            if(store.user.username === name){
+                                this.$message.error("该用户已登录，请勿再次尝试！");
+                                return false;
+                            }
+                            getToken(qs.stringify(this.ruleForm)).then(res => {
                                 localStorage.setItem("access_token",res.access_token);
                                 localStorage.setItem("refresh_token",res.refresh_token);
                                 let name = jwt.decode(res.access_token).user_name;
@@ -118,46 +138,23 @@
                                         console.info(res['data']);
                                         this.$store.commit('$_setUser', {user: res['data']});
                                         this.$router.push({name: 'GoodsList'});
-                                        location.reload();
+                                        this.$options.methods.RefreshUser(res['data']);
                                     }
                                 });
                             }).catch(e =>{
                                 console.info(e);
-                                this.$message.error("登录失败，请重试！");
-                            });
-                        } else {
-                            let name = jwt.decode(token).user_name;
-                            if(store.user.username === name){
-                                this.$message.error("该用户已登录，请勿再次尝试！");
-                                return false;
-                            }
-                            post('/oauth/token', qs.stringify(this.ruleForm)).then(res => {
-                                localStorage.setItem("access_token",res.access_token);
-                                localStorage.setItem("refresh_token",res.refresh_token);
-                                let name = jwt.decode(token).user_name;
-                                console.info(name);
-                                // 再请求数据
-                                get('/user/name/' + name, {}).then(res => {
-                                    if(res['status'] === 200) {
-                                        this.$message.success("登录成功！");
-                                        console.info(res['data']);
-                                        this.$store.commit('$_setUser', {user: res['data']});
-                                        this.$router.push({name: 'GoodsList'});
-                                        location.reload();
-                                    }
-                                });
-                            }).catch(e =>{
-                                console.info(e);
-                                this.$message.error("登录失败，请重试！");
+                                this.$message.error("登录失败，请重试222！");
                             });
                         }
-
                     } else {
-                        this.$message.error("登录失败，请重试！");
+                        this.$message.error("登录失败，请重试333！");
                         return false;
                     }
                 });
             },
+            RefreshUser(data) {
+                globalBus.$emit("RefreshUser", data);
+            }
         }
     }
 </script>

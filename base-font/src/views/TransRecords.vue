@@ -29,18 +29,22 @@
                     prop="goods_name"
                     label="商品">
                 <template slot-scope="scope">
-                    <el-link :href="'/goods/detail/' + scope.row.id" :underline="false">
+                    <router-link :to="'/goods/detail/' + scope.row.id">
+                    <el-link  :underline="false">
                         <span>{{ scope.row.goods_name }}</span>
                     </el-link>
+                    </router-link>
                 </template>
             </el-table-column>
             <el-table-column
                     prop="username"
                     label="卖家">
                 <template slot-scope="scope">
-                    <el-link :href="'/userInfo/' + scope.row.user1_id" :underline="false">
+                    <router-link :to="'/userInfo/' + scope.row.user1_id">
+                    <el-link :underline="false">
                         <span>{{ scope.row.username }}</span>
                     </el-link>
+                    </router-link>
                 </template>
             </el-table-column>
             <el-table-column

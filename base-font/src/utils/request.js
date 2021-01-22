@@ -2,8 +2,13 @@ import axios from 'axios'
 import { Loading, Message  } from 'element-ui'    // 这里我是使用elementUI的组件来给提示
 import router from '@/router'
 import { encode, decode } from 'js-base64';
+import store from '@/store/index'
 
 let loadingInstance = null;    // 加载全局的loading
+
+let jwt = 'bearer ' + localStorage.access_token;;
+let applyToken = 'Basic ' + encode('admin:123');
+
 
 const instance = axios.create({    //创建axios实例，在这里可以设置请求的默认配置
     timeout: 10000, // 设置超时时间10s
@@ -24,19 +29,23 @@ let httpCode = {        //这里我简单列出一些常见的http状态码信�
 }
 
 /** 添加请求拦截器 **/
+// base64 encode（client-id:client-secret） 得到
 instance.interceptors.request.use(config => {
-    // 如果有token就带token
-    if(localStorage.access_token){
-        config.headers.Authorization = 'bearer ' + localStorage.access_token;
-    }else{
-        // base64 encode（client-id:client-secret） 得到
-        config.headers.Authorization = 'Basic ' + encode('admin:123');
-    }
+
+    // // 如果有token就带token
+    // if(store.state.user == null || localStorage.access_token == null){
+    //     config.headers.Authorization = 'Basic ' + encode('admin:123');
+    // }
+    // else{
+    //     config.headers.Authorization = 'bearer ' + localStorage.access_token;
+    // }
+
+
+
     loadingInstance = Loading.service({       // 发起请求时加载全局loading，请求失败或有响应时会关闭
         spinner: 'el-icon-loading',
         text: '拼命加载中...'
     });
-
     if (config.method === 'get') { // 添加时间戳参数，防止浏览器（IE）对get请求的缓存
         config.params = {
             ...config.params,
@@ -60,13 +69,21 @@ instance.interceptors.request.use(config => {
 /** 添加响应拦截器  **/
 instance.interceptors.response.use(response => {
     loadingInstance.close();
-    if (response.status === 200 || response.status === 201 || response.status === 202 || response.status === 203) {     // 响应结果里的status: ok是我与后台的约定，大家可以根据实际情况去做对应的判断
-        return Promise.resolve(response.data)
+    // 先用http 状态码判断
+    if (response.status === 200 ) {     // 响应结果里的status: ok是我与后台的约定，大家可以根据实际情况去做对应的判断
+        // 再用后端Result的状态码判断
+        if(response.data.status === 200 || response.data.status === 201 || response.data.status === 202 || response.data.status === 203 ){
+            return Promise.resolve(response.data)
+        }else if(!response.data.status){
+            return Promise.resolve(response.data)
+        }else {
+            return Promise.reject(response.data);
+        }
     } else {
         Message({
             message: response.data.message,
             type: 'error'
-        })
+        });
         return Promise.reject(response)
     }
 }, error => {
@@ -99,6 +116,7 @@ export const get = (url, params, config = {}) => {
         instance({
             method: 'get',
             url,
+            headers:{'Authorization':jwt},
             params,
             ...config
         }).then(response => {
@@ -115,6 +133,7 @@ export const post = (url, data, config = {}) => {
         instance({
             method: 'post',
             url,
+            headers:{'Authorization':jwt},
             data,
             ...config
         }).then(response => {
@@ -131,6 +150,7 @@ export const put = (url, data, config = {}) => {
         instance({
             method: 'put',
             url,
+            headers:{'Authorization':jwt},
             data,
             ...config
         }).then(response => {
@@ -142,13 +162,32 @@ export const put = (url, data, config = {}) => {
 };
 
 
-/* 统一封装put请求  */
+/* 统一封装deleted请求  */
 export const deleted = (url, data, config = {}) => {
     return new Promise((resolve, reject) => {
         instance({
             method: 'delete',
             url,
+            headers:{'Authorization':jwt},
             data,
+            ...config
+        }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+};
+
+
+/* 统一封装post请求  */
+export const getToken = ( data, config = {}) => {
+    return new Promise((resolve, reject) => {
+        instance({
+            method: 'post',
+            url:'/oauth/token',
+            data,
+            headers:{'Authorization':applyToken},
             ...config
         }).then(response => {
             resolve(response)

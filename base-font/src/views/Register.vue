@@ -4,10 +4,16 @@
 * @desciption:  Register
 */
 <template>
+    <el-row :gutter="20">
+        <el-col :span="14" :offset="3">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <h2>注 册</h2>
+                </div>
     <div>
-        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="账户" prop="userName">
-                <el-input type="text" v-model="ruleForm.userName" autocomplete="off"></el-input>
+        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="demo-ruleForm">
+            <el-form-item label="用户名" prop="username">
+                <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="userPwd">
                 <el-input type="password" v-model="ruleForm.userPwd" autocomplete="off"></el-input>
@@ -20,13 +26,11 @@
             </el-form-item>
 
             <el-form-item label="所在地区" prop="address">
-                <el-col :span="6">
                 <el-cascader
                         size="large"
                         :options="options"
                         v-model="addressOptions">
                 </el-cascader>
-                </el-col>
             </el-form-item>
 
 
@@ -67,6 +71,9 @@
             </el-form-item>
         </el-form>
     </div>
+            </el-card>
+        </el-col>
+    </el-row>
 </template>
 <script>
     import { get, post,put,deleted } from '../utils/request'
@@ -81,7 +88,7 @@
                 if (value.length <= 2) {
                     callback(new Error('用户名长度必须大于2'));
                 }
-                await post('/user/checkName', {userName : value})
+                await post('/user/checkName', {username : value})
                     .then(res => {
                         if(res['data'] != null){
                             callback(new Error('用户名已存在'));
@@ -133,7 +140,7 @@
                 addressOptions: [],
                 email:'',
                 ruleForm: {
-                    userName: '',
+                    username: '',
                     userPwd: '',
                     userPwd2:'',
                     signature:'',
@@ -147,7 +154,7 @@
                     area:'',
                 },
                 rules: {
-                    userName: [
+                    username: [
                         { required: true, validator: checkName, trigger: 'blur' }
                     ],
                     userPwd: [

@@ -38,6 +38,7 @@
 </template>
 
 <script>
+    import { globalBus } from '@/utils/globalBus';
     export default {
         name: "Header",
         data(){
@@ -54,7 +55,7 @@
         },
         created() {
             this.userInfo = this.$store.getters.getUser['user'];
-            if(Object.keys(this.userInfo).length == 0) this.isLogin = false;
+            if(Object.keys(this.userInfo).length === 0) this.isLogin = false;
             else this.isLogin = true;
         },
         methods:{
@@ -63,9 +64,25 @@
             },
             logout(){
                 this.$store.commit('$_removeUser', {});
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("refresh_token");
                 this.$router.push({name: 'Login'});
                 this.isLogin = false;
             },
+            RefreshUser(){
+                this.userInfo = this.$store.getters.getUser['user'];
+                if(Object.keys(this.userInfo).length === 0) this.isLogin = false;
+                else this.isLogin = true;
+            }
+        },
+        mounted() {
+            globalBus.$on("RefreshUser", (msg) => {
+                // A发送来的消息
+                console.info(msg);
+                this.userInfo = this.$store.getters.getUser['user'];
+                if(Object.keys(this.userInfo).length === 0) this.isLogin = false;
+                else this.isLogin = true;
+            });
         }
     }
 </script>

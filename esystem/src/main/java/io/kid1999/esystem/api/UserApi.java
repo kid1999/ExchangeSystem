@@ -145,7 +145,7 @@ public class UserApi {
     @ApiOperation("检查用户名是否使用")
     Result checkNameUsed(@RequestBody HashMap<String,String> map) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("username",map.get("userName"));
+        wrapper.eq("username",map.get("username"));
         User user = userDao.selectOne(wrapper);
         if(user == null) {
             return new Result().success();

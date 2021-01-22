@@ -28,9 +28,11 @@
                             <el-card class="box-card">
                                 <div slot="header" id="header-font">
                                     <span>
-                                        <el-link :underline="false" :href="'/goods/detail/' + goods.id">
+                                        <router-link :to="'/goods/detail/' + goods.id">
+                                            <el-link :underline="false">
                                             <h2>{{goods.goods_name}}</h2>
-                                        </el-link>
+                                            </el-link>
+                                        </router-link>
                                     </span>
                                 </div>
 
@@ -63,25 +65,32 @@
                                 <div id="goods_context">
                                     <p>
                                         期望交换<i class="el-icon-s-goods el-icon--right"></i>：
-                                        <el-link :underline="false" :href="'/goods/detail/' + goods.want_goods_id">
+                                        <router-link :to="'/goods/detail/' + goods.want_goods_id">
+                                            <el-link :underline="false"  >
                                             <strong>{{goods.want_goods_name }}</strong>
                                         </el-link>
+                                        </router-link>
+
                                     </p>
                                     <p>
                                         <span>点击量 </span><i class="el-icon-s-promotion el-icon--left"></i>：  <strong>{{goods.number_of_clicked }}</strong>
                                     </p>
                                     <p>
                                         所有者<i class="el-icon-s-custom el-icon--right"></i>：
-                                        <el-link :underline="false" :href="'/userInfo/' + goods.user_id">
+                                        <router-link :to="'/userInfo/' + goods.user_id">
+                                            <el-link :underline="false"  >
                                             <strong>{{goods.username }}</strong>
-                                        </el-link>
+                                            </el-link>
+                                        </router-link>
                                     </p>
                                 </div>
                                 <div id="buy">
                                     <el-button type="success" size="mini" round  @click="applyExchange(goods.id)">申请交易</el-button>
-                                    <el-link :underline="false" :href="'/goods/detail/' + goods.id">
+
+                                    <router-link :to="'/goods/detail/' + goods.id">
                                         <el-button type="info" size="mini" round >查看详情</el-button>
-                                    </el-link>
+                                    </router-link>
+
                                 </div>
                             </el-card>
                         </div>

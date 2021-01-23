@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import io.kid1999.esystem.dao.UserDao;
-import io.kid1999.esystem.entity.Address;
 import io.kid1999.esystem.entity.User;
 import io.kid1999.esystem.utils.AddressAndContactWayUtil;
 import io.kid1999.esystem.utils.EmailUtil;
@@ -13,8 +12,10 @@ import io.kid1999.esystem.utils.RedisUtil;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -29,6 +30,7 @@ import static io.kid1999.esystem.common.Constants.DEFAULT_AVATAR_URL;
  * @description 用户管理操作
  **/
 
+@Slf4j
 @RestController @RequestMapping("/user")
 @Api(tags = "用户管理操作")
 public class UserApi {
@@ -45,10 +47,13 @@ public class UserApi {
     @Autowired
     private AddressAndContactWayUtil addressUtil;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping("/register")
     @ApiOperation("注册新用户")
     public Result register(@RequestBody HashMap<String,String> map) {
-        System.out.println(map);
+        log.info("注册新用户 " + map.get("username"));
         Long addressId = addressUtil.checkAndSaveAddress(map);
         Long contactWayId = addressUtil.saveContactWay(map);
         String avatarUrl = map.get("avatarUrl");
@@ -60,7 +65,7 @@ public class UserApi {
         user.setContactWayId(contactWayId);
         user.setAvatarUrl(avatarUrl);
         user.setUsername(map.get("username"));
-        user.setPassword(map.get("password"));
+        user.setPassword(passwordEncoder.encode(map.get("password")));
         user.setSignature(map.get("signature"));
         user.setCreateTime(LocalDateTime.now());
         user.setLastLoginTime(LocalDateTime.now());
@@ -74,6 +79,7 @@ public class UserApi {
     @PostMapping("/login")
     @ApiOperation("登录")
     public Result login(@RequestBody Map<String,String> map) {
+        log.info("登录 " + map.get("username"));
         String userName = map.get("username");
         String userPwd = map.get("password");
         QueryWrapper<User> wrapper = new QueryWrapper();
@@ -92,10 +98,10 @@ public class UserApi {
     @PutMapping("")
     @ApiOperation("修改个人信息")
     public Result updateUserInfo(@RequestBody Map<String,String> map) {
+        log.info("修改个人信息 " + map.get("name"));
         String name = map.get("name");
         String pwd = map.get("password");
         User user = new User();
-        Address address = new Address();
         userDao.updateById(user);
         return new Result(200,"修改成功！");
     }
@@ -103,6 +109,7 @@ public class UserApi {
     @GetMapping("/{id}")
     @ApiOperation("获取个人信息")
     public Result<User> getUser(@PathVariable long id) {
+        log.info("获取个人信息 " + id);
         User user = userDao.selectById(id);
         if(user == null) {
             return new Result<>().failed("用户不存在！");
@@ -115,6 +122,7 @@ public class UserApi {
     @GetMapping("/name/{username}")
     @ApiOperation("获取个人信息")
     public Result<User> getUser(@PathVariable String username) {
+        log.info("获取个人信息 " + username);
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("username",username);
         User user = userDao.selectOne(wrapper);
@@ -129,7 +137,8 @@ public class UserApi {
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除用户")
-    public Result deleteUser(@PathVariable int id) {
+    public Result deleteUser(@PathVariable long id) {
+        log.info("删除用户 " + id);
         userDao.deleteById(id);
         return new Result().success("删除成功！");
     }
@@ -137,7 +146,8 @@ public class UserApi {
     @GetMapping("/loginTimes/{id}")
     @ApiOperation("获取用户登录次数")
     @Cacheable(value="userLoginTimes",key="#id")
-    public Result getUserLoginTimes(@PathVariable int id) {
+    public Result getUserLoginTimes(@PathVariable long id) {
+        log.info("获取用户登录次数 " + id);
         User user = userDao.selectById(id);
         if(user == null) {
             return new Result().failed("用户不存在！");
@@ -150,6 +160,7 @@ public class UserApi {
     @PostMapping("/checkName")
     @ApiOperation("检查用户名是否使用")
     Result checkNameUsed(@RequestBody HashMap<String,String> map) {
+        log.info("检查用户名是否使用 " + map.get("username"));
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("username",map.get("username"));
         User user = userDao.selectOne(wrapper);
@@ -167,6 +178,7 @@ public class UserApi {
     @PostMapping("/sendCheckCode")
     @ApiOperation("获取邮件验证码")
     Result sendCheckCode(@RequestBody HashMap<String,String> map) {
+        log.info("获取邮件验证码 " + map.get("username"));
         String username = map.get("username");
         HashMap<String,String> usermap = userDao.findUserAndContactWayByName(username);
         String email = usermap.get("email");
@@ -183,13 +195,17 @@ public class UserApi {
     @PostMapping("/changePassword")
     @ApiOperation("修改密码")
     Result changeUserPassword(@RequestBody HashMap<String,String> map) {
+        log.info("修改密码 " + map.get("username"));
         String username = map.get("username");
         String checkCode = map.get("checkCode");
         String value = (String) redisUtil.getValue("CheckCode::" + username);
+        if(StrUtil.equals("",value)){
+            return new Result().failed("验证码已失效");
+        }
         if(StrUtil.equals(value,checkCode)){
             UpdateWrapper<User> wrapper = new UpdateWrapper<>();
             wrapper.eq("username",username);
-            wrapper.set("password",map.get("password"));
+            wrapper.set("password",passwordEncoder.encode(map.get("password")));
             userDao.update(new User(),wrapper);
             redisUtil.setKey(username,"",1);
             return new Result().success();

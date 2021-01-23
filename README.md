@@ -14,7 +14,7 @@
 
 - [x] 综合oauth2-JWT的安全验证体系
 
-- [ ] 基于JavaMail的用户校验
+- [x] 基于JavaMail的用户校验
 
 - [ ] 基于ES的搜索
 

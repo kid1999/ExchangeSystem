@@ -4,6 +4,7 @@ import io.kid1999.esystem.utils.FileUtil;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import static io.kid1999.esystem.common.Constants.MINIO_URL;
  * @create 2021-01-05 9:52
  * @description TODO
  **/
+@Slf4j
 @RestController
 @RequestMapping("/file")
 @Api(tags = "文件操作")
@@ -31,6 +33,7 @@ public class FileApi {
     @PostMapping("")
     @ApiOperation("上传文件到Minio")
     Result insertFile(@RequestParam("file") MultipartFile file){
+        log.info("上传文件到Minio");
         String randomFileName = FileUtil.getRandomFileName() +
                 getFileNameNoEx(file);
         try {
@@ -45,7 +48,9 @@ public class FileApi {
         }
     }
 
-
+    /**
+     * 获取文件后缀名
+     */
     String getFileNameNoEx(MultipartFile file){
         String ex = "";
         if (!file.isEmpty()) {

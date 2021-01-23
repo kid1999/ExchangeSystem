@@ -31,12 +31,14 @@ mybatis-plus:
       logic-delete-field: flag  # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 logging:
   level:
     com.baomidou.example.mapper: debug
+  file:
+    path: logs
 
 
 spring:
@@ -114,3 +116,4 @@ security:
       jwt:
         key-uri: http://localhost:8080/oauth/token_key
         key-value: dev
+

@@ -9,6 +9,7 @@ import io.kid1999.esystem.utils.RedisUtil;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.List;
  * @create 2021-01-03 16:12
  * @description 货物接口
  **/
+@Slf4j
 @RestController
 @RequestMapping("/goods")
 @Api(tags = "货物管理操作")
@@ -34,6 +36,7 @@ public class GoodsApi {
     @PostMapping("")
     @ApiOperation("创建货物信息")
     Result insertGoods(@RequestBody Goods goods){
+        log.info("创建货物信息");
         int status = goodsDao.insert(goods);
         return new Result(status,"创建成功！");
     }
@@ -41,6 +44,7 @@ public class GoodsApi {
     @DeleteMapping("/{id}")
     @ApiOperation("删除货物信息")
     Result deleteGoods(@PathVariable Long id){
+        log.info("删除货物信息 " + id);
         int status = goodsDao.deleteById(id);
         return new Result(200,"删除成功！");
     }
@@ -49,6 +53,7 @@ public class GoodsApi {
     @PutMapping("")
     @ApiOperation("修改货物信息")
     Result updateGoods(@RequestBody Goods goods){
+        log.info("修改货物信息 ");
         int status = goodsDao.updateById(goods);
         return new Result(status,"");
     }
@@ -56,6 +61,7 @@ public class GoodsApi {
     @GetMapping("/{id}")
     @ApiOperation("获取货物信息")
     Result getGoods(@PathVariable Long id){
+        log.info("获取货物信息 " + id);
         // 点击量 + 定时刷新到数据库
         redisUtil.incr("goodsView::" + id);
         HashMap<String,String> data = goodsDao.findGoodsById(id);
@@ -68,6 +74,7 @@ public class GoodsApi {
     Result getGoodsByGoodsName(@RequestParam(value = "goodsName") String goodsName,
                                @RequestParam(value = "page_size") int pageSize,
                                @RequestParam(value = "current_page") int currentPage){
+        log.info("通过name搜索货物信息 " + goodsName);
         Page<HashMap<String,String>> page = new Page<>();
         page.setSize(pageSize);
         page.setCurrent(currentPage);
@@ -79,6 +86,7 @@ public class GoodsApi {
     @ApiOperation("通过userId查找货物信息")
     Result getGoodsByUserId(@PathVariable long userId){
         QueryWrapper<Goods> wrapper = new QueryWrapper<>();
+        log.info("通过userId查找货物信息 " + userId);
         wrapper.eq("user_id",userId);
         List<Goods> goods = goodsDao.selectList(wrapper);
         return new Result(200,"查询成功！",goods);
@@ -89,6 +97,7 @@ public class GoodsApi {
     Result getGoodsByGoodsName(@RequestParam(value = "page_size") int pageSize,
                                @RequestParam(value = "current_page") int currentPage,
                                @RequestParam(value = "userId") Long userId){
+        log.info("查询user收藏的goods " + userId);
         Page<HashMap<String,String>> page = new Page<>();
         page.setSize(pageSize);
         page.setCurrent(currentPage);
@@ -103,6 +112,7 @@ public class GoodsApi {
     public Result getAllGoods(@RequestParam(value = "page_size") int pageSize,
                               @RequestParam(value = "current_page") int currentPage,
                               @RequestParam(value = "userId") Long userId){
+        log.info("获取所有货物信息 " + userId);
         Page<HashMap<String,String>> page = new Page<>();
         page.setSize(pageSize);
         page.setCurrent(currentPage);

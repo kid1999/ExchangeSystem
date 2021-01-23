@@ -3,6 +3,7 @@ package io.kid1999.esystem.api;
 import io.kid1999.esystem.dao.UserDao;
 import io.kid1999.esystem.utils.FileUtil;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
  * @title TestApi
  */
 
-@Log
+@Deprecated
+@Slf4j
 @RestController
 public class TestApi {
 	@Autowired
@@ -24,7 +26,7 @@ public class TestApi {
 
 	@GetMapping("/getPath")
 	public String getFileName(){
-		System.out.println(fileUtil.bucketExists("images"));
+//		log.info(fileUtil.bucketExists("images"));
 		return "success";
 	}
 

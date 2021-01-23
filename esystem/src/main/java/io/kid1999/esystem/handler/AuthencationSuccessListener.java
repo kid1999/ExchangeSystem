@@ -2,6 +2,7 @@ package io.kid1999.esystem.handler;
 
 import io.kid1999.esystem.dao.UserDao;
 import io.kid1999.esystem.utils.RedisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
  * @create 2021-01-21 18:05
  * @description 认证成功 监听器
  **/
+@Slf4j
 @Component
 public class AuthencationSuccessListener implements ApplicationListener<AuthenticationSuccessEvent> {
 
@@ -24,11 +26,10 @@ public class AuthencationSuccessListener implements ApplicationListener<Authenti
         Object o = authentication.getPrincipal();
         if(o instanceof User){
             User auth = (User) o;
-            System.out.println(auth.getUsername());
+            log.info(auth.getUsername() + "  登录成功");
+        }else {
+            log.info("验证成功");
         }
-        System.out.println("---验证成功---");
+
     }
-
-
-
 }

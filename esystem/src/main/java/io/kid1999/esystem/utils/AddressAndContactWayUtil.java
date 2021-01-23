@@ -7,7 +7,7 @@ import io.kid1999.esystem.dao.AddressDao;
 import io.kid1999.esystem.dao.ContactWayDao;
 import io.kid1999.esystem.entity.Address;
 import io.kid1999.esystem.entity.ContactWay;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import java.util.HashMap;
  * @create 2021-01-18 21:50
  * @description 地址处理工具
  **/
-@Log
+@Slf4j
 @Service
 public class AddressAndContactWayUtil {
 
@@ -33,6 +33,7 @@ public class AddressAndContactWayUtil {
      * 核查 保存 地址信息
      */
     public Long checkAndSaveAddress(HashMap<String,String> map){
+        log.info("核查保存地址信息");
         String address = map.get("address");
         String province = map.get("province");
         String city = map.get("city");
@@ -59,6 +60,7 @@ public class AddressAndContactWayUtil {
      * 保存联系方式
      */
     public Long saveContactWay(HashMap<String,String> map){
+        log.info("保存联系方式");
         String email = map.get("email");
         String phone = map.get("phone");
         String qq = map.get("email");
@@ -79,7 +81,6 @@ public class AddressAndContactWayUtil {
      *
      */
     public Long findGithubOrSave(JSONObject jsonObject){
-
         System.out.println(jsonObject.get("avatar"));
         System.out.println(jsonObject.get("uuid"));
         return 0L;

@@ -3,6 +3,7 @@ package io.kid1999.esystem.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.kid1999.esystem.dao.UserDao;
 import io.kid1999.esystem.entity.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ import java.util.List;
  * @create 2021-01-19 17:59
  * @description 比对密码是否匹配
  **/
+@Slf4j
 @Component
 public class UserService implements UserDetailsService {
 
@@ -31,11 +33,12 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("login - username: " + username);
+        log.info("login  " + username);
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("username",username);
         User user = userDao.selectOne(wrapper);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        // 全部赋予user角色
         authorities.add(new SimpleGrantedAuthority("ROLE_user"));
         if(user == null){
             throw new UsernameNotFoundException("用户不存在！");

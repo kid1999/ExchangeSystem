@@ -7,6 +7,7 @@ import io.kid1999.esystem.entity.Goods;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * @create 2021-01-03 17:58
  * @description 商品收藏管理
  **/
+@Slf4j
 @RestController @RequestMapping("/collection")
 @Api(tags = "商品收藏管理")
 public class CollectionApi {
@@ -28,6 +30,7 @@ public class CollectionApi {
     @PostMapping("")
     @ApiOperation("新建收藏")
     Result insertCollection(@RequestBody HashMap<String,Long> map){
+        log.info("新建收藏");
         Long goodsId = map.get("goodsId");
         Long userId = map.get("userId");
         if(goodsId == null || userId == null){
@@ -60,7 +63,8 @@ public class CollectionApi {
 
     @DeleteMapping("/{id}")
     @ApiOperation("删除收藏")
-    Result deleteCollection(@PathVariable int id){
+    Result deleteCollection(@PathVariable long id){
+        log.info("删除收藏 " + id);
         collectionDao.deleteById(id);
         return new Result(200,"删除成功！");
     }
@@ -68,13 +72,15 @@ public class CollectionApi {
     @PutMapping("")
     @ApiOperation("更新收藏")
     Result updateCollection(Collection collection){
+        log.info("更新收藏 ");
         collectionDao.updateById(collection);
         return new Result(200,"更新成功！");
     }
 
     @GetMapping("/{userId}")
     @ApiOperation("查询某人的收藏")
-    Result getCollection(@PathVariable int userId){
+    Result getCollection(@PathVariable long userId){
+        log.info("查询某人的收藏 " + userId);
         List<Goods> collections = collectionDao.selectCollectionsByUserId(userId);
         return new Result(200,"查找成功！",collections);
     }

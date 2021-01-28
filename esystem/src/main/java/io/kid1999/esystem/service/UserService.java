@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -25,11 +24,7 @@ import java.util.List;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private UserDao userDao;
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -39,11 +34,11 @@ public class UserService implements UserDetailsService {
         User user = userDao.selectOne(wrapper);
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         // 全部赋予user角色
-        authorities.add(new SimpleGrantedAuthority("ROLE_user"));
         if(user == null){
             throw new UsernameNotFoundException("用户不存在！");
         }else{
-            String password = passwordEncoder.encode(user.getPassword());
+            authorities.add(new SimpleGrantedAuthority(user.getRole()));
+            String password = user.getPassword();
             return new org.springframework.security.core.userdetails.User(username,password,authorities);
         }
     }

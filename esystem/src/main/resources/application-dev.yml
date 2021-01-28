@@ -6,6 +6,12 @@ server:
     context-path: /api
 
 
+# es 配置
+es:
+  name: elasticsearch
+  host: kid1999.top:9200
+
+
 # swagger2 配置
 swagger2:
   enable: true
@@ -47,9 +53,9 @@ spring:
   # mysql 配置：
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://159.75.6.26:3306/ESystem?useUnicode=true&characterEncoding=utf8&serverTimezone=CST
+    url: jdbc:mysql://159.75.6.26:3306/ESystem?serverTimezone=Asia/Shanghai&characterEncoding=utf-8
     username: root
-    password: Xyq_pass=kid1999
+    password: pass=kid1999
 
     #Hikari 连接池配置
     hikari:
@@ -61,6 +67,12 @@ spring:
       max-lifetime: 300000   #控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
       connection-timeout: 30000  #数据库连接超时时间,默认30秒，即30000
       connection-test-query: SELECT 1
+
+  # jpa elasticsearch 配置
+  elasticsearch:
+    rest:
+      uris: kid1999.top:9200
+
 
   # redis 配置
   redis:
@@ -105,15 +117,19 @@ spring:
     connection-timeout: 1000ms
 
 # 授权服务器配置
-security:
-  oauth2:
-    client:
-#      client-id: user-client
-#      client-secret: user-secret-8888
-      user-authorization-uri: http://localhost:8080/oauth/authorize
-      access-token-uri: http://localhost:8080/oauth/token
-    resource:
-      jwt:
-        key-uri: http://localhost:8080/oauth/token_key
-        key-value: dev
+#security:
+#  oauth2:
+#    client:
+##      JWT的client-id
+##      client-id: user-client
+##      JWT的client-secre
+##      client-secret: user-secret-8888
+##      授权码模式的认证地址
+#      user-authorization-uri: http://localhost:8080/oauth/authorize
+##      授权码模式的认证地址
+#      access-token-uri: http://localhost:8080/oauth/token
+#    resource:
+#      jwt:
+#        key-uri: http://localhost:8080/oauth/token_key
+#        key-value: dev
 

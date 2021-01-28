@@ -39,6 +39,13 @@ public class User implements Serializable, UserDetails {
     private String avatarUrl;
 
     /**
+     *
+     *
+     * @mbg.generated Sun Jan 03 22:00:27 CST 2021
+     */
+    private String role;
+
+    /**
      * 
      *
      * @mbg.generated Sun Jan 03 22:00:27 CST 2021

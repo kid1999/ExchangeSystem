@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 /**
@@ -41,5 +42,9 @@ public interface UserDao extends BaseMapper<User> {
             "`user`.username = #{name}\n" +
             "AND `user`.deleted = 0\n")
     HashMap<String,String> findUserAndContactWayByName(String name);
+
+
+    @Select("UPDATE `user` SET login_times = login_times + 1 , last_login_time = #{lastLoginTime} WHERE username = #{username} and deleted = 0")
+    void updateLoginTimesByUsername(String username, LocalDateTime lastLoginTime);
 
 }

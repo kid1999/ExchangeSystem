@@ -44,8 +44,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/v2/api-docs").permitAll()
                 .antMatchers("/configuration/ui").permitAll()
                 .antMatchers("/configuration/security").permitAll()
-                .anyRequest().authenticated();
+//                .anyRequest().authenticated();
 
+                // 放行所有
+                .anyRequest().permitAll();
     }
 
 }

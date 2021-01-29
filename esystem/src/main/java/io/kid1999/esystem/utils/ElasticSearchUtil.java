@@ -34,7 +34,7 @@ import java.util.HashMap;
  **/
 @Slf4j
 @Component
-public class ESUtil {
+public class ElasticSearchUtil {
     @Resource
     private RestHighLevelClient client;
 
@@ -69,10 +69,9 @@ public class ESUtil {
     /**
      * 添加文档
      */
-    public IndexResponse createDocument(String index,Object object) throws IOException {
+    public IndexResponse insertDocument(String index,Object object) throws IOException {
         IndexRequest request = new IndexRequest(index);
         request.id("1");
-        request.timeout(TimeValue.timeValueSeconds(1));
         request.timeout("1s");
         request.source(object);
         IndexResponse response = client.index(request, RequestOptions.DEFAULT);

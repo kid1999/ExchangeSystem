@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.kid1999.esystem.entity.Goods;
+import io.kid1999.esystem.es.entry.GoodsEntry;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
@@ -184,5 +185,42 @@ public interface GoodsDao extends BaseMapper<Goods> {
             "LEFT JOIN goods AS g2 ON g.want_goods_id = g2.id\n" +
             "WHERE c.user_id = #{id} and c.deleted = 0\n")
     IPage<HashMap<String,String>> findGoodsAndCollectionByUserId(Page<?> page,Long id);
+
+
+
+
+    /**
+     * 通过id 查询goods的信息
+     * @param id
+     * @return
+     */
+    @Select("SELECT\n" +
+            "g.id,\n" +
+            "g.user_id as userId,\n" +
+            "u.username,\n" +
+            "g.goods_name as goodsName,\n" +
+            "g.img_url as imgUrl,\n" +
+            "g.want_goods_id as wantGoodsId,\n" +
+            "g.remarks,\n" +
+            "g.goods_status as goodsStatus,\n" +
+            "g.number_of_clicked as numberOfClicked,\n" +
+            "g.create_date as createDate,\n" +
+            "g.deleted,\n" +
+            "g.price,\n" +
+            "g2.goods_name AS wantGoodsName,\n" +
+            "g.goods_condition as goodsCondition,\n" +
+            "g.description,\n" +
+            "g.address_id addressId,\n" +
+            "a.address\n" +
+            "FROM\n" +
+            "goods AS g\n" +
+            "LEFT JOIN `user` AS u ON u.id = g.user_id\n" +
+            "LEFT JOIN goods AS g2 ON g.want_goods_id = g2.id\n" +
+            "LEFT JOIN address AS a ON g.address_id = a.id\n" +
+            "WHERE g.deleted = 0 and g.id >= #{id}\n" +
+            "order by g.id ASC;")
+    List<GoodsEntry> findGoodsSinceId(Long id);
+
+
 
 }

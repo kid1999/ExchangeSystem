@@ -1,27 +1,55 @@
 package io.kid1999.esystem.task;
 
-import io.kid1999.esystem.dao.UserDao;
-import io.kid1999.esystem.utils.RedisUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import io.kid1999.esystem.dao.GoodsDao;
+import io.kid1999.esystem.entity.Goods;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 /**
  * @author kid1999
  * @create 2021-01-28 17:12
  * @description 设置redis定时持久化到Mysql
  **/
-
+@Slf4j
 @Component
 public class RedisToMysql {
 
-    @Autowired
-    private RedisUtil redisUtil;
+    // redis中 goods点击 的key
+    private final static String GOODS_VIEW = "goodsView";
 
-    @Autowired
-    private UserDao userDao;
+    @Resource
+    private RedisTemplate redisTemplate;
 
-    public void saveUserLoginTimesToSQL(){
+    @Resource
+    private GoodsDao goodsDao;
 
+    @Scheduled(fixedRate = 30000)
+    public void saveUserGoodsViewTimes2DB(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        log.info("time:{}，开始执行Redis数据持久化到MySQL任务", LocalDateTime.now().format(formatter));
+        Goods g = new Goods();
+        Map<String, Integer> hashList = redisTemplate.opsForHash().entries(GOODS_VIEW);
+        if(hashList.size() == 0){
+            log.info("time:{}，","redis中么有数据");
+        }else{
+            for (Map.Entry<String, Integer> entry : hashList.entrySet()) {
+                Long id = Long.valueOf(entry.getKey());
+                Integer count = entry.getValue();
+                UpdateWrapper<Goods> wrapper = new UpdateWrapper<>();
+                wrapper.eq("id",id);
+                wrapper.set("number_of_clicked",count);
+                goodsDao.update(g,wrapper);
+            }
+        }
+        log.info("time:{}，结束执行Redis数据持久化到MySQL任务", LocalDateTime.now().format(formatter));
     }
 
 }

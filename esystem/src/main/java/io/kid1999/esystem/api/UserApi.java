@@ -50,6 +50,8 @@ public class UserApi {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
+
     @PostMapping("/register")
     @ApiOperation("注册新用户")
     public Result register(@RequestBody HashMap<String,String> map) {
@@ -174,6 +176,7 @@ public class UserApi {
 
     // 验证码失效时间
     private final Long CHECKCODE_EXPIRE_DATE = 15*60L;
+    private final static String CHECK_CODE = "CheckCode::";
 
     @PostMapping("/sendCheckCode")
     @ApiOperation("获取邮件验证码")
@@ -186,7 +189,7 @@ public class UserApi {
             return new Result().failed("该账户未绑定邮箱，无法修改密码！");
         }else{
             String checkCode = RandomUtil.randomString(6);
-            redisUtil.setKey("CheckCode::" + username,checkCode,CHECKCODE_EXPIRE_DATE);
+            redisUtil.setStringKey(CHECK_CODE + username,checkCode,CHECKCODE_EXPIRE_DATE);
             emailUtil.sendMailCode(email,"Esystem的验证码",checkCode);
             return new Result().success();
         }
@@ -198,7 +201,7 @@ public class UserApi {
         log.info("修改密码 " + map.get("username"));
         String username = map.get("username");
         String checkCode = map.get("checkCode");
-        String value = (String) redisUtil.getValue("CheckCode::" + username);
+        String value = (String) redisUtil.getStringValue(CHECK_CODE + username);
         if(StrUtil.equals("",value)){
             return new Result().failed("验证码已失效");
         }
@@ -207,7 +210,7 @@ public class UserApi {
             wrapper.eq("username",username);
             wrapper.set("password",passwordEncoder.encode(map.get("password")));
             userDao.update(new User(),wrapper);
-            redisUtil.setKey(username,"",1);
+            redisUtil.deleteKey(username);
             return new Result().success();
         }else{
             return new Result().failed("验证码错误");

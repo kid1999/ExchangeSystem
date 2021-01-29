@@ -6,10 +6,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author kid1999
+ */
 @Repository
 public interface GoodsRepository extends ElasticsearchRepository<GoodsEntry, Long> {
 
-    List<GoodsEntry> findAllByNameLike(String name);
-
+    List<GoodsEntry> findAllByGoodsNameLike(String name);
 
 }

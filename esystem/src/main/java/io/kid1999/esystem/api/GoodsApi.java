@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.kid1999.esystem.dao.GoodsDao;
 import io.kid1999.esystem.entity.Goods;
+import io.kid1999.esystem.es.entry.GoodsEntry;
+import io.kid1999.esystem.service.GoodsService;
 import io.kid1999.esystem.utils.RedisUtil;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,12 +34,14 @@ public class GoodsApi {
     private GoodsDao goodsDao;
 
     @Autowired
-    private RedisUtil redisUtil;
+    private GoodsService goodsService;
+
 
     @PostMapping("")
     @ApiOperation("创建货物信息")
     Result insertGoods(@RequestBody Goods goods){
         log.info("创建货物信息");
+        goods.setCreateDate(LocalDateTime.now());
         int status = goodsDao.insert(goods);
         return new Result(status,"创建成功！");
     }
@@ -45,7 +50,7 @@ public class GoodsApi {
     @ApiOperation("删除货物信息")
     Result deleteGoods(@PathVariable Long id){
         log.info("删除货物信息 " + id);
-        int status = goodsDao.deleteById(id);
+        goodsService.deleteGoods(id);
         return new Result(200,"删除成功！");
     }
 
@@ -54,17 +59,15 @@ public class GoodsApi {
     @ApiOperation("修改货物信息")
     Result updateGoods(@RequestBody Goods goods){
         log.info("修改货物信息 ");
-        int status = goodsDao.updateById(goods);
-        return new Result(status,"");
+        goodsService.updateGoods(goods);
+        return new Result().success();
     }
 
     @GetMapping("/{id}")
     @ApiOperation("获取货物信息")
     Result getGoods(@PathVariable Long id){
         log.info("获取货物信息 " + id);
-        // 点击量 + 定时刷新到数据库
-        redisUtil.incr("goodsView::" + id);
-        HashMap<String,String> data = goodsDao.findGoodsById(id);
+        GoodsEntry data = goodsService.getGoods(id);
         return new Result(200,"获取数据成功！",data);
     }
 

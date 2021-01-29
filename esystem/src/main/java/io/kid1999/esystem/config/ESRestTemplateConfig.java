@@ -19,7 +19,7 @@ public class ESRestTemplateConfig {
     private String ES_HOST;
 
     @Bean
-    public RestHighLevelClient ESClient() {
+    public RestHighLevelClient restHighLevelClient() {
         final ClientConfiguration clientConfiguration = ClientConfiguration.builder()
                 .connectedTo(ES_HOST)
                 .build();

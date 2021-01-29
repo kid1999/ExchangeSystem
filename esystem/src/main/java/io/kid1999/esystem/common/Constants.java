@@ -69,4 +69,10 @@ public class Constants {
 	 */
 	public static final long REDIS_EXPIRE_DATE = 24*60*60;
 
+
+	/**
+	 * ES goods entry 的 index
+	 */
+	public static final String ES_GOODS_INDEX = "goods";
+
 }

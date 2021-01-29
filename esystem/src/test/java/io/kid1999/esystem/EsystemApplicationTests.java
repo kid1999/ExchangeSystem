@@ -3,7 +3,8 @@ package io.kid1999.esystem;
 
 import io.kid1999.esystem.es.entry.GoodsEntry;
 import io.kid1999.esystem.es.repository.GoodsRepository;
-import io.kid1999.esystem.utils.ESUtil;
+import io.kid1999.esystem.task.MysqlToES;
+import io.kid1999.esystem.utils.ElasticSearchUtil;
 import io.kid1999.esystem.utils.EmailUtil;
 import io.kid1999.esystem.utils.TokenUtil;
 import org.elasticsearch.client.RequestOptions;
@@ -18,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 @SpringBootTest
 class EsystemApplicationTests {
@@ -57,27 +57,16 @@ class EsystemApplicationTests {
 
 
 	@Autowired
-	private RestHighLevelClient ESClient;
+	private RestHighLevelClient restHighLevelClient;
 	@Test
 	void Test3() throws IOException {
 		HashMap<String,String> map = new HashMap<>();
 		map.put("name","kid");
 		map.put("password","dasdasd");
 		CreateIndexRequest request = new CreateIndexRequest("test");
-		CreateIndexResponse response = ESClient.indices().create(request, RequestOptions.DEFAULT);
+		CreateIndexResponse response = restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
 		System.out.println(response);
 		System.out.println(response.index());
-	}
-
-
-	@Resource
-	private ESUtil esUtil;
-	@Test
-	void Tes4() throws IOException {
-		HashMap<String,String> map = new HashMap<>();
-		map.put("name","kid");
-		map.put("password","dasda");
-		esUtil.createDocument("test",map);
 	}
 
 
@@ -87,17 +76,17 @@ class EsystemApplicationTests {
 	void Tes5() throws IOException {
 		GoodsEntry g = new GoodsEntry();
 		g.setId(3L);
-		g.setName("kid123");
-		g.setPassword("aaaaa");
 		GoodsEntry entry = goodsRepository.save(g);
 		System.out.println(entry.toString());
 		System.out.println(entry.getId());
 	}
 
+
+	@Resource
+	private MysqlToES mysqlToES;
 	@Test
-	void Tes6() throws IOException {
-		List<GoodsEntry> kid = goodsRepository.findAllByNameLike("kid");
-		System.out.println(kid);
+	void Tes7() throws IOException {
+		mysqlToES.transDataToEs();
 	}
 
 

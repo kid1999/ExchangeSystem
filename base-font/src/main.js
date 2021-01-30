@@ -14,21 +14,21 @@ Vue.prototype.$ajax = axios;
 axios.defaults.baseURL = '/api';
 Vue.config.productionTip = false;
 
-router.beforeEach((to, from, next) => {
-  console.info(store.state.user)
-  // 注册放行
-  if(to.path === "/register" || to.path === "/login") {
-    next();
-  }
-  //vuex里面的user是否已经存在，不然就直接跳转到登录页面
-  else if( localStorage.getItem("access_token")==null || store.state.user == null) {
-    next({
-      path: "/login"
-    })
-  }else {
-    next();
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   console.info(store.state.user)
+//   // 注册放行
+//   if(to.path === "/register" || to.path === "/login" || to.path === '/') {
+//     next();
+//   }
+//   //vuex里面的user是否已经存在，不然就直接跳转到登录页面
+//   else if( localStorage.getItem("access_token")==null || store.state.user == null) {
+//     next({
+//       path: "/login"
+//     })
+//   }else {
+//     next();
+//   }
+// });
 
 
 new Vue({

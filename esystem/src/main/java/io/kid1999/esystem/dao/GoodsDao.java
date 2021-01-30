@@ -26,6 +26,7 @@ public interface GoodsDao extends BaseMapper<Goods> {
      * 查找所有goods
      * @return
      */
+    @Deprecated
     @Select("SELECT\n" +
             "g.id,\n" +
             "g.user_id,\n" +
@@ -60,22 +61,22 @@ public interface GoodsDao extends BaseMapper<Goods> {
      */
     @Select("SELECT\n" +
             "g.id,\n" +
-            "g.user_id,\n" +
-            "g.goods_name,\n" +
-            "g.img_url,\n" +
-            "g.goods_condition,\n" +
+            "g.user_id as userId,\n" +
+            "g.goods_name as goodsName,\n" +
+            "g.img_url as imgUrl,\n" +
+            "g.goods_condition as goodsCondition,\n" +
             "g.description,\n" +
-            "g.want_goods_id,\n" +
+            "g.want_goods_id as wantGoodsId,\n" +
             "g.remarks,\n" +
-            "g.goods_status,\n" +
-            "g.number_of_clicked,\n" +
-            "g.create_date,\n" +
+            "g.goods_status as goodsStatus,\n" +
+            "g.number_of_clicked as numberOfClicked,\n" +
+            "g.create_date as createDate,\n" +
             "g.deleted,\n" +
             "g.price,\n" +
             "u.username,\n" +
             "a.address,\n" +
-            "g.address_id,\n" +
-            "g2.goods_name AS want_goods_name,\n" +
+            "g.address_id as addressId,\n" +
+            "g2.goods_name as wantGoodsName,\n" +
             "(SELECT collection.deleted FROM collection,goods WHERE collection.goods_id = goods.id and collection.user_id = #{userId} and goods.id = g.id LIMIT 1) as cdeleted\n" +
             "FROM\n" +
             "goods AS g\n" +
@@ -91,6 +92,7 @@ public interface GoodsDao extends BaseMapper<Goods> {
      * @param page
      * @return
      */
+    @Deprecated
     @Select("SELECT\n" +
             "g.id,\n" +
             "g.user_id,\n" +

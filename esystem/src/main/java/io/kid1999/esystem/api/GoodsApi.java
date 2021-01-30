@@ -78,11 +78,8 @@ public class GoodsApi {
                                @RequestParam(value = "page_size") int pageSize,
                                @RequestParam(value = "current_page") int currentPage){
         log.info("通过name搜索货物信息 " + goodsName);
-        Page<HashMap<String,String>> page = new Page<>();
-        page.setSize(pageSize);
-        page.setCurrent(currentPage);
-        IPage<HashMap<String, String>> goods = goodsDao.findGoodsByNameAndPage(page,goodsName);
-        return new Result(200,"查询成功！",goods);
+        org.springframework.data.domain.Page<GoodsEntry> data = goodsService.getGoodsByGoodsName(goodsName,currentPage,pageSize);
+        return new Result(200,"查询成功！",data);
     }
 
     @GetMapping("/user/{userId}")

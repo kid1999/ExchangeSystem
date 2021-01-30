@@ -9,12 +9,14 @@ import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import static io.kid1999.esystem.common.Constants.ES_GOODS_INDEX;
@@ -42,12 +44,6 @@ public class GoodsService {
 
     private final static String GOODS_VIEW = "goodsView";
 
-    /**
-     * 搜索
-     */
-    public List<GoodsEntry> searchGoods(String goodsName){
-        return goodsRepository.findAllByGoodsNameLike(goodsName);
-    }
 
     /**
      * 删除
@@ -83,5 +79,13 @@ public class GoodsService {
         return entry.get();
     }
 
+    /**
+     *  搜索
+     */
+    public Page<GoodsEntry> getGoodsByGoodsName(String goodsName,int currentPage,int pageSize){
+        Pageable pageable = PageRequest.of(currentPage, pageSize);
+        Page<GoodsEntry> entry = goodsRepository.findAllByGoodsNameLike(goodsName, pageable);
+        return entry;
+    }
 
 }

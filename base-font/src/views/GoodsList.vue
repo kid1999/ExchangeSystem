@@ -30,14 +30,14 @@
                                     <span>
                                         <router-link :to="'/goods/detail/' + goods.id">
                                             <el-link :underline="false">
-                                            <h2>{{goods.goods_name}}</h2>
+                                            <h2>{{goods.goodsName}}</h2>
                                             </el-link>
                                         </router-link>
                                     </span>
                                 </div>
 
                                 <div class="mdui-card-media">
-                                    <img :src="goods.img_url"/>
+                                    <img :src="goods.imgUrl"/>
                                     <div class="mdui-card-menu" v-if="goods.cdeleted === 0">
                                         <el-tooltip class="item" effect="dark" content="取消收藏" placement="top">
                                             <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.cdeleted)">
@@ -57,7 +57,7 @@
                                     <div class="mdui-grid-tile-actions">
                                         <div class="mdui-grid-tile-text">
                                             <div class="mdui-grid-tile-title">{{goods.address}}</div>
-                                            <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">grid_on</i>{{goods.create_date | formatDate}}</div>
+                                            <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">grid_on</i>{{goods.createDate | formatDate}}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -65,19 +65,19 @@
                                 <div id="goods_context">
                                     <p>
                                         期望交换<i class="el-icon-s-goods el-icon--right"></i>：
-                                        <router-link :to="'/goods/detail/' + goods.want_goods_id">
+                                        <router-link :to="'/goods/detail/' + goods.wantGoodsId">
                                             <el-link :underline="false"  >
-                                            <strong>{{goods.want_goods_name }}</strong>
+                                            <strong>{{goods.wantGoodsName }}</strong>
                                         </el-link>
                                         </router-link>
 
                                     </p>
                                     <p>
-                                        <span>点击量 </span><i class="el-icon-s-promotion el-icon--left"></i>：  <strong>{{goods.number_of_clicked }}</strong>
+                                        <span>点击量 </span><i class="el-icon-s-promotion el-icon--left"></i>：  <strong>{{goods.numberOfClicked }}</strong>
                                     </p>
                                     <p>
                                         所有者<i class="el-icon-s-custom el-icon--right"></i>：
-                                        <router-link :to="'/userInfo/' + goods.user_id">
+                                        <router-link :to="'/userInfo/' + goods.userId">
                                             <el-link :underline="false"  >
                                             <strong>{{goods.username }}</strong>
                                             </el-link>
@@ -190,23 +190,23 @@
                     goodsName: 'iphone'
                 }],
                 goods_list:[{
-                    "goods_status": 0,
-                    "goods_name": "手机",
+                    "goodsStatus": 0,
+                    "goodsName": "手机",
                     "address": "北京市市辖区东城区",
-                    "want_goods_name": "手机",
-                    "want_goods_id": 1,
+                    "wantGoodsName": "手机",
+                    "wantGoodsId": 1,
                     "username": "kid",
-                    "number_of_clicked": 666,
-                    "address_id": 1,
+                    "numberOfClicked": 666,
+                    "addressId": 1,
                     "description": "sad",
                     "deleted": 0,
-                    "user_id": 1,
-                    "img_url": "http://kid1999.top:9000/default/avatar.png",
+                    "userId": 1,
+                    "imgUrl": "http://kid1999.top:9000/default/avatar.png",
                     "price": 11111,
                     "id": 1,
-                    "create_date": "2021-01-20T22:59:58.000+00:00",
+                    "createDate": "2021-01-20T22:59:58.000+00:00",
                     "remarks": "sd",
-                    "goods_condition": "全新"
+                    "goodsCondition": "全新"
                 }],
                 currentPage:0,
                 pageSize:20,
@@ -299,9 +299,10 @@
             search(){
                 get('/goods/search', {"goodsName" : this.search_context,current_page: this.currentPage,page_size: this.pageSize})
                     .then(res => {
-                        this.goods_list = res['data']['records'];
-                        this.total = res['data']['total'];
-                        this.currentPage = res['data']['current'];
+                        console.info(res)
+                        this.goods_list = res['data']['content'];
+                        this.total = res['data']['totalPages'];
+                        this.currentPage = res['data']['number'];
                         this.pageSize = res['data']['size'];
                         console.info(this.goods_list);
                     });

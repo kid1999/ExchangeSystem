@@ -14,7 +14,7 @@
                     <div class="block" >
                         <el-image
                                 style="width: 100px; height: 100px"
-                                :src="goods.img_url"
+                                :src="goods.imgUrl"
                                 fit="fit"></el-image>
                     </div>
                 </el-form-item>
@@ -35,11 +35,11 @@
                 </el-dialog>
             </el-form-item>
 
-            <el-form-item label="商品名" prop="goods_name" :rules="[{ required: true, message: '商品名不能为空'}]">
-                <el-input type="text" v-model="goods.goods_name" autocomplete="off" :disabled="canChangeable"></el-input>
+            <el-form-item label="商品名" prop="goodsName" :rules="[{ required: true, message: '商品名不能为空'}]">
+                <el-input type="text" v-model="goods.goodsName" autocomplete="off" :disabled="canChangeable"></el-input>
             </el-form-item>
-            <el-form-item label="商品状况" prop="goods_condition" :rules="[{ required: true, message: '商品状况不能为空'}]">
-                <el-select v-model="goods.goods_condition" placeholder="请选择商品状况" :disabled="canChangeable">
+            <el-form-item label="商品状况" prop="goodsCondition" :rules="[{ required: true, message: '商品状况不能为空'}]">
+                <el-select v-model="goods.goodsCondition" placeholder="请选择商品状况" :disabled="canChangeable">
                     <el-option label="全新" value="全新"></el-option>
                     <el-option label="九成新" value="九成新"></el-option>
                     <el-option label="八成新" value="八成新"></el-option>
@@ -57,12 +57,12 @@
             <el-form-item label="商品备注" prop="remarks">
                 <el-input type="text" v-model="goods.remarks" autocomplete="off" :disabled="canChangeable"></el-input>
             </el-form-item>
-            <el-form-item label="交换商品" prop="want_goods_name" :rules="[{ required: true, message: '期待交换商品不能为空'}]">
-                <el-select v-model="goods.want_goods_name" filterable placeholder="请输入选择" @blur="getExchangeGoods" :disabled="canChangeable">
+            <el-form-item label="交换商品" prop="wantGoodsName" :rules="[{ required: true, message: '期待交换商品不能为空'}]">
+                <el-select v-model="goods.wantGoodsName" filterable placeholder="请输入选择" @blur="getExchangeGoods" :disabled="canChangeable">
                     <el-option
                             v-for="goods in remoteGoods"
                             :key="goods.id"
-                            :label="goods.goods_name"
+                            :label="goods.goodsName"
                             :value="goods.id">
                     </el-option>
                 </el-select>
@@ -77,11 +77,11 @@
                 <el-input type="text" v-model="formatCreateTime" autocomplete="off" disabled></el-input>
             </el-form-item>
             <el-form-item label="商品访问量" prop="number_of_clicked">
-                <el-input type="text" v-model="goods.number_of_clicked" autocomplete="off" disabled></el-input>
+                <el-input type="text" v-model="goods.numberOfClicked" autocomplete="off" disabled></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button  @click="canChangeable = false" v-if="userId === goods.user_id">修改资料</el-button>
-                <el-button type="primary" @click="updateGoods" v-if="userId === goods.user_id">保存修改</el-button>
+                <el-button  @click="canChangeable = false" v-if="userId === goods.userId">修改资料</el-button>
+                <el-button type="primary" @click="updateGoods" v-if="userId === goods.userId">保存修改</el-button>
             </el-form-item>
             </el-form>
         </el-card>
@@ -104,7 +104,7 @@
                 </div>
                 <el-collapse-item v-if="goodsComment.length !== 0" v-for="comment in goodsComment">
                     <template slot="title"  >
-                        <el-link :underline="false" :href="'/user/' + comment.user_id"><h3>{{comment.user_name}}</h3></el-link> - {{comment.date | timeFormat}}<i class="header-icon el-icon-info"></i>
+                        <el-link :underline="false" :href="'/userInfo/' + comment.user1_id"><h3>{{comment.username}}</h3></el-link> - {{comment.date | timeFormat}}<i class="header-icon el-icon-info"></i>
                     </template>
                     <div>{{comment.context}}</div>
                 </el-collapse-item>

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,7 +43,17 @@ public class GoodsService {
     @Resource
     private RedisTemplate<String,Long> redisTemplate;
 
+    @Resource
+    private KafkaTemplate kafkaTemplate;
+
     private final static String GOODS_VIEW = "goodsView";
+    private final static String GOODS_SEARCH = "goodsSearch";
+
+    /**
+     * 当商品点击，收藏时 将数据存储到数据集
+     * 当商品搜索时，回传 推荐的商品id列表 猜你喜欢
+     */
+
 
 
     /**
@@ -87,5 +98,6 @@ public class GoodsService {
         Page<GoodsEntry> entry = goodsRepository.findAllByGoodsNameLike(goodsName, pageable);
         return entry;
     }
+
 
 }

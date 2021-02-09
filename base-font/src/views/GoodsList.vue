@@ -25,7 +25,7 @@
                     <el-col :span="6">
 
                         <div class="grid-content bg-purple" id="goods">
-                            <el-card class="box-card">
+                            <el-card class="box-card" >
                                 <div slot="header" id="header-font">
                                     <span>
                                         <router-link :to="'/goods/detail/' + goods.id">
@@ -37,7 +37,7 @@
                                 </div>
 
                                 <div class="mdui-card-media">
-                                    <img :src="goods.imgUrl"/>
+                                    <img :src="goods.imgUrl" style="height: 230px"/>
                                     <div class="mdui-card-menu" v-if="goods.cdeleted === 0">
                                         <el-tooltip class="item" effect="dark" content="取消收藏" placement="top">
                                             <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.cdeleted)">
@@ -103,6 +103,7 @@
                 <el-pagination
                         background
                         layout="prev, pager, next"
+                        @current-change="handleCurrentChange"
                         :current-page="currentPage"
                         :page-size="pageSize"
                         :total="total">
@@ -307,6 +308,20 @@
                         console.info(this.goods_list);
                     });
             },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                let _this = this;
+                let user = this.$store.getters.getUser['user'];
+                const data = {"current_page":val,"page_size":_this.pageSize,userId:user['id']};
+                get('/goods', data)
+                    .then(res => {
+                        this.goods_list = res['data']['records'];
+                        this.total = res['data']['total'];
+                        this.currentPage = res['data']['current'];
+                        this.pageSize = res['data']['size'];
+                        console.info(this.goods_list);
+                    });
+            }
         }
 
     }

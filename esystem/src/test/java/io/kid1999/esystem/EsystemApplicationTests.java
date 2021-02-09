@@ -89,5 +89,21 @@ class EsystemApplicationTests {
 		mysqlToES.transDataToEs();
 	}
 
+	@Autowired
+	private MakeRandomUser makeRandomUser;
+
+	@Test
+	void makeuser(){
+		makeRandomUser.makeUser(100);
+	}
+
+
+	@Autowired
+	private MakeGoods makeGoods;
+
+	@Test
+	void makegoods(){
+		makeGoods.selectAll("dasda");
+	}
 
 }

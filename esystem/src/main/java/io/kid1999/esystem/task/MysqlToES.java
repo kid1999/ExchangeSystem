@@ -35,7 +35,7 @@ public class MysqlToES {
 
 
     // 定时30s 增量迁移到ES
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 300000)
     public void transDataToEs(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         log.info("time:{}，开始执行Mysql数据持久化到ES任务", LocalDateTime.now().format(formatter));

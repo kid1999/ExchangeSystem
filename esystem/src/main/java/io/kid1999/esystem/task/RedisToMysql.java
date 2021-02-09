@@ -31,7 +31,7 @@ public class RedisToMysql {
     @Resource
     private GoodsDao goodsDao;
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 300000)
     public void saveUserGoodsViewTimes2DB(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         log.info("time:{}，开始执行Redis数据持久化到MySQL任务", LocalDateTime.now().format(formatter));

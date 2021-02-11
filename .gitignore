@@ -1,2 +1,7 @@
 *.log
 *.yml
+*.class
+
+
+resources
+target

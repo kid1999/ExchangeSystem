@@ -1,9 +1,13 @@
 package io.kid1999.esystem.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.kid1999.esystem.dao.GoodsDao;
 import io.kid1999.esystem.entity.Goods;
 import io.kid1999.esystem.es.entry.GoodsEntry;
+import io.kid1999.esystem.es.entry.RecommendationGoodsEntry;
+import io.kid1999.esystem.es.repository.GoodsIdRepository;
 import io.kid1999.esystem.es.repository.GoodsRepository;
+import io.kid1999.esystem.utils.KafkaUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateResponse;
@@ -13,11 +17,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static io.kid1999.esystem.common.Constants.ES_GOODS_INDEX;
@@ -35,6 +39,9 @@ public class GoodsService {
     private GoodsRepository goodsRepository;
 
     @Resource
+    private GoodsIdRepository goodsIdRepository;
+
+    @Resource
     private GoodsDao goodsDao;
 
     @Resource
@@ -44,7 +51,9 @@ public class GoodsService {
     private RedisTemplate<String,Long> redisTemplate;
 
     @Resource
-    private KafkaTemplate kafkaTemplate;
+    private KafkaUtil kafkaUtil;
+
+
 
     private final static String GOODS_VIEW = "goodsView";
     private final static String GOODS_SEARCH = "goodsSearch";
@@ -59,9 +68,9 @@ public class GoodsService {
     /**
      * 删除
      */
-    public void deleteGoods(Long id){
-        goodsDao.deleteById(id);
-        goodsRepository.deleteById(id);
+    public void deleteGoods(Long goodsId){
+        goodsDao.deleteById(goodsId);
+        goodsRepository.deleteById(goodsId);
     }
 
 
@@ -84,9 +93,10 @@ public class GoodsService {
     /**
      *  根据id 获取信息
      */
-    public GoodsEntry getGoods(Long id){
-        Optional<GoodsEntry> entry = goodsRepository.findById(id);
-        redisTemplate.opsForHash().increment(GOODS_VIEW,id + "",1L);
+    public GoodsEntry getGoods(Long userId,Long goodsId){
+        Optional<GoodsEntry> entry = goodsRepository.findById(goodsId);
+        redisTemplate.opsForHash().increment(GOODS_VIEW,goodsId + "",1L);
+        kafkaUtil.send2Spark(userId,goodsId,4.0);
         return entry.get();
     }
 
@@ -98,6 +108,19 @@ public class GoodsService {
         Page<GoodsEntry> entry = goodsRepository.findAllByGoodsNameLike(goodsName, pageable);
         return entry;
     }
+
+    /**
+     * 猜你喜欢,每日推荐50个 ？
+     */
+    public List<Goods> findYourLove(Long userId){
+        Optional<RecommendationGoodsEntry> entryOptional = goodsIdRepository.findById(userId);
+        RecommendationGoodsEntry data = entryOptional.get();
+        QueryWrapper<Goods> wrapper = new QueryWrapper<>();
+        wrapper.in("id",data.getGoodsId());
+        List<Goods> goods = goodsDao.selectList(wrapper);
+        return goods;
+    }
+
 
 
 }

@@ -5,15 +5,12 @@ import cn.hutool.core.io.FileUtil;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
-import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.mllib.recommendation.ALS;
 import org.apache.spark.mllib.recommendation.MatrixFactorizationModel;
 import org.apache.spark.mllib.recommendation.Rating;
-import org.apache.spark.rdd.RDD;
 import org.apache.spark.streaming.Durations;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaInputDStream;
@@ -23,7 +20,6 @@ import org.apache.spark.streaming.kafka010.KafkaUtils;
 import org.apache.spark.streaming.kafka010.LocationStrategies;
 import org.elasticsearch.spark.rdd.api.java.JavaEsSpark;
 import org.spark_project.guava.collect.ImmutableList;
-import scala.Tuple2;
 import util.RatingUtil;
 
 import java.util.*;
@@ -40,11 +36,14 @@ public final class ProductRecommendationByALS {
     //	用户ID，商品ID，用户行为评分(0-5)
     //	UserID,ItemId,Rating
 
+
     public static void main(String[] args) throws InterruptedException {
         final String brokers = "159.75.6.26:9092";
-        final String topic = "Test";
+        final String KAFKA_TOPIC = "ProductRecommendation";
         final String modelPath = "F:\\Git\\ExchangeSystem\\spark-work\\src\\main\\resources\\model";
         final String dataPath = "F:\\Git\\ExchangeSystem\\spark-work\\src\\main\\resources\\data\\data.txt";
+        final int RECOMMEND_NUM = 3;
+        final String ES_INDEX = "recommendation-goods";
 
 
         SparkConf sparkConf = new SparkConf()
@@ -90,7 +89,7 @@ public final class ProductRecommendationByALS {
         kafkaParams.put("enable.auto.commit", false);
 
         // TODO 设置参数和topic，读取kafka消息流
-        Collection<String> topics = Arrays.asList(topic);
+        Collection<String> topics = Arrays.asList(KAFKA_TOPIC);
         final JavaInputDStream<ConsumerRecord<String, String>> stream =
                 KafkaUtils.createDirectStream(
                         jssc,
@@ -123,10 +122,14 @@ public final class ProductRecommendationByALS {
             map.put("es.mapping.id","userId");
             map.put("es.write.operation","upsert");
             for(Rating rating:collect){
-                Rating[] ratings = model.recommendProducts(rating.user(), 3);
-                Map<String, ?> doc = ImmutableMap.of("userId", rating.user(),"goodsId",ratings);
+                Rating[] ratings = model.recommendProducts(rating.user(), RECOMMEND_NUM);
+                int[] products = new int[RECOMMEND_NUM];
+                for (int i = 0; i <RECOMMEND_NUM ; i++) {
+                    products[i] = ratings[i].product();
+                }
+                Map<String, ?> doc = ImmutableMap.of("userId", rating.user(),"goodsId",products);
                 JavaRDD<Map<String, ?>> javaRDD = jsc.parallelize(ImmutableList.of(doc));
-                JavaEsSpark.saveToEs(javaRDD, "spark-test/_doc",map);
+                JavaEsSpark.saveToEs(javaRDD, ES_INDEX + "/_doc",map);
             }
 
             // TODO 保存模型

@@ -7,13 +7,14 @@ import io.kid1999.esystem.dao.GoodsDao;
 import io.kid1999.esystem.entity.Goods;
 import io.kid1999.esystem.es.entry.GoodsEntry;
 import io.kid1999.esystem.service.GoodsService;
+import io.kid1999.esystem.service.UserService;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -30,11 +31,14 @@ import java.util.List;
 @Api(tags = "货物管理操作")
 public class GoodsApi {
 
-    @Autowired
+    @Resource
     private GoodsDao goodsDao;
 
-    @Autowired
+    @Resource
     private GoodsService goodsService;
+
+    @Resource
+    private UserService userService;
 
 
     @PostMapping("")
@@ -68,8 +72,8 @@ public class GoodsApi {
     Result getGoods(@PathVariable Long id,
                     Principal principal){
         log.info("获取货物信息 " + id);
-        System.out.println(principal.getName());
-        GoodsEntry data = goodsService.getGoods(id);
+        Long userId = userService.findUserIdByName(principal.getName());
+        GoodsEntry data = goodsService.getGoods(userId,id);
         return new Result(200,"获取数据成功！",data);
     }
 
@@ -123,5 +127,12 @@ public class GoodsApi {
     }
 
 
+    @GetMapping("/recommendation/{userId}")
+    @ApiOperation("实时推荐")
+    public Result findYourLove(@PathVariable Long userId){
+        log.info("实时推荐 " + userId);
+        List<Goods> goods = goodsService.findYourLove(userId);
+        return new Result(200,"获取数据成功！",goods);
+    }
 
 }

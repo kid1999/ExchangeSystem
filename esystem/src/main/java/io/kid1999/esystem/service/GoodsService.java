@@ -9,10 +9,6 @@ import io.kid1999.esystem.es.repository.GoodsIdRepository;
 import io.kid1999.esystem.es.repository.GoodsRepository;
 import io.kid1999.esystem.utils.KafkaUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.action.update.UpdateResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,11 +16,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
-import static io.kid1999.esystem.common.Constants.ES_GOODS_INDEX;
 
 /**
  * @author kid1999
@@ -45,9 +38,6 @@ public class GoodsService {
     private GoodsDao goodsDao;
 
     @Resource
-    private RestHighLevelClient client;
-
-    @Resource
     private RedisTemplate<String,Long> redisTemplate;
 
     @Resource
@@ -56,7 +46,6 @@ public class GoodsService {
 
 
     private final static String GOODS_VIEW = "goodsView";
-    private final static String GOODS_SEARCH = "goodsSearch";
 
     /**
      * 当商品点击，收藏时 将数据存储到数据集
@@ -79,15 +68,8 @@ public class GoodsService {
      */
     public void updateGoods(Goods goods){
         goodsDao.updateById(goods);
-        UpdateRequest request = new UpdateRequest(ES_GOODS_INDEX, goods.getId() + "");
-        request.timeout("1s");
-        request.doc(goods);
-        try {
-            UpdateResponse update = client.update(request, RequestOptions.DEFAULT);
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
-        }
+        GoodsEntry entry = GoodsEntry.parse2GoodsEntry(goods);
+        goodsRepository.save(entry);
     }
 
     /**
@@ -96,7 +78,7 @@ public class GoodsService {
     public GoodsEntry getGoods(Long userId,Long goodsId){
         Optional<GoodsEntry> entry = goodsRepository.findById(goodsId);
         redisTemplate.opsForHash().increment(GOODS_VIEW,goodsId + "",1L);
-        kafkaUtil.send2Spark(userId,goodsId,4.0);
+        kafkaUtil.send2Spark(userId,goodsId,3.0);
         return entry.get();
     }
 

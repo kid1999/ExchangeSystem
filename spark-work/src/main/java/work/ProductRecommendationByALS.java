@@ -40,8 +40,8 @@ public final class ProductRecommendationByALS {
     public static void main(String[] args) throws InterruptedException {
         final String brokers = "159.75.6.26:9092";
         final String KAFKA_TOPIC = "ProductRecommendation";
-        final String modelPath = "F:\\Git\\ExchangeSystem\\spark-work\\src\\main\\resources\\model";
-        final String dataPath = "F:\\Git\\ExchangeSystem\\spark-work\\src\\main\\resources\\data\\data.txt";
+        final String modelPath = "/app/model";
+        final String dataPath = "/app/data";
         final int RECOMMEND_NUM = 3;
         final String ES_INDEX = "recommendation-goods";
 
@@ -141,7 +141,7 @@ public final class ProductRecommendationByALS {
             // TODO 保存新数据
             if(!rdd.isEmpty()){
                 rdd.repartition(1)
-                        .saveAsTextFile("F:\\Git\\ExchangeSystem\\spark-work\\src\\main\\resources\\data\\" + "save-" + System.currentTimeMillis());
+                        .saveAsTextFile(dataPath + "save-" + System.currentTimeMillis());
             }
         });
 

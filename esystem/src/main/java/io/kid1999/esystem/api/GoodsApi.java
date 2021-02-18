@@ -62,7 +62,7 @@ public class GoodsApi {
     @PutMapping("")
     @ApiOperation("修改货物信息")
     Result updateGoods(@RequestBody Goods goods){
-        log.info("修改货物信息 ");
+        log.info("修改货物信息 " + goods.getId());
         goodsService.updateGoods(goods);
         return new Result().success();
     }

@@ -66,6 +66,26 @@ const routes = [
     component: () => import('../views/ChangePassword')
   },
   {
+    path: '/FindYourLove',
+    name: 'FindYourLove',
+    component: () => import('../views/FindYourLove')
+  },
+  {
+    path: '/MyGoods',
+    name: 'MyGoods',
+    component: () => import('../views/MyGoods')
+  },
+  {
+    path: '/NewGoods/:id',
+    name: 'NewGoods',
+    component: () => import('../views/NewGoods')
+  },
+  {
+    path: '/NewGoods',
+    name: 'NewGoods',
+    component: () => import('../views/NewGoods')
+  },
+  {
     path: '/test',
     name: 'Test',
     component: () => import('../components/Test')

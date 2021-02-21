@@ -10,7 +10,9 @@
             <el-menu-item index="/message">消息中心</el-menu-item>
             <el-menu-item index="/transRecord">交易记录</el-menu-item>
             <el-menu-item index="/collection">收藏夹</el-menu-item>
-            <el-menu-item index="/comments">留言评论</el-menu-item>
+            <el-menu-item index="/comments">
+                留言评论<el-badge :value="commentNum" :max="99" class="item" :hidden="commentNum === 0"></el-badge>
+            </el-menu-item>
             <el-menu-item index="/activity">同城活动</el-menu-item>
             <el-menu-item index="/FindYourLove">猜你喜欢</el-menu-item>
             <el-menu-item index="/NewGoods">上架商品</el-menu-item>
@@ -38,6 +40,7 @@
 </template>
 
 <script>
+    import { get, post,put,deleted } from '../utils/request'
     import { globalBus } from '@/utils/globalBus';
     export default {
         name: "Header",
@@ -51,6 +54,7 @@
                 isLogin:false,//登录状态
                 btnState:'',//判断点击登录还是注册
                 notice:0,//通知数
+                commentNum:0,
             }
         },
         created() {
@@ -69,13 +73,21 @@
                 this.$router.push({name: 'Login'});
                 this.isLogin = false;
             },
+            // del
             RefreshUser(){
                 this.userInfo = this.$store.getters.getUser['user'];
                 if(Object.keys(this.userInfo).length === 0) this.isLogin = false;
                 else this.isLogin = true;
+            },
+            getCommentNum(){
+                get('/comment/num/' + this.userInfo.id,{}).then(res =>{
+                    console.info('获得未读消息数量为： ' + res['data']);
+                    this.commentNum = res['data'];
+                })
             }
         },
         mounted() {
+            // login 刷新状态
             globalBus.$on("RefreshUser", (msg) => {
                 // A发送来的消息
                 console.info(msg);
@@ -83,6 +95,17 @@
                 if(Object.keys(this.userInfo).length === 0) this.isLogin = false;
                 else this.isLogin = true;
             });
+
+            // 评论消息已读
+            globalBus.$on("delCommentMsg", (num) => {
+                // A发送来的消息
+                console.info(num);
+                this.commentNum -= num;
+            });
+
+            // 轮询评论消息数量 60s查询一下
+            setInterval(this.getCommentNum, 60000);
+
         }
     }
 </script>

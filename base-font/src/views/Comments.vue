@@ -113,6 +113,7 @@
 </template>
 
 <script>
+    import { globalBus } from '@/utils/globalBus';
     import {get,post, put,deleted} from "../utils/request";
     import moment from 'moment'
     export default {
@@ -163,11 +164,12 @@
                 console.info(res);
                 if(res.length != 0){
                     put('/comment/read', {ids:res})
-                        .then(res => {
+                        .then(response => {
                             this.$notify.success({
                                 title: '成功',
                                 message: '消息已全阅！'
                             });
+                            globalBus.$emit("delCommentMsg", res.length);
                         });
                 }else{
                     this.$notify.error({
@@ -199,6 +201,7 @@
                     data['status'] = 1;
                     put('/comment/read/' + data['id'], {})
                         .then(res => {
+                            globalBus.$emit("delCommentMsg", 1);
                             this.$notify.success({
                                 title: '成功',
                                 message: '此评论已阅！'

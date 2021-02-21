@@ -3,10 +3,11 @@ package io.kid1999.esystem;
 
 import io.kid1999.esystem.es.entry.GoodsEntry;
 import io.kid1999.esystem.es.repository.GoodsRepository;
+import io.kid1999.esystem.service.CommentService;
 import io.kid1999.esystem.task.MysqlToES;
-import io.kid1999.esystem.utils.ElasticSearchUtil;
 import io.kid1999.esystem.utils.EmailUtil;
 import io.kid1999.esystem.utils.TokenUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
@@ -20,6 +21,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.HashMap;
 
+@Slf4j
 @SpringBootTest
 class EsystemApplicationTests {
 
@@ -104,6 +106,21 @@ class EsystemApplicationTests {
 	@Test
 	void makegoods(){
 		makeGoods.selectAll("dasda");
+	}
+
+	@Resource
+	private CommentService commentService;
+	@Test
+	void TestCommentByRedis(){
+		commentService.addMsg(5L);
+		log.error(commentService.getUsersMsg(5L) + "");
+		commentService.addMsg(5L);
+		commentService.addMsg(5L);
+		commentService.addMsg(5L);
+		commentService.addMsg(5L);
+		commentService.reduceMsg(5L,3);
+		log.error(commentService.getUsersMsg(5L) + "");
+
 	}
 
 }

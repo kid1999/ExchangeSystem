@@ -4,13 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import io.kid1999.esystem.dao.CommentDao;
 import io.kid1999.esystem.entity.Comment;
+import io.kid1999.esystem.service.CommentService;
 import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +27,11 @@ import java.util.List;
 @Api(tags = "商品评论收藏管理")
 public class CommentApi {
 
-    @Autowired
+    @Resource
     private CommentDao commentDao;
+
+    @Resource
+    private CommentService commentService;
 
     @PostMapping("")
     @ApiOperation("新建评论")
@@ -36,6 +40,7 @@ public class CommentApi {
         comment.setDate(LocalDateTime.now());
         comment.setStatus((byte) 0);
         commentDao.insert(comment);
+        commentService.addMsg(comment.getUser2Id());
         return new Result().success();
     }
 
@@ -57,6 +62,7 @@ public class CommentApi {
         Comment comment = new Comment();
         comment.setStatus((byte) 1);
         commentDao.update(comment, updateWrapper);
+        commentService.reduceMsg(comment.getUser2Id(),1);
         return new Result().success();
     }
 
@@ -69,6 +75,7 @@ public class CommentApi {
         Comment comment = new Comment();
         comment.setStatus((byte) 1);
         commentDao.update(comment, updateWrapper);
+        commentService.reduceMsg(comment.getUser2Id(),map.get("ids").size());
         return new Result().success();
     }
 
@@ -128,5 +135,13 @@ public class CommentApi {
         log.info("删除评论 " + id);
         commentDao.deleteById(id);
         return new Result().success("删除评论成功！");
+    }
+
+    @GetMapping("/num/{userId}")
+    @ApiOperation("获取user未读留言数量")
+    Result getUserCommentNum(@PathVariable Long userId){
+        log.info("获取user未读留言数量 " + userId);
+        int msgNum = commentService.getUsersMsg(userId);
+        return new Result().success(msgNum);
     }
 }

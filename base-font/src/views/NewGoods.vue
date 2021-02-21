@@ -28,7 +28,8 @@
                 </el-form-item>
 
                 <el-form-item label="商品名" prop="goodsName" :rules="[{ required: true, message: '商品名不能为空'}]">
-                    <el-input type="text" v-model="goods.goodsName" autocomplete="off" ></el-input>
+                    <el-input type="text" v-model="goods.goodsName" autocomplete="off" maxlength="30"
+                              show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="商品状况" prop="goodsCondition" :rules="[{ required: true, message: '商品状况不能为空'}]">
                     <el-select v-model="goods.goodsCondition" placeholder="请选择商品状况" >
@@ -41,10 +42,12 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="商品详情" prop="description">
-                    <el-input type="text" v-model="goods.description" autocomplete="off" ></el-input>
+                    <el-input type="text" v-model="goods.description" autocomplete="off" maxlength="70"
+                              show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="商品备注" prop="remarks">
-                    <el-input type="text" v-model="goods.remarks" autocomplete="off" ></el-input>
+                    <el-input type="text" v-model="goods.remarks" autocomplete="off" maxlength="70"
+                              show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="交换商品">
                     <el-autocomplete

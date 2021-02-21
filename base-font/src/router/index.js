@@ -86,6 +86,11 @@ const routes = [
     component: () => import('../views/NewGoods')
   },
   {
+    path: '/NewActivity',
+    name: 'NewActivity',
+    component: () => import('../views/NewActivity')
+  },
+  {
     path: '/UserDetail/:id',
     name: 'UserDetail',
     component: () => import('../views/UserInfo')

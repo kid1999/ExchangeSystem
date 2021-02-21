@@ -14,6 +14,7 @@
             <el-menu-item index="/activity">同城活动</el-menu-item>
             <el-menu-item index="/FindYourLove">猜你喜欢</el-menu-item>
             <el-menu-item index="/NewGoods">上架商品</el-menu-item>
+            <el-menu-item index="/NewActivity">发起活动</el-menu-item>
             <el-submenu index="#" style="float: right; padding: 3px 0" v-if="isLogin">
                 <template slot="title">
                     <el-avatar :src="userInfo.avatarUrl"></el-avatar>

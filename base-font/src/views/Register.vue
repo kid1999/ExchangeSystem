@@ -13,7 +13,8 @@
     <div>
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="demo-ruleForm">
             <el-form-item label="用户名" prop="username">
-                <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+                <el-input type="text" v-model="ruleForm.username" autocomplete="off" maxlength="15"
+                          show-word-limit></el-input>
             </el-form-item>
             <el-form-item label="密码" prop="userPwd">
                 <el-input type="password" v-model="ruleForm.userPwd" autocomplete="off"></el-input>
@@ -22,7 +23,8 @@
                 <el-input type="password" v-model="ruleForm.userPwd2" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="签名" prop="signature">
-                <el-input type="text" v-model="ruleForm.signature" autocomplete="off"></el-input>
+                <el-input type="text" v-model="ruleForm.signature" autocomplete="off" maxlength="70"
+                          show-word-limit></el-input>
             </el-form-item>
 
             <el-form-item label="所在地区" prop="address">
@@ -67,7 +69,7 @@
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">注册</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')">注 册</el-button>
             </el-form-item>
         </el-form>
     </div>

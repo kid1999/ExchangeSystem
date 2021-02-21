@@ -22,19 +22,8 @@
                 </el-table-column>
                 <el-table-column
                         prop="address"
-                        label="地址"
+                        label="用户地址"
                         width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="goods_name"
-                        label="商品">
-                    <template slot-scope="scope">
-                        <router-link :to="'/goods/detail/' + scope.row.id">
-                        <el-link :underline="false">
-                            <span>{{ scope.row.goods_name }}</span>
-                        </el-link>
-                        </router-link>
-                    </template>
                 </el-table-column>
                 <el-table-column
                         prop="username"
@@ -82,16 +71,20 @@
 
         <el-dialog title="评论详情" :visible.sync="dialogTableVisible">
             <ul class="mdui-list">
-                <li class="mdui-list-item mdui-ripple">
-                    <i class="mdui-icon material-icons">&#xe8f6;</i>
-                    <h4>交易商品</h4>
-                    <div class="mdui-list-item-content">{{viewTableData.goods_name}}</div>
-                </li>
-                <li class="mdui-list-item mdui-ripple">
-                    <i class="mdui-icon material-icons">&#xe87c;</i>
-                    <h4>用 户</h4>
-                    <div class="mdui-list-item-content">{{viewTableData.username}}</div>
-                </li>
+                <router-link :to="'/goods/detail/' + viewTableData.goods_id">
+                    <li class="mdui-list-item mdui-ripple">
+                        <i class="mdui-icon material-icons">&#xe8f6;</i>
+                        <h4>交易商品</h4>
+                        <div class="mdui-list-item-content">{{viewTableData.goods_name}}</div>
+                    </li>
+                </router-link>
+                <router-link :to="'/userInfo/' + viewTableData.user1_id">
+                    <li class="mdui-list-item mdui-ripple">
+                        <i class="mdui-icon material-icons">&#xe87c;</i>
+                        <h4>用 户</h4>
+                        <div class="mdui-list-item-content">{{viewTableData.username}}</div>
+                    </li>
+                </router-link>
                 <li class="mdui-list-item mdui-ripple">
                     <i class="mdui-icon material-icons">&#xe192;</i>
                     <h4>评论时间</h4>
@@ -196,7 +189,12 @@
             },
             viewClick(data){
                 this.dialogTableVisible = true;
-                this.viewTableData = data;
+                get('/goods/' + data['id'], {})
+                    .then(res => {
+                        data['goods_name'] = res['data']['goodsName'];
+                        this.viewTableData = data;
+                        console.info(data)
+                    });
                 if(data['status'] === 0){
                     data['status'] = 1;
                     put('/comment/read/' + data['id'], {})

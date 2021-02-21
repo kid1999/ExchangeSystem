@@ -131,6 +131,7 @@
                                 title: '成功',
                                 message: '密码修改成功！'
                             });
+                            this.$router.push('/')
                         }).catch(e =>{
                             this.$notify.error({
                                 title: '失败',

@@ -18,6 +18,7 @@
                 <template slot="title">
                     <el-avatar :src="userInfo.avatarUrl"></el-avatar>
                 </template>
+                <el-menu-item>用户名： <strong>{{userInfo.username}}</strong></el-menu-item>
                 <el-menu-item :index="'/userInfo/' + this.userInfo['id']">用户信息</el-menu-item>
                 <el-menu-item index="/MyActivity">我的活动</el-menu-item>
                 <el-menu-item index="/MyGoods">我的商品</el-menu-item>

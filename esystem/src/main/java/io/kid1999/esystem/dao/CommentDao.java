@@ -58,19 +58,16 @@ public interface CommentDao extends BaseMapper<Comment> {
             "`comment`.`status`,\n" +
             "`comment`.deleted,\n" +
             "`user`.username,\n" +
-            "goods.goods_name,\n" +
             "`user`.avatar_url,\n" +
             "`user`.address_id,\n" +
             "address.address\n" +
             "FROM\n" +
             "`comment` ,\n" +
-            "goods ,\n" +
             "`user` ,\n" +
             "address\n" +
             "WHERE\n" +
             "`comment`.user2_id = #{userId} AND\n" +
             "`comment`.user1_id = `user`.id AND\n" +
-            "`comment`.goods_id = goods.id AND\n" +
             "`comment`.deleted = 0 AND\n" +
             "`user`.address_id = address.id\n")
     List<HashMap<String,String>> findAllByUserId(Long userId);

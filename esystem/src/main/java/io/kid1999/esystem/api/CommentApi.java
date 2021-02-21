@@ -102,13 +102,16 @@ public class CommentApi {
         return new Result(200,"查询成功！",comments);
     }
 
+
+
     @GetMapping("/user/{userId}")
-    @ApiOperation("获取user所有的goods的评论")
-    Result selectAllCommentByUserId(@PathVariable Long userId){
+    @ApiOperation("获取user的所有留言")
+    Result selectCommentByUserId(@PathVariable Long userId){
         log.info("获取user所有的goods的评论 " + userId);
         List<HashMap<String, String>> comments = commentDao.findAllByUserId(userId);
         return new Result(200,"查询成功！",comments);
     }
+
 
     @GetMapping("")
     @ApiOperation("获取所有评论")

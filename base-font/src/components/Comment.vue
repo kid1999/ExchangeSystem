@@ -23,9 +23,9 @@
                     <li class="mdui-list-item mdui-ripple">
                         <div class="mdui-list-item-avatar">
                             <router-link :to="'/userInfo/' + comment.user1_id">
-                            <el-tooltip :content="comment.username" placement="top">
-                                <img :src="comment.avatar_url"/>
-                            </el-tooltip>
+                                <el-tooltip :content="comment.username" placement="top">
+                                    <img :src="comment.avatar_url"/>
+                                </el-tooltip>
                             </router-link>
                         </div>
                         <div class="mdui-list-item-content">

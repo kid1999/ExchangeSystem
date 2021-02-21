@@ -1,24 +1,81 @@
 /**
 * @auther: kid1999
-* @date: 2021/1/15 10:59
-* @desciption:  UserInfo
+* @date: 2021/2/21 9:38
+* @desciption:  UserDetail
 */
 <template>
     <div>
-        <el-card class="box-card">
-            <div slot="header" class="clearfix">
-                <h2>用户信息</h2>
-            </div>
-            <el-form :model="user" status-icon ref="goods" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="用户头像" prop="avatarUrl" v-if="canChangeable">
-                    <div class="block" >
-                        <el-image
-                                style="width: 100px; height: 100px"
-                                :src="user.avatarUrl"
-                                fit="fit"></el-image>
-                    </div>
+        <el-row :gutter="20">
+            <el-col :span="16">
+                <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <h2>用户信息</h2>
+                </div>
+                <el-form :model="user" status-icon ref="goods" label-width="100px" class="demo-ruleForm">
+                    <el-form-item label="用户头像" prop="avatarUrl">
+                        <div class="block" >
+                            <el-image
+                                    style="width: 100px; height: 100px"
+                                    :src="user.avatarUrl"
+                                    fit="fit"></el-image>
+                        </div>
+                    </el-form-item>
+                    <el-form-item label="用户名" prop="username" :rules="[{ required: true, message: '用户名不能为空'}]">
+                        <el-input type="text" v-model="user.username" autocomplete="off" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="签名" prop="signature">
+                        <el-input type="text" v-model="user.signature" autocomplete="off" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="登录次数" prop="loginTimes">
+                        <el-input type="text" v-model="user.loginTimes" autocomplete="off" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="上次登录时间" prop="lastLoginTime">
+                        <el-input type="text" v-model="lastLoginTime" autocomplete="off" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="创建时间" prop="createTime">
+                        <el-input type="text" v-model="createTime" autocomplete="off" disabled></el-input>
+                    </el-form-item>
+                    <el-button @click="changeUserInfo" v-if="canChangeable">修改用户信息</el-button>
+                </el-form>
+            </el-card>
+            </el-col>
+            <el-col :span="8">
+                <Comment :id="this.id" :user="this.user"></Comment>
+            </el-col>
+        </el-row>
+
+        <el-dialog title="用户信息" :visible.sync="dialogFormVisible">
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
+                <el-form-item label="用户名">
+                    <el-input v-model="ruleForm.username" autocomplete="off" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="用户头像" prop="avatarUrl" v-else="canChangeable" :rules="[{ required: true, message: '头像不能为空'}]">
+                <el-form-item label="签名">
+                    <el-input v-model="ruleForm.signature" autocomplete="off" maxlength="70"
+                              show-word-limit></el-input>
+                </el-form-item>
+                <el-form-item label="所在地区" prop="address">
+                    <el-cascader
+                            size="large"
+                            :options="options"
+                            v-model="addressOptions">
+                    </el-cascader>
+                </el-form-item>
+
+                <el-form-item label="手机号" prop="phone">
+                    <el-input type="text" v-model="ruleForm.phone" autocomplete="off"></el-input>
+                </el-form-item>
+
+
+                <el-form-item label="邮箱" prop="email">
+                    <el-input type="text" v-model="ruleForm.email" autocomplete="off"></el-input>
+                </el-form-item>
+
+                <el-form-item label="QQ" prop="qq">
+                    <el-input type="text" v-model="ruleForm.qq" autocomplete="off"></el-input>
+                </el-form-item>
+
+
+                <el-form-item label="用户头像" prop="avatarUrl">
                     <el-upload
                             action="/api/file"
                             list-type="picture-card"
@@ -33,99 +90,113 @@
                     <el-dialog :visible.sync="dialogVisible">
                         <img width="100%" :src="dialogImageUrl" alt="">
                     </el-dialog>
+
                 </el-form-item>
 
-                <el-form-item label="用户名" prop="username" :rules="[{ required: true, message: '用户名不能为空'}]">
-                    <el-input type="text" v-model="user.username" autocomplete="off" :disabled="canChangeable"></el-input>
-                </el-form-item>
-                <el-form-item label="签名" prop="signature">
-                    <el-input type="text" v-model="user.signature" autocomplete="off" :disabled="canChangeable"></el-input>
-                </el-form-item>
-                <el-form-item label="登录次数" prop="loginTimes">
-                    <el-input type="text" v-model="user.loginTimes" autocomplete="off" disabled></el-input>
-                </el-form-item>
-                <el-form-item label="上次登录时间" prop="lastLoginTime">
-                    <el-input type="text" v-model="lastLoginTime" autocomplete="off" :disabled="canChangeable"></el-input>
-                </el-form-item>
-                <el-form-item label="创建时间" prop="createTime">
-                    <el-input type="text" v-model="createTime" autocomplete="off" :disabled="canChangeable"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button  @click="canChangeable = false" v-if="id === user.id">修改资料</el-button>
-                    <el-button type="primary" @click="updateUser" v-if="id === user.id">保存修改</el-button>
-                </el-form-item>
+
             </el-form>
-        </el-card>
-
-        <el-card class="box-card">
-            <div slot="header" class="clearfix">
-                <h2>留言评论</h2>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
             </div>
-            <el-collapse accordion>
-                <div>
-                    <el-input
-                            type="textarea"
-                            placeholder="请输入内容"
-                            v-model="newComment"
-                            maxlength="50"
-                            show-word-limit
-                    >
-                    </el-input>
-                    <el-button type="primary" size="small" @click="pushComment">发布留言</el-button>
-                </div>
-                <el-collapse-item v-if="leavingComment.length !== 0" v-for="comment in leavingComment">
-                    <template slot="title"  >
-                        <el-link :underline="false" :href="'/user/' + comment.user_id"><h3>{{comment.username}}</h3></el-link> - {{comment.date | timeFormat}}<i class="header-icon el-icon-info"></i>
-                    </template>
-                    <div>{{comment.context}}</div>
-                </el-collapse-item>
+        </el-dialog>
 
-                <el-collapse-item v-else="goodsComment.length !== 0">
-                    <template slot="title"  >
-                        <h3>暂无留言</h3><i class="header-icon el-icon-info"></i>
-                    </template>
-                </el-collapse-item>
-            </el-collapse>
-        </el-card>
+
+
+
     </div>
 </template>
 
 <script>
+    import { regionData,CodeToText } from 'element-china-area-data'
     import { get, post,put,deleted } from '../utils/request'
     import moment from 'moment'
+    import Comment from "../components/Comment";
     export default {
         name: "UserInfo",
+        components: {Comment},
         data(){
+            const validatePhone = (rule, value, callback) => {
+                const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+                console.log(reg.test(value));
+                if (value === '' || reg.test(value)) {
+                    callback();
+                } else {
+                    return callback(new Error('请输入正确的手机号'));
+                }
+            };
+            const validateQQ = (rule, value, callback) => {
+                const reg = /^[1-9][0-9]{4,9}$/;
+                console.log(reg.test(value));
+                if (value === '' || reg.test(value)) {
+                    callback();
+                } else {
+                    return callback(new Error('请输入正确的QQ号'));
+                }
+            };
             return{
                 id:'',      //当前页面user
-                userId:'',  //当前访问user
-                canChangeable:true,
+                user:{},  //当前访问user
                 dialogImageUrl: '',
                 dialogVisible:false,
-                user:{},
-                leavingComment:[],
-                newComment:'',
+                dialogFormVisible:false,
+                options: regionData,
+                canChangeable:false,
+                addressOptions: [],
+                ruleForm:{
+                    id:'',
+                    username:'',
+                    signature:'',
+                    email:'',
+                    phone:'',
+                    qq:'',
+                },
+                rules: {
+                    email: [{
+                        required: true,//是否必填
+                        message: '请输入邮箱地址',//错误提示信息
+                        trigger: 'blur'//检验方式（blur为鼠标点击其他地方，）
+                    },
+                        {
+                            type: 'email',//要检验的类型（number，email，date等）
+                            message: '请输入正确的邮箱地址',
+                            trigger: ['blur', 'change']
+                        }
+                    ],
+                    phone: [
+                        { required: false, validator: validatePhone, trigger: 'blur' }
+                    ],
+                    qq: [
+                        { required: false, validator: validateQQ, trigger: 'blur' }
+                    ],
+                }
             }
         },
         created() {
             this.id = this.$route.params.id;
-            this.userId = this.$store.getters.getUser['user']['id'];
+            this.user = this.$store.getters.getUser['user'];
             get('/user/' + this.id, {})
                 .then(res => {
                     this.user = res['data'];
+                    this.ruleForm.username = this.user.username;
+                    this.ruleForm.signature = this.user.signature;
+                    this.ruleForm.id = this.user.id;
                 });
-
-            // 获取user的评论
-            get('/leavingComment/othersToMe/' + this.id, {})
-                .then(res => {
-                    this.leavingComment = res['data'];
-                    console.info(this.leavingComment);
-                });
+            if(this.id == this.user.id) this.canChangeable = true;
         },
         filters:{
             timeFormat(timestr){
                 return moment(timestr).format("YYYY-MM-DD HH:mm")
             }
+        },
+        watch : {
+            addressOptions:function(val) {
+                this.ruleForm.province = CodeToText[val[0]];
+                this.ruleForm.city = CodeToText[val[1]];
+                this.ruleForm.area = CodeToText[val[2]];
+                this.ruleForm.address = this.ruleForm.province + this.ruleForm.city +this.ruleForm.area;
+                console.info(this.ruleForm);
+            },
         },
         computed:{
             lastLoginTime(){
@@ -136,19 +207,14 @@
             }
         },
         methods:{
-            pushComment(){
-                const data = {user1Id:this.userId,user2Id:this.id,context:this.newComment}
-                post('/comment', data)
-                    .then(res => {
-                        this.$message.success("发布留言成功");
-                        res['username'] = this.goodsComment.push(data);
-                    });
-            },
-            updateUser(){
-                put('/user', this.user)
-                    .then(res => {
-                        this.$message.success("修改成功")
-                    });
+            changeUserInfo(){
+                this.dialogFormVisible = true;
+                get('/contactway/' + this.user.addressId,{}).then(res =>{
+                    console.info(res['data']);
+                    this.ruleForm['phone'] = res['data']['phone'];
+                    this.ruleForm['email'] = res['data']['email'];
+                    this.ruleForm['qq'] = res['data']['qq'];
+                })
             },
             handleRemove(file, fileList) {
                 console.log(file, fileList);
@@ -168,6 +234,25 @@
                 this.$message.success("图片上传成功！");
                 this.ruleForm.avatarUrl = response['data']['fileName'];
                 console.info(this.ruleForm);
+            },
+            submitForm(formName) {
+                let data = this.ruleForm;
+                if(typeof (data['address']) === 'undefined'){
+                    data['addressId'] = this.user.addressId;
+                }
+                console.info(data);
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        put('/user', data).then(res => {
+                            if(res['status'] === 200) {
+                                this.$message.success("修改成功！");
+                            }
+                        });
+                    } else {
+                        this.$message.error("修改失败!");
+                        return false;
+                    }
+                });
             },
 
         }

@@ -34,6 +34,9 @@ public class AddressAndContactWayUtil {
      */
     public Long checkAndSaveAddress(HashMap<String,String> map){
         log.info("核查保存地址信息");
+        if(map.get("addressId") != null){
+            return Long.valueOf(map.get("addressId"));
+        }
         String address = map.get("address");
         String province = map.get("province");
         String city = map.get("city");

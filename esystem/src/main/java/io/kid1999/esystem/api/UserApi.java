@@ -99,11 +99,19 @@ public class UserApi {
 
     @PutMapping("")
     @ApiOperation("修改个人信息")
-    public Result updateUserInfo(@RequestBody Map<String,String> map) {
+    public Result updateUserInfo(@RequestBody HashMap<String,String> map) {
         log.info("修改个人信息 " + map.get("name"));
-        String name = map.get("name");
-        String pwd = map.get("password");
+        Long addressId = addressUtil.checkAndSaveAddress(map);
+        Long contactWayId = addressUtil.saveContactWay(map);
         User user = new User();
+        if(map.get("avatarUrl") != null){
+            user.setAvatarUrl(map.get("avatarUrl"));
+        }
+        user.setId(Long.valueOf(map.get("id")));
+        user.setAddressId(addressId);
+        user.setContactWayId(contactWayId);
+        user.setUsername(map.get("username"));
+        user.setSignature(map.get("signature"));
         userDao.updateById(user);
         return new Result(200,"修改成功！");
     }

@@ -43,7 +43,7 @@ instance.interceptors.request.use(config => {
 
 
     loadingInstance = Loading.service({       // 发起请求时加载全局loading，请求失败或有响应时会关闭
-        spinner: 'el-icon-loading',
+        // spinner: 'el-icon-loading',
         text: '拼命加载中...'
     });
     if (config.method === 'get') { // 添加时间戳参数，防止浏览器（IE）对get请求的缓存

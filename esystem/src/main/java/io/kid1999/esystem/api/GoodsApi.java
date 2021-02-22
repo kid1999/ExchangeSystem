@@ -12,6 +12,7 @@ import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -114,15 +115,14 @@ public class GoodsApi {
 
     @GetMapping("")
     @ApiOperation("获取所有货物信息")
-//    @Cacheable(value="goodsList",key="#currentPage-#userId")
+    @Cacheable(cacheNames="goodsList#3600",key="#currentPage")
     public Result getAllGoods(@RequestParam(value = "page_size") int pageSize,
-                              @RequestParam(value = "current_page") int currentPage,
-                              @RequestParam(value = "userId") Long userId){
-        log.info("获取所有货物信息 " + userId);
+                              @RequestParam(value = "current_page") int currentPage){
+        log.info("获取所有货物信息 " + currentPage);
         Page<HashMap<String,String>> page = new Page<>();
         page.setSize(pageSize);
         page.setCurrent(currentPage);
-        IPage<HashMap<String, String>> data = goodsDao.findAllByPage(page,userId);
+        IPage<HashMap<String, String>> data = goodsDao.findAllGoodsByPage(page);
         return new Result(200,"获取数据成功！",data);
     }
 

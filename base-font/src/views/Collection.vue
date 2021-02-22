@@ -33,18 +33,10 @@
 
                                 <div class="mdui-card-media">
                                     <img :src="goods.img_url"/>
-                                    <div class="mdui-card-menu" v-if="goods.cdeleted === 0">
+                                    <div class="mdui-card-menu" v-if="goods.goods_status === 0">
                                         <el-tooltip class="item" effect="dark" content="取消收藏" placement="top">
-                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.cdeleted)">
+                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id)">
                                                 <i class="mdui-icon material-icons">&#xe87d;</i>
-                                            </button>
-                                        </el-tooltip>
-                                    </div>
-
-                                    <div class="mdui-card-menu" v-else="goods.cdeleted === 0">
-                                        <el-tooltip class="item" effect="dark" content="收藏" placement="top">
-                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.cdeleted)">
-                                                <i class="mdui-icon material-icons">&#xe87e;</i>
                                             </button>
                                         </el-tooltip>
                                     </div>
@@ -203,6 +195,7 @@
                 currentPage:0,
                 pageSize:20,
                 total:100,
+                user:{},
                 currentDate: new Date(),
                 transaction_goods_id:1,
                 applyValidateForm:{
@@ -224,9 +217,8 @@
             },
         },
         created() {
-            let _this = this;
-            let user = this.$store.getters.getUser['user'];
-            const data = {"current_page":_this.currentPage,"page_size":_this.pageSize,userId:user['id']};
+            this.user = this.$store.getters.getUser['user'];
+            const data = {"current_page":this.currentPage,"page_size":this.pageSize,userId:this.user['id']};
             // 获取user收藏的所有的物品
             get('/goods/collection', data)
                 .then(res => {
@@ -235,28 +227,23 @@
                     this.total = res['data']['total'];
                     this.currentPage = res['data']['current'];
                     this.pageSize = res['data']['size'];
-                    this.userId = user['id'];
+                    this.userId = res['user_id'];
                     console.info(this.goods_list);
                 });
 
             // 获取user的物品
-            get('/goods/user/' + user['id'],{})
+            get('/goods/user/' + this.user['id'],{})
                 .then(res => {
                     this.userGoods = res['data'];
                 });
         },
         methods:{
             // 收藏
-            collectionGoods(goods_id,cdeleted){
-                post('/collection', {goodsId:goods_id,userId:this.$store.getters.getUser['user']['id']}).then(res => {
+            collectionGoods(goods_id){
+                deleted('/collection', {goodsId:goods_id,userId:this.user['id']}).then(res => {
                     if(res['status'] === 200) {
-                        this.$message.success(res['message']);
-                        let goods_cdeleted = cdeleted == 0 ? 1 : 0;
-                        for (var goods of this.goods_list) {
-                            if(goods.id === goods_id){
-                                goods.cdeleted = goods_cdeleted;
-                            }
-                        }
+                        this.$message.success('取消收藏成功！');
+                        this.goods_list = this.goods_list.filter(({id}) => id !== goods_id);
                     }
                 }).catch(error => {
                     this.$message.error('收藏失败');
@@ -270,7 +257,7 @@
             // 申请交换 到 远程
             submitForm(formName) {
                 this.buyVisible = false;
-                this.applyValidateForm.user2Id = this.$store.getters.getUser['user']['userId'];
+                this.applyValidateForm.user2Id = this.user['id'];
                 this.applyValidateForm.user1Id = this.goods_list[this.transaction_goods_id]['user_id'];
                 this.applyValidateForm.goodsId = this.transaction_goods_id;
                 console.info(this.applyValidateForm);

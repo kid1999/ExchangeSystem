@@ -2,6 +2,7 @@ package io.kid1999.esystem.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -25,6 +26,7 @@ public class KafkaUtil {
      * 商品推荐 发送给spark （userId,goodsId,score）
      */
 
+    @Async("taskExecutor")
     public void send2Spark(Long userId,Long goodsId,double score){
         kafkaTemplate.send(KAFKA_TOPIC,"search",userId + "," + goodsId + "," + score);
     }

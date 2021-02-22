@@ -19,6 +19,7 @@ import java.util.List;
  * @create 2021-01-04 11:44
  * @description 留言管理操作
  **/
+@Deprecated
 @Slf4j
 @RestController @RequestMapping("/leavingComment")
 @Api(tags = "留言管理操作")

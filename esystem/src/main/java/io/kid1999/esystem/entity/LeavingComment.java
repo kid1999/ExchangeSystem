@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 /**
  * @TableName leaving_comment
  */
+@Deprecated
 @Data
 public class LeavingComment implements Serializable {
     /**

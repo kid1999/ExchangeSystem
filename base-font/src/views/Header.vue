@@ -40,6 +40,7 @@
 </template>
 
 <script>
+    import axios from 'axios';
     import { get, post,put,deleted } from '../utils/request'
     import { globalBus } from '@/utils/globalBus';
     export default {
@@ -80,10 +81,11 @@
                 else this.isLogin = true;
             },
             getCommentNum(){
-                get('/comment/num/' + this.userInfo.id,{}).then(res =>{
-                    console.info('获得未读消息数量为： ' + res['data']);
-                    this.commentNum = res['data'];
-                })
+                axios.get('/comment/num/' + this.userInfo.id,{})
+                    .then(res =>{
+                        console.info('获得未读消息数量为： ' + res['data']['data']);
+                        this.commentNum = res['data']['data']
+                    })
             }
         },
         mounted() {

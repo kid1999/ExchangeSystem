@@ -38,21 +38,23 @@
 
                                 <div class="mdui-card-media">
                                     <img :src="goods.imgUrl" style="height: 230px"/>
-                                    <div class="mdui-card-menu" v-if="goods.cdeleted === 0">
-                                        <el-tooltip class="item" effect="dark" content="取消收藏" placement="top">
-                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.cdeleted)">
+
+                                    <div class="mdui-card-menu" v-if="goods.goodsStatus === 0">
+                                        <el-tooltip class="item" effect="dark" content="收藏" placement="top">
+                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.goodsStatus)">
+                                                <i class="mdui-icon material-icons">&#xe87e;</i>
+                                            </button>
+                                        </el-tooltip>
+                                    </div>
+                                    <div class="mdui-card-menu" v-else="goods.goodsStatus === 0">
+                                        <el-tooltip class="item" effect="dark" content="已收藏" placement="top">
+                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.goodsStatus)">
                                                 <i class="mdui-icon material-icons">&#xe87d;</i>
                                             </button>
                                         </el-tooltip>
                                     </div>
 
-                                    <div class="mdui-card-menu" v-else="goods.cdeleted === 0">
-                                        <el-tooltip class="item" effect="dark" content="收藏" placement="top">
-                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.cdeleted)">
-                                                <i class="mdui-icon material-icons">&#xe87e;</i>
-                                            </button>
-                                        </el-tooltip>
-                                    </div>
+
 
                                     <div class="mdui-grid-tile-actions">
                                         <div class="mdui-grid-tile-text">
@@ -205,7 +207,7 @@
                     "imgUrl": "http://kid1999.top:9000/default/avatar.png",
                     "price": 11111,
                     "id": 1,
-                    "createDate": "2021-01-20T22:59:58.000+00:00",
+                    "createDate": "2021-01-20T22:59:58",
                     "remarks": "sd",
                     "goodsCondition": "全新"
                 }],
@@ -225,6 +227,7 @@
                     detailedAddress:'',
                     detailedDatetime:'',
                 },
+                user:{},
             }
         },
         filters: {
@@ -233,9 +236,8 @@
             },
         },
         created() {
-            let _this = this;
-            let user = this.$store.getters.getUser['user'];
-            const data = {"current_page":_this.currentPage,"page_size":_this.pageSize,userId:user['id']};
+            this.user = this.$store.getters.getUser['user'];
+            const data = {"current_page":this.currentPage,"page_size":this.pageSize,userId:this.user['id']};
             get('/goods', data)
                 .then(res => {
                     this.goods_list = res['data']['records'];
@@ -246,26 +248,31 @@
                 });
 
             // 获取user的物品
-            get('/goods/user/' + user['id'],{})
+            get('/goods/user/' + this.user['id'],{})
                 .then(res => {
                     this.userGoods = res['data'];
                 });
         },
         methods:{
             // 收藏
-            collectionGoods(goods_id,deleted){
-                post('/collection', {goodsId:goods_id,userId:this.$store.getters.getUser['user']['id']}).then(res => {
+            collectionGoods(goods_id,status){
+                if(status !== 0){
+                    this.$notify.info("你已收藏该商品，请前往收藏夹查看！");
+                    return;
+                }
+                post('/collection', {goodsId:goods_id,userId:this.user['id']}).then(res => {
                     if(res['status'] === 200) {
-                        this.$message.success(res['message']);
-                        deleted = deleted === 0 ? 1 : 0;
+                        this.$message.success('收藏成功！');
                         for (var goods of this.goods_list) {
                             if(goods.id === goods_id){
-                                goods.cdeleted = deleted;
+                                goods.goodsStatus = 1;
                             }
                         }
+                    }else{
+                        this.$message.error('收藏失败！');
                     }
                 }).catch(error => {
-                    this.$message.error('收藏失败');
+                    this.$message.error('收藏失败！');
                 });
             },
             // 申请交换

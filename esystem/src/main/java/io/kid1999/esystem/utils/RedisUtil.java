@@ -30,11 +30,11 @@ public class RedisUtil {
      */
 
     // 字段自增
-    public void incr(String key) {
-        RedisAtomicLong entityIdCounter = new RedisAtomicLong(key, redisTemplate.getConnectionFactory());
-        Long increment = entityIdCounter.getAndIncrement();
-        if ((null == increment || increment.longValue() == 0) && REDIS_EXPIRE_DATE > 0) {
-            entityIdCounter.expire(REDIS_EXPIRE_DATE, TimeUnit.SECONDS);
+    public void increment(String key,int dep) {
+        if(redisTemplate.opsForValue().get(key) != null){
+            redisTemplate.opsForValue().increment(key,dep);
+        }else{
+            redisTemplate.opsForValue().set(key,1);
         }
     }
 

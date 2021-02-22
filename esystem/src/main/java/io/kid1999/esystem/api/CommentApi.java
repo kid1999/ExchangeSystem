@@ -9,6 +9,7 @@ import io.kid1999.esystem.utils.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -137,6 +138,7 @@ public class CommentApi {
         return new Result().success("删除评论成功！");
     }
 
+    @Transactional
     @GetMapping("/num/{userId}")
     @ApiOperation("获取user未读留言数量")
     Result getUserCommentNum(@PathVariable Long userId){

@@ -89,7 +89,6 @@ public class UserApi {
         User user = userDao.selectOne(wrapper);
         if(user != null && StrUtil.equals(userPwd,user.getPassword())){
             user.setPassword("");
-            redisUtil.incr("userLoginTimes::" + user.getId());
             return new Result(200,"登录成功！",user);
         }else {
             return new Result().failed("账号密码不正确!");

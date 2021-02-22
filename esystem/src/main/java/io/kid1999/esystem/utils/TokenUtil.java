@@ -16,6 +16,7 @@ import static io.kid1999.esystem.common.Constants.TOKEN_SECRET;
  * @create 2020-10-01 11:59
  * @description token 工具类
  **/
+@Deprecated
 @Component
 public class TokenUtil {
 

@@ -97,6 +97,7 @@
             });
 
             // 评论消息已读
+            this.getCommentNum();
             globalBus.$on("delCommentMsg", (num) => {
                 // A发送来的消息
                 console.info(num);

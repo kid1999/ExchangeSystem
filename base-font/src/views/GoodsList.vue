@@ -13,9 +13,13 @@
         <div id="search">
             <el-row>
                 <el-input placeholder="请输入内容搜索" v-model="search_context" class="input-with-select">
-                    <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+                    <el-button slot="append" icon="el-icon-search" @click="search(search_context)"></el-button>
                 </el-input>
             </el-row>
+        </div>
+
+        <div id="hotwords">
+            <HotWords></HotWords>
         </div>
 
 
@@ -175,9 +179,11 @@
 
 <script>
     import { get, post,put,deleted } from '../utils/request'
+    import HotWords from "../components/HotWords";
     let moment = require('moment');
     export default {
         name: "GoodsList",
+        components:{'HotWords':HotWords},
         data() {
             return {
                 buyVisible: false,
@@ -304,7 +310,9 @@
                 });
             },
             // 搜索
-            search(){
+            search(context){
+                this.search_context = context;
+                console.info(context)
                 get('/goods/search', {"goodsName" : this.search_context,current_page: this.currentPage,page_size: this.pageSize})
                     .then(res => {
                         console.info(res)
@@ -349,7 +357,7 @@
     }
 
     #list{
-        margin-top: 18px;
+        margin-top: 5px;
     }
 
     #buy{

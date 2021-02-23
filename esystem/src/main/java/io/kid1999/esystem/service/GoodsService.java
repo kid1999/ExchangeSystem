@@ -13,11 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author kid1999
@@ -38,7 +39,7 @@ public class GoodsService {
     private GoodsDao goodsDao;
 
     @Resource
-    private RedisTemplate<String,Long> redisTemplate;
+    private RedisTemplate redisTemplate;
 
     @Resource
     private KafkaUtil kafkaUtil;
@@ -46,6 +47,7 @@ public class GoodsService {
 
 
     private final static String GOODS_VIEW = "goodsView";
+    private final static String HOT_WORD = "hotWord";
 
     /**
      * 当商品点击，收藏时 将数据存储到数据集
@@ -85,11 +87,53 @@ public class GoodsService {
     /**
      *  搜索
      */
-    public Page<GoodsEntry> getGoodsByGoodsName(String goodsName,int currentPage,int pageSize){
+    public Page<GoodsEntry> getGoodsByGoodsName(String goodsName,int currentPage,int pageSize) {
         Pageable pageable = PageRequest.of(currentPage, pageSize);
         Page<GoodsEntry> entry = goodsRepository.findAllByGoodsNameLike(goodsName, pageable);
+        addHotWord(goodsName);
         return entry;
     }
+
+
+    /**
+     * 设置缓存失效时间，统一为凌晨零点
+     */
+    public void addHotWord(String hotWord) {
+        if(hotWord.length() < 2) {
+            return;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        //晚上十二点与当前时间的毫秒差
+        Long timeOut = (calendar.getTimeInMillis() - System.currentTimeMillis()) / 1000;
+        redisTemplate.expire(HOT_WORD, timeOut, TimeUnit.SECONDS);
+        redisTemplate.opsForZSet().incrementScore(HOT_WORD, hotWord, 1); // 加入排序set
+    }
+
+    /**
+     * 获取热词前五位
+     */
+    public List<String> getHotWord() {
+        List<String> hotWordList = new ArrayList<>();
+        Set<ZSetOperations.TypedTuple<Object>> typedTupleSet = redisTemplate.opsForZSet().reverseRangeByScoreWithScores(HOT_WORD,1,100);
+        Iterator<ZSetOperations.TypedTuple<Object>> iterator = typedTupleSet.iterator();
+        int flag = 0;
+        while (iterator.hasNext()){
+            flag++;
+            ZSetOperations.TypedTuple<Object> typedTuple = iterator.next();
+            String hotWord = (String)typedTuple.getValue();
+            hotWordList.add(hotWord);
+            if ( flag >= 5 ) {
+                break;
+            }
+        }
+        return hotWordList;
+    }
+
 
     /**
      * 猜你喜欢,每日推荐50个 ？

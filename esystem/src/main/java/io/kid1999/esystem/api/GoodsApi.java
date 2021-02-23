@@ -135,4 +135,12 @@ public class GoodsApi {
         return new Result(200,"获取数据成功！",goods);
     }
 
+    @GetMapping("/hotwords")
+    @ApiOperation("搜索热词")
+    public Result findHotWords(){
+        log.info("搜索热词 ");
+        List<String> hotWord = goodsService.getHotWord();
+        return new Result(200,"获取数据成功！",hotWord);
+    }
+
 }

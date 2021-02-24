@@ -22,7 +22,7 @@ import java.util.List;
 @Component
 public class MysqlToES {
 
-    public static final String LAST_GOODS_ID = "last_trans_goods_id";
+    public static final String LAST_GOODS_ID = "lastSaveId";
 
     @Resource
     private GoodsDao goodsDao;

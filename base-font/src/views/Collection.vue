@@ -15,72 +15,68 @@
         </div>
 
         <div id="list">
-            <el-row>
-                <div v-for="goods in goods_list">
-                    <el-col :span="6">
-
-                        <div class="grid-content bg-purple" id="goods">
-                            <el-card class="box-card">
-                                <div slot="header" id="header-font">
+            <el-row type="flex" v-for="i in Math.ceil(goods_list.length / 4)">
+                <el-col :span="6" v-for="goods in goods_list.slice((i - 1) * 4, i * 4)">
+                    <div class="grid-content bg-purple" id="goods">
+                        <el-card class="box-card">
+                            <div slot="header" id="header-font">
                                     <span>
                                         <router-link :to="'/goods/detail/' + goods.id">
                                         <el-link :underline="false">
-                                            <h2>{{goods.goods_name}}</h2>
+                                            <h2>{{goods.goods_name | filterTitle}}</h2>
                                         </el-link>
                                             </router-link>
                                     </span>
+                            </div>
+
+                            <div class="mdui-card-media">
+                                <img :src="goods.img_url" style="height: 230px"/>
+                                <div class="mdui-card-menu" v-if="goods.goods_status === 0">
+                                    <el-tooltip class="item" effect="dark" content="取消收藏" placement="top">
+                                        <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id)">
+                                            <i class="mdui-icon material-icons">&#xe87d;</i>
+                                        </button>
+                                    </el-tooltip>
                                 </div>
 
-                                <div class="mdui-card-media">
-                                    <img :src="goods.img_url"/>
-                                    <div class="mdui-card-menu" v-if="goods.goods_status === 0">
-                                        <el-tooltip class="item" effect="dark" content="取消收藏" placement="top">
-                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id)">
-                                                <i class="mdui-icon material-icons">&#xe87d;</i>
-                                            </button>
-                                        </el-tooltip>
-                                    </div>
-
-                                    <div class="mdui-grid-tile-actions">
-                                        <div class="mdui-grid-tile-text">
-                                            <div class="mdui-grid-tile-title">{{goods.address}}</div>
-                                            <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">grid_on</i>{{goods.create_date | formatDate}}</div>
-                                        </div>
+                                <div class="mdui-grid-tile-actions">
+                                    <div class="mdui-grid-tile-text">
+                                        <div class="mdui-grid-tile-title">{{goods.address}}</div>
+                                        <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">grid_on</i>{{goods.create_date | formatDate}}</div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div id="goods_context">
-                                    <p>
-                                        期望交换<i class="el-icon-s-goods el-icon--right"></i>：
-                                        <router-link :to="'/goods/detail/' + goods.want_goods_id">
+                            <div id="goods_context">
+                                <p>
+                                    期望交换<i class="el-icon-s-goods el-icon--right"></i>：
+                                    <router-link :to="'/goods/detail/' + goods.want_goods_id">
                                         <el-link :underline="false">
-                                            <strong>{{goods.want_goods_name }}</strong>
+                                            <strong>{{goods.want_goods_name | filterTitleMini}}</strong>
                                         </el-link>
-                                        </router-link>
-                                    </p>
-                                    <p>
-                                        <span>点击量 </span><i class="el-icon-s-promotion el-icon--left"></i>：  <strong>{{goods.number_of_clicked }}</strong>
-                                    </p>
-                                    <p>
-                                        所有者<i class="el-icon-s-custom el-icon--right"></i>：
-                                        <router-link :to="'/userInfo/' + goods.user_id">
+                                    </router-link>
+                                </p>
+                                <p>
+                                    <span>点击量 </span><i class="el-icon-s-promotion el-icon--left"></i>：  <strong>{{goods.number_of_clicked }}</strong>
+                                </p>
+                                <p>
+                                    所有者<i class="el-icon-s-custom el-icon--right"></i>：
+                                    <router-link :to="'/userInfo/' + goods.user_id">
                                         <el-link :underline="false">
                                             <strong>{{goods.username }}</strong>
                                         </el-link>
-                                        </router-link>
-                                    </p>
-                                </div>
-                                <div id="buy">
-                                    <el-button type="success" size="mini" round  @click="applyExchange(goods.id)">申请交易</el-button>
-                                    <el-link :underline="false" :href="'/goods/detail/' + goods.id">
-                                        <el-button type="info" size="mini" round >查看详情</el-button>
-                                    </el-link>
-                                </div>
-                            </el-card>
-                        </div>
-
-                    </el-col>
-                </div>
+                                    </router-link>
+                                </p>
+                            </div>
+                            <div id="buy">
+                                <el-button type="success" size="mini" round  @click="applyExchange(goods.id)">申请交易</el-button>
+                                <el-link :underline="false" :href="'/goods/detail/' + goods.id">
+                                    <el-button type="info" size="mini" round style="margin-left: 10px">查看详情</el-button>
+                                </el-link>
+                            </div>
+                        </el-card>
+                    </div>
+                </el-col>
             </el-row>
 
             <div id="pagination">
@@ -215,6 +211,26 @@
             formatDate: function (time) {
                 return moment(time).format('YYYY-MM-DD');
             },
+            filterTitle(title){
+                if(typeof title === 'undefined'){
+                    return "不想让你知道哦"
+                }
+                if(title.length < 12){
+                    return title
+                }else{
+                    return title.slice(0,10) + '...';
+                }
+            },
+            filterTitleMini(title){
+                if(typeof title === 'undefined'){
+                    return "不想让你知道哦"
+                }
+                if(title.length < 9){
+                    return title
+                }else{
+                    return title.slice(0,8) + '..';
+                }
+            }
         },
         created() {
             this.user = this.$store.getters.getUser['user'];

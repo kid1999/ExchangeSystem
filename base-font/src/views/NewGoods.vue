@@ -42,7 +42,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="商品详情" prop="description">
-                    <el-input type="text" v-model="goods.description" autocomplete="off" maxlength="70"
+                    <el-input type="text" v-model="goods.description" autocomplete="off" maxlength="120"
                               show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="商品备注" prop="remarks">
@@ -53,7 +53,7 @@
                     <el-autocomplete
                             v-model="search_context"
                             :fetch-suggestions="querySearchAsync"
-                            placeholder="请输入内容"
+                            :placeholder="goods.wantGoodsName"
                             @select="handleSelect"
                     ></el-autocomplete>
                 </el-form-item>
@@ -98,7 +98,6 @@
                     if(res['status'] === 200) {
                         console.info(res);
                         this.goods = res['data'];
-                        delete this.goods.createDate;
                     }
                 });
             }
@@ -107,14 +106,14 @@
             this.username = this.$store.getters.getUser['user']['username'];
             this.goods.userId = this.userId;
             this.goods.addressId = this.$store.getters.getUser['user']['addressId'];
-            this.goods.numberOfClicked = 0;
+            this.goods.address = '玉蟾国际城'
             this.loadRemoteGoods();
         },
         methods: {
             updateGoods(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        if(typeof(this.goods.wantGoodsId) == "undefined"){
+                        if(typeof(this.goods.wantGoodsName) == "undefined"){
                             this.$message.error("交换商品不能为空！");
                             return;
                         }
@@ -167,6 +166,7 @@
             },
             handleSelect(item){
                 this.goods.wantGoodsId = item.name;
+                this.goods.wantGoodsName = item.value;
             },
             //输入框获取焦点时调用的方法
             querySearchAsync(queryString, cb) {

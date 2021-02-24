@@ -17,14 +17,14 @@
                                     <span>
                                         <router-link :to="'/goods/detail/' + goods.id">
                                         <el-link :underline="false">
-                                            <h2>{{goods.goodsName}}</h2>
+                                            <h2>{{goods.goodsName | filterTitle}}</h2>
                                         </el-link>
                                             </router-link>
                                     </span>
                             </div>
 
                             <div class="mdui-card-media">
-                                <img :src="goods.imgUrl"/>
+                                <img :src="goods.imgUrl" style="height: 230px"/>
 
                                 <div class="mdui-grid-tile-actions">
                                     <div class="mdui-grid-tile-text">
@@ -44,13 +44,15 @@
                                 </p>
                                 <p>
                                     详情<i class="el-icon-s-goods el-icon--right"></i>：
-                                    {{goods.description }}
+                                    {{goods.description | filterTitleMini}}
                                 </p>
                             </div>
                             <div id="buy">
                                 <el-link :underline="false" :href="'/goods/detail/' + goods.id">
-                                    <el-button type="info" size="mini" round >查看</el-button>
-                                    <el-button type="success" size="mini" round >修改</el-button>
+                                    <el-button type="info" size="mini" round >查 看</el-button>
+                                </el-link>
+                                <el-link :underline="false" :href="'/NewGoods/' + goods.id">
+                                    <el-button type="success" size="mini" round style="margin-left: 10px">修 改</el-button>
                                 </el-link>
                             </div>
                         </el-card>
@@ -121,6 +123,26 @@
             formatDate: function (time) {
                 return moment(time).format('YYYY-MM-DD');
             },
+            filterTitle(title){
+                if(typeof title === 'undefined'){
+                    return "不想让你知道哦"
+                }
+                if(title.length < 12){
+                    return title
+                }else{
+                    return title.slice(0,10) + '...';
+                }
+            },
+            filterTitleMini(title){
+                if(typeof title === 'undefined'){
+                    return "不想让你知道哦"
+                }
+                if(title.length < 9){
+                    return title
+                }else{
+                    return title.slice(0,8) + '..';
+                }
+            }
         },
         created() {
             let _this = this;
@@ -188,5 +210,7 @@
 </script>
 
 <style scoped>
-
+    #goods_context{
+        text-align: left;
+    }
 </style>

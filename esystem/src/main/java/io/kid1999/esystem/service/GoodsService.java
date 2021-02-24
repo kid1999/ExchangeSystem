@@ -55,7 +55,6 @@ public class GoodsService {
      */
 
 
-
     /**
      * 删除
      */
@@ -68,14 +67,14 @@ public class GoodsService {
     /**
      * 更新
      */
-    public void updateGoods(Goods goods){
+    public void updateGoods(GoodsEntry goodsEntry){
+        Goods goods = GoodsEntry.parse2Goods(goodsEntry);
         goodsDao.updateById(goods);
-        GoodsEntry entry = GoodsEntry.parse2GoodsEntry(goods);
-        goodsRepository.save(entry);
+        goodsRepository.save(goodsEntry);
     }
 
     /**
-     *  根据id 获取信息
+     *  获取goods详细信息
      */
     public GoodsEntry getGoods(Long userId,Long goodsId){
         Optional<GoodsEntry> entry = goodsRepository.findById(goodsId);

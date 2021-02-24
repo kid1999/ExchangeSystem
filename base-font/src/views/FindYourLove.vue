@@ -18,26 +18,25 @@
                                     <span>
                                         <router-link :to="'/goods/detail/' + goods.id">
                                         <el-link :underline="false">
-                                            <h2>{{goods.goodsName}}</h2>
+                                            <h2>{{goods.goodsName | filterTitle}}</h2>
                                         </el-link>
                                             </router-link>
                                     </span>
                                 </div>
 
                                 <div class="mdui-card-media">
-                                    <img :src="goods.imgUrl"/>
-                                    <div class="mdui-card-menu" v-if="goods.cdeleted === 0">
-                                        <el-tooltip class="item" effect="dark" content="取消收藏" placement="top">
-                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.cdeleted)">
-                                                <i class="mdui-icon material-icons">&#xe87d;</i>
+                                    <img :src="goods.imgUrl" style="height: 230px"/>
+                                    <div class="mdui-card-menu" v-if="goods.goodsStatus === 0">
+                                        <el-tooltip class="item" effect="dark" content="收藏" placement="top">
+                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.goodsStatus)">
+                                                <i class="mdui-icon material-icons">&#xe87e;</i>
                                             </button>
                                         </el-tooltip>
                                     </div>
-
-                                    <div class="mdui-card-menu" v-else="goods.cdeleted === 0">
-                                        <el-tooltip class="item" effect="dark" content="收藏" placement="top">
-                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.cdeleted)">
-                                                <i class="mdui-icon material-icons">&#xe87e;</i>
+                                    <div class="mdui-card-menu" v-else="goods.goodsStatus === 0">
+                                        <el-tooltip class="item" effect="dark" content="已收藏" placement="top">
+                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.goodsStatus)">
+                                                <i class="mdui-icon material-icons">&#xe87d;</i>
                                             </button>
                                         </el-tooltip>
                                     </div>
@@ -60,13 +59,13 @@
                                     </p>
                                     <p>
                                         详情<i class="el-icon-s-goods el-icon--right"></i>：
-                                        {{goods.description }}
+                                        {{goods.description | filterTitleMini}}
                                     </p>
                                 </div>
                                 <div id="buy">
                                     <el-button type="success" size="mini" round  @click="applyExchange(goods.id)">申请交易</el-button>
                                     <el-link :underline="false" :href="'/goods/detail/' + goods.id">
-                                        <el-button type="info" size="mini" round >了解详情</el-button>
+                                        <el-button type="info" size="mini" round style="margin-left: 10px">了解详情</el-button>
                                     </el-link>
                                 </div>
                             </el-card>
@@ -188,44 +187,69 @@
                     detailedAddress:'',
                     detailedDatetime:'',
                 },
+                user:{},
             }
         },
         filters: {
             formatDate: function (time) {
                 return moment(time).format('YYYY-MM-DD');
             },
+            filterTitle(title){
+                if(typeof title === 'undefined'){
+                    return "不想让你知道哦"
+                }
+                if(title.length < 12){
+                    return title
+                }else{
+                    return title.slice(0,10) + '...';
+                }
+            },
+            filterTitleMini(title){
+                if(typeof title === 'undefined'){
+                    return "不想让你知道哦"
+                }
+                if(title.length < 9){
+                    return title
+                }else{
+                    return title.slice(0,8) + '..';
+                }
+            }
         },
         created() {
-            let _this = this;
-            let user = this.$store.getters.getUser['user'];
+            this.user = this.$store.getters.getUser['user'];
             // 获取user收藏的所有的物品
-            get('/goods/recommendation/' + user.id,{})
+            get('/goods/recommendation/' + this.user.id,{})
                 .then(res => {
                     console.info(res);
                     this.goods_list = res['data'];
                 });
 
             // 获取user的物品
-            get('/goods/user/' + user['id'],{})
+            get('/goods/user/' + this.user['id'],{})
                 .then(res => {
                     this.userGoods = res['data'];
                 });
         },
         methods:{
             // 收藏
-            collectionGoods(goods_id,cdeleted){
-                post('/collection', {goodsId:goods_id,userId:this.$store.getters.getUser['user']['id']}).then(res => {
+            collectionGoods(goods_id,status){
+                if(status !== 0){
+                    this.$notify.info("你已收藏该商品，请前往收藏夹查看！");
+                    return;
+                }
+                post('/collection', {goodsId:goods_id,userId:this.user['id']}).then(res => {
                     if(res['status'] === 200) {
-                        this.$message.success(res['message']);
-                        let goods_cdeleted = cdeleted == 0 ? 1 : 0;
+                        this.$message.success('收藏成功！');
                         for (var goods of this.goods_list) {
                             if(goods.id === goods_id){
-                                goods.cdeleted = goods_cdeleted;
+                                goods.goodsStatus = 1;
                             }
                         }
+                    }else{
+                        this.$message.error('收藏失败！');
                     }
                 }).catch(error => {
-                    this.$message.error('收藏失败');
+                    this.$message.error('收藏失败！');
                 });
             },
             // 申请交换
@@ -236,7 +260,7 @@
             // 申请交换 到 远程
             submitForm(formName) {
                 this.buyVisible = false;
-                this.applyValidateForm.user2Id = this.$store.getters.getUser['user']['userId'];
+                this.applyValidateForm.user2Id = this.user.id;
                 this.applyValidateForm.user1Id = this.goods_list[this.transaction_goods_id]['user_id'];
                 this.applyValidateForm.goodsId = this.transaction_goods_id;
                 console.info(this.applyValidateForm);

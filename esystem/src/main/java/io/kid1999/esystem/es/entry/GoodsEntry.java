@@ -45,11 +45,10 @@ public class GoodsEntry implements Serializable {
     private static final long serialVersionUID = -1;
 
 
-    public static GoodsEntry parse2GoodsEntry(Goods goods){
+    public static GoodsEntry parse2GoodsEntry(Goods goods,String username){
         GoodsEntry entry = new GoodsEntry();
         entry.id = goods.getId();
         entry.addressId = goods.getAddressId();
-        // entry.createDate = Date.from(goods.getCreateDate().atZone( ZoneId.systemDefault()).toInstant());
         entry.deleted = goods.getDeleted();
         entry.description = goods.getDescription();
         entry.goodsCondition = goods.getGoodsCondition();
@@ -61,6 +60,24 @@ public class GoodsEntry implements Serializable {
         entry.remarks = goods.getRemarks();
         entry.wantGoodsId = goods.getWantGoodsId();
         entry.userId = goods.getUserId();
+        entry.username = username;
         return entry;
+    }
+
+
+    public static Goods parse2Goods(GoodsEntry goodsEntry){
+        Goods goods = new Goods();
+        goods.setWantGoodsId(goodsEntry.wantGoodsId);
+        goods.setId(goodsEntry.id);
+        goods.setUserId(goodsEntry.userId);
+        goods.setPrice(goodsEntry.price);
+        goods.setNumberOfClicked(goodsEntry.numberOfClicked);
+        goods.setRemarks(goodsEntry.remarks);
+        goods.setImgUrl(goodsEntry.imgUrl);
+        goods.setGoodsCondition(goodsEntry.goodsCondition);
+        goods.setAddressId(goodsEntry.addressId);
+        goods.setGoodsStatus(goodsEntry.goodsStatus);
+        goods.setDescription(goodsEntry.description);
+        return goods;
     }
 }

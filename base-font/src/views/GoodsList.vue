@@ -23,87 +23,84 @@
         </div>
 
 
-        <div id="list">
-            <el-row>
-                <div v-for="goods in goods_list">
-                    <el-col :span="6">
-
-                        <div class="grid-content bg-purple" id="goods">
-                            <el-card class="box-card" >
-                                <div slot="header" id="header-font">
+        <div id="list" v-if="goods_list.length !== 0">
+            <el-row type="flex" v-for="i in Math.ceil(goods_list.length / 4)">
+                <el-col :span="6" v-for="goods in goods_list.slice((i - 1) * 4, i * 4)">
+                    <div class="grid-content bg-purple" id="goods">
+                        <el-card class="box-card" >
+                            <div slot="header" id="header-font">
                                     <span>
                                         <router-link :to="'/goods/detail/' + goods.id">
                                             <el-link :underline="false">
-                                            <h2>{{goods.goodsName}}</h2>
+                                            <h2>{{goods.goodsName | filterTitle}}</h2>
                                             </el-link>
                                         </router-link>
                                     </span>
+                            </div>
+
+                            <div class="mdui-card-media">
+                                <img :src="goods.imgUrl" style="height: 230px"/>
+
+                                <div class="mdui-card-menu" v-if="goods.goodsStatus === 0">
+                                    <el-tooltip class="item" effect="dark" content="收藏" placement="top">
+                                        <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.goodsStatus)">
+                                            <i class="mdui-icon material-icons">&#xe87e;</i>
+                                        </button>
+                                    </el-tooltip>
+                                </div>
+                                <div class="mdui-card-menu" v-else="goods.goodsStatus === 0">
+                                    <el-tooltip class="item" effect="dark" content="已收藏" placement="top">
+                                        <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.goodsStatus)">
+                                            <i class="mdui-icon material-icons">&#xe87d;</i>
+                                        </button>
+                                    </el-tooltip>
                                 </div>
 
-                                <div class="mdui-card-media">
-                                    <img :src="goods.imgUrl" style="height: 230px"/>
-
-                                    <div class="mdui-card-menu" v-if="goods.goodsStatus === 0">
-                                        <el-tooltip class="item" effect="dark" content="收藏" placement="top">
-                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.goodsStatus)">
-                                                <i class="mdui-icon material-icons">&#xe87e;</i>
-                                            </button>
-                                        </el-tooltip>
-                                    </div>
-                                    <div class="mdui-card-menu" v-else="goods.goodsStatus === 0">
-                                        <el-tooltip class="item" effect="dark" content="已收藏" placement="top">
-                                            <button class="mdui-btn mdui-btn-icon mdui-text-color-white" @click="collectionGoods(goods.id,goods.goodsStatus)">
-                                                <i class="mdui-icon material-icons">&#xe87d;</i>
-                                            </button>
-                                        </el-tooltip>
-                                    </div>
 
 
-
-                                    <div class="mdui-grid-tile-actions">
-                                        <div class="mdui-grid-tile-text">
-                                            <div class="mdui-grid-tile-title">{{goods.address}}</div>
-                                            <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">grid_on</i>{{goods.createDate | formatDate}}</div>
-                                        </div>
+                                <div class="mdui-grid-tile-actions">
+                                    <div class="mdui-grid-tile-text">
+                                        <div class="mdui-grid-tile-title">{{goods.address}}</div>
+                                        <div class="mdui-grid-tile-subtitle"><i class="mdui-icon material-icons">grid_on</i>{{goods.createDate | formatDate}}</div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div id="goods_context">
-                                    <p>
-                                        期望交换<i class="el-icon-s-goods el-icon--right"></i>：
-                                        <router-link :to="'/goods/detail/' + goods.wantGoodsId">
-                                            <el-link :underline="false"  >
-                                            <strong>{{goods.wantGoodsName }}</strong>
+                            <div id="goods_context">
+                                <p>
+                                    期望交换<i class="el-icon-s-goods el-icon--right"></i>：
+                                    <router-link :to="'/goods/detail/' + goods.wantGoodsId">
+                                        <el-link :underline="false"  >
+                                            <strong>{{goods.wantGoodsName | filterTitleMini}}</strong>
                                         </el-link>
-                                        </router-link>
-
-                                    </p>
-                                    <p>
-                                        <span>点击量 </span><i class="el-icon-s-promotion el-icon--left"></i>：  <strong>{{goods.numberOfClicked }}</strong>
-                                    </p>
-                                    <p>
-                                        所有者<i class="el-icon-s-custom el-icon--right"></i>：
-                                        <router-link :to="'/userInfo/' + goods.userId">
-                                            <el-link :underline="false"  >
-                                            <strong>{{goods.username }}</strong>
-                                            </el-link>
-                                        </router-link>
-                                    </p>
-                                </div>
-                                <div id="buy">
-                                    <el-button type="success" size="mini" round  @click="applyExchange(goods.id)">申请交易</el-button>
-
-                                    <router-link :to="'/goods/detail/' + goods.id">
-                                        <el-button type="info" size="mini" round >查看详情</el-button>
                                     </router-link>
 
-                                </div>
-                            </el-card>
-                        </div>
+                                </p>
+                                <p>
+                                    <span>点击量 </span><i class="el-icon-s-promotion el-icon--left"></i>：  <strong>{{goods.numberOfClicked }}</strong>
+                                </p>
+                                <p>
+                                    所有者<i class="el-icon-s-custom el-icon--right"></i>：
+                                    <router-link :to="'/userInfo/' + goods.userId">
+                                        <el-link :underline="false"  >
+                                            <strong>{{goods.username |filterTitleMini}}</strong>
+                                        </el-link>
+                                    </router-link>
+                                </p>
+                            </div>
+                            <div id="buy">
+                                <el-button type="success" size="mini" round  @click="applyExchange(goods.id)">申请交易</el-button>
 
-                    </el-col>
-                </div>
+                                <router-link :to="'/goods/detail/' + goods.id">
+                                    <el-button type="info" size="mini" round style="margin-left: 10px">查看详情</el-button>
+                                </router-link>
+
+                            </div>
+                        </el-card>
+                    </div>
+                </el-col>
             </el-row>
+
 
             <div id="pagination">
                 <el-pagination
@@ -116,6 +113,11 @@
                 </el-pagination>
             </div>
 
+        </div>
+
+
+        <div id="noGoods" v-else="goods_list.length !== 0">
+            <span>没有满足的商品呢！</span>
         </div>
 
         <!--    购买商品弹窗    -->
@@ -240,6 +242,26 @@
             formatDate: function (time) {
                 return moment(time).format('YYYY-MM-DD');
             },
+            filterTitle(title){
+                if(title === null || typeof title === 'undefined'){
+                    return "不想让你知道哦"
+                }
+                if(title.length < 12){
+                    return title
+                }else{
+                    return title.slice(0,10) + '...';
+                }
+            },
+            filterTitleMini(title){
+                if(title === null || typeof title === 'undefined'){
+                    return "不想让你知道哦"
+                }
+                if(title.length < 9){
+                    return title
+                }else{
+                    return title.slice(0,8) + '..';
+                }
+            }
         },
         created() {
             this.user = this.$store.getters.getUser['user'];
@@ -320,7 +342,6 @@
                         this.total = res['data']['totalPages'];
                         this.currentPage = res['data']['number'];
                         this.pageSize = res['data']['size'];
-                        console.info(this.goods_list);
                     });
             },
             handleCurrentChange(val) {
@@ -343,6 +364,10 @@
 </script>
 
 <style>
+
+    #goods_context{
+        text-align: left;
+    }
 
     #pagination{
         margin-top: 18px;

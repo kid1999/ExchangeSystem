@@ -2,9 +2,12 @@ package io.kid1999.esystem.api;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.kid1999.esystem.dao.CollectionDao;
 import io.kid1999.esystem.entity.Collection;
 import io.kid1999.esystem.entity.Goods;
+import io.kid1999.esystem.es.entry.GoodsEntry;
 import io.kid1999.esystem.service.UserService;
 import io.kid1999.esystem.utils.KafkaUtil;
 import io.kid1999.esystem.utils.Result;
@@ -102,5 +105,20 @@ public class CollectionApi {
         log.info("查询某人的收藏 " + userId);
         List<Goods> collections = collectionDao.selectCollectionsByUserId(userId);
         return new Result(200,"查找成功！",collections);
+    }
+
+    @GetMapping("/search")
+    @ApiOperation("搜索user的收藏的货物信息")
+    Result getGoodsByGoodsName(@RequestParam(value = "goodsName") String goodsName,
+                               @RequestParam(value = "page_size") int pageSize,
+                               @RequestParam(value = "current_page") int currentPage,
+                               Principal principal){
+        log.info("搜索user的收藏的货物信息 " + goodsName);
+        Page<HashMap<String,String>> page = new Page<>();
+        page.setSize(pageSize);
+        page.setCurrent(currentPage);
+        IPage<HashMap<String, String>> data = collectionDao.findCollectionGoodsByUserIdAndGoodsName
+                (page, userService.findUserIdByName(principal.getName()), goodsName);
+        return new Result(200,"查询成功！",data);
     }
 }

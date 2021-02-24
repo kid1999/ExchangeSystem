@@ -84,7 +84,7 @@ public class GoodsService {
     }
 
     /**
-     *  搜索
+     *  搜索商品信息
      */
     public Page<GoodsEntry> getGoodsByGoodsName(String goodsName,int currentPage,int pageSize) {
         Pageable pageable = PageRequest.of(currentPage, pageSize);

@@ -7,7 +7,7 @@
     <div>
         <div class="wrapper">
             <div class="footer">
-                <p class="copy">© 2021 · kid1999 · All Rights Reserved</p>
+                <p class="copy">© 2021 · <a href="https://github.com/kid1999">kid1999</a> · All Rights Reserved</p>
             </div>
         </div>
     </div>

@@ -70,9 +70,9 @@
                             </div>
                             <div id="buy">
                                 <el-button type="success" size="mini" round  @click="applyExchange(goods.id)">申请交易</el-button>
-                                <el-link :underline="false" :href="'/goods/detail/' + goods.id">
+                                <router-link :to="'/goods/detail/' + goods.id">
                                     <el-button type="info" size="mini" round style="margin-left: 10px">查看详情</el-button>
-                                </el-link>
+                                </router-link>
                             </div>
                         </el-card>
                     </div>
@@ -272,31 +272,33 @@
             },
             // 申请交换 到 远程
             submitForm(formName) {
+                console.info(this.transaction_goods_id)
                 this.buyVisible = false;
-                this.applyValidateForm.user2Id = this.user['id'];
-                this.applyValidateForm.user1Id = this.goods_list[this.transaction_goods_id]['user_id'];
+                this.applyValidateForm.user2Id = this.user.id;
+                this.applyValidateForm.user1Id = this.goods_list[this.transaction_goods_id].user_id;
                 this.applyValidateForm.goodsId = this.transaction_goods_id;
                 console.info(this.applyValidateForm);
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        post('/transRecord', this.applyValidateForm).then(res => {
-                            if(res['status'] === 200) {
-                                this.$message.success("申请成功！");
-                                console.info(res);
-                            }else if(res['status'] === 201){
-                                this.$message.warning("交易时间已过");
-                            }
-                        });
-                    } else {
-                        this.$message.error("申请失败，请重试！");
-                        return false;
-                    }
-                });
+                // this.$refs[formName].validate((valid) => {
+                //     if (valid) {
+                //         post('/transRecord', this.applyValidateForm).then(res => {
+                //             if(res['status'] === 200) {
+                //                 this.$message.success("申请成功！");
+                //                 console.info(res);
+                //             }else if(res['status'] === 201){
+                //                 this.$message.warning("交易时间已过");
+                //             }
+                //         });
+                //     } else {
+                //         this.$message.error("申请失败，请重试！");
+                //         return false;
+                //     }
+                // });
             },
             // 搜索
             search(){
-                get('/goods/search', {"goodsName" : this.search_context,current_page: this.currentPage,page_size: this.pageSize})
+                get('/collection/search', {"goodsName" : this.search_context,current_page: this.currentPage,page_size: this.pageSize})
                     .then(res => {
+                        console.info(res);
                         this.goods_list = res['data']['records'];
                         this.total = res['data']['total'];
                         this.currentPage = res['data']['current'];

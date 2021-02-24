@@ -48,12 +48,12 @@
                                 </p>
                             </div>
                             <div id="buy">
-                                <el-link :underline="false" :href="'/goods/detail/' + goods.id">
+                                <router-link :to="'/goods/detail/' + goods.id">
                                     <el-button type="info" size="mini" round >查 看</el-button>
-                                </el-link>
-                                <el-link :underline="false" :href="'/NewGoods/' + goods.id">
+                                </router-link>
+                                <router-link :to="'/NewGoods/' + goods.id">
                                     <el-button type="success" size="mini" round style="margin-left: 10px">修 改</el-button>
-                                </el-link>
+                                </router-link>
                             </div>
                         </el-card>
                     </div>

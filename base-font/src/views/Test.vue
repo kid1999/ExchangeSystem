@@ -5,8 +5,12 @@
 */
 <template>
     <div>
-        test
-        <el-butun
+        <div class="mdui-list">
+            <a href="#" class="mdui-list-item mdui-ripple">同城活动人数统计</a>
+            <a href="#" class="mdui-list-item mdui-ripple">交易逻辑</a>
+            <a href="#" class="mdui-list-item mdui-ripple">整合安全验证，处理header逻辑</a>
+            <a href="#" class="mdui-list-item mdui-ripple">消息中心，消息推送</a>
+        </div>
     </div>
 </template>
 

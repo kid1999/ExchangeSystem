@@ -7,8 +7,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
@@ -22,8 +24,11 @@ import java.util.HashMap;
 @RequestMapping("/joinActivity")
 @Api(tags = "活动管理操作")
 public class JoinActivityApi {
-    @Autowired
+    @Resource
     private JoinActivityDao joinActivityDao;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @PostMapping("")
     @ApiOperation("加入活动")

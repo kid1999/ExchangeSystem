@@ -24,6 +24,8 @@
 
 - [x] 基于Kafka的任务队列、消息队列
 
+- [x] Spring Cache - Redis 缓存加速
+
 - [x] 热门搜索、热门商品
 
 - [ ] 商品分类
@@ -38,50 +40,16 @@
 
 > 后期基于Docker-file 和 Docker-compose 统一部署。
 
-```
-docker pull mysql:5.7
-docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD='Root=123' mysql
-```
+参见：[常见Docker环境运维](https://kid1999.github.io/2020/09/07/%E5%B8%B8%E7%94%A8%E7%8E%AF%E5%A2%83Docker%E8%BF%90%E7%BB%B4/)
 
-#### redis
-
-```
-docker pull redis
-docker run -p 6379:6379 -d redis redis-server
-```
-
-#### minIO
-
-```
-docker pull minio/minio
-docker run -p 9000:9000 \
-  -v /data:/data:z \
-  -e "MINIO_ACCESS_KEY=admin" \
-  -e "MINIO_SECRET_KEY=Root=123" \
-  minio/minio server -d /data
-```
-
-#### rabbitMQ
-
-```
-
-docker pull rabbitmq:3-management
-docker run -dit --name rabbitmq --restart=always -e RABBITMQ_DEFAULT_USER=root -e RABBITMQ_DEFAULT_PASS='Root=123' -p 15672:15672 -p 5672:5672 rabbitmq:3-management
-```
-
-#### ES
-
-....
-
-## 环境要求
-* Docker
-* JDK1.8
 ## 项目技术栈
+* 语言：Java1.8、Js
 * 后端 : SpringBoot、SpringMVC、Mybatis Plus
 * 前端 : Vue.js、Element-UI、MDUI
 * 文件存储系统 : MinIO
 * 数据库：Mysql5.7、Redis
 * 网络服务器 : Nginx
 * 搜索引擎：ES 
-* 消息中间件：rabbitMQ
+* 消息中间件：Kafka
+* 商品推荐：Spark-ALS
 

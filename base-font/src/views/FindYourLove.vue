@@ -64,9 +64,9 @@
                                 </div>
                                 <div id="buy">
                                     <el-button type="success" size="mini" round  @click="applyExchange(goods.id)">申请交易</el-button>
-                                    <el-link :underline="false" :href="'/goods/detail/' + goods.id">
+                                    <router-link :to="'/goods/detail/' + goods.id">
                                         <el-button type="info" size="mini" round style="margin-left: 10px">了解详情</el-button>
-                                    </el-link>
+                                    </router-link>
                                 </div>
                             </el-card>
                         </div>

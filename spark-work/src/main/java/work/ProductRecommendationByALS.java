@@ -41,8 +41,8 @@ public final class ProductRecommendationByALS {
         final String brokers = "159.75.6.26:9092";
         final String KAFKA_TOPIC = "ProductRecommendation";
         final String modelPath = "/app/model";
-        final String dataPath = "/app/data";
-        final int RECOMMEND_NUM = 3;
+        final String dataPath =  "/app/data"; //"src/main/resources/data/data.txt";
+        final int RECOMMEND_NUM = 20;   // 推荐商品个数
         final String ES_INDEX = "recommendation-goods";
 
 

@@ -7,7 +7,7 @@
     <div>
         <el-card class="box-card">
             <div slot="header" class="clearfix">
-                <h2>交易请求消息</h2>
+                <h2>交易审批信息</h2>
             </div>
             <el-table
                     :data="tableData"

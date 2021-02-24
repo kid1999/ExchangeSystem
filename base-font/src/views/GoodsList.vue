@@ -311,8 +311,8 @@
             // 申请交换 到 远程
             submitForm(formName) {
                 this.buyVisible = false;
-                this.applyValidateForm.user2Id = this.$store.getters.getUser['user']['userId'];
-                this.applyValidateForm.user1Id = this.goods_list[this.transaction_goods_id]['user_id'];
+                this.applyValidateForm.user2Id = this.user.id;
+                this.applyValidateForm.user1Id = this.goods_list[this.transaction_goods_id]['userId'];
                 this.applyValidateForm.goodsId = this.transaction_goods_id;
                 console.info(this.applyValidateForm);
                 this.$refs[formName].validate((valid) => {

@@ -56,6 +56,7 @@
                 <el-form-item label="所在地区" prop="address">
                     <el-cascader
                             size="large"
+                            :placeholder="address.address"
                             :options="options"
                             v-model="addressOptions">
                     </el-cascader>
@@ -151,6 +152,8 @@
                     phone:'',
                     qq:'',
                 },
+                address:{},
+                contactWay:{},
                 rules: {
                     email: [{
                         required: true,//是否必填
@@ -177,6 +180,7 @@
             this.user = this.$store.getters.getUser['user'];
             get('/user/' + this.id, {})
                 .then(res => {
+                    console.info(res)
                     this.user = res['data'];
                     this.ruleForm.username = this.user.username;
                     this.ruleForm.signature = this.user.signature;
@@ -209,12 +213,12 @@
         methods:{
             changeUserInfo(){
                 this.dialogFormVisible = true;
-                get('/contactway/' + this.user.addressId,{}).then(res =>{
-                    console.info(res['data']);
-                    this.ruleForm['phone'] = res['data']['phone'];
-                    this.ruleForm['email'] = res['data']['email'];
-                    this.ruleForm['qq'] = res['data']['qq'];
-                })
+                this.address = JSON.parse(localStorage.getItem("address"));
+                this.contactWay = JSON.parse(localStorage.getItem("contactWay"));
+                this.ruleForm['contactWayId'] = this.contactWay['id'];
+                this.ruleForm['phone'] = this.contactWay['phone'];
+                this.ruleForm['email'] = this.contactWay['email'];
+                this.ruleForm['qq'] = this.contactWay['qq'];
             },
             handleRemove(file, fileList) {
                 console.log(file, fileList);
@@ -246,6 +250,15 @@
                         put('/user', data).then(res => {
                             if(res['status'] === 200) {
                                 this.$message.success("修改成功！");
+                                // 再刷新数据
+                                get('/user', {}).then(res => {
+                                    if(res['status'] === 200) {
+                                        console.info(res);
+                                        this.$store.commit('$_setUser', {user: res['data'][0]});
+                                        localStorage.setItem("address",JSON.stringify(res['data'][1]));
+                                        localStorage.setItem("contactWay",JSON.stringify(res['data'][2]));
+                                    }
+                                });
                             }
                         });
                     } else {

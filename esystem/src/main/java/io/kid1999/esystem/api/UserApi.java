@@ -18,8 +18,10 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.kid1999.esystem.common.Constants.DEFAULT_AVATAR_URL;
@@ -128,16 +130,17 @@ public class UserApi {
         }
     }
 
-    @GetMapping("/name/{username}")
+    @GetMapping("")
     @ApiOperation("获取个人信息")
-    public Result<User> getUser(@PathVariable String username) {
-        log.info("获取个人信息 " + username);
+    public Result getUser(Principal principal) {
+        log.info("获取个人信息 " + principal.getName());
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("username",username);
+        wrapper.eq("username",principal.getName());
         User user = userDao.selectOne(wrapper);
         if(user != null){
             user.setPassword("");
-            return new Result<>(200,"获取数据成功！",user);
+            List<Object> data = addressUtil.getContactWayAndAddress(user);
+            return new Result(200,"获取数据成功！",data);
         }else {
             return new Result<>().failed("获取数据失败！");
         }

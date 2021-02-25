@@ -10,7 +10,6 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -19,7 +18,7 @@ import java.util.Date;
  * @description TODO
  **/
 @Data
-@Document( indexName = "goods")
+@Document( indexName = "goods",refreshInterval = "-1")
 public class GoodsEntry implements Serializable {
     @Field(type = FieldType.Keyword)
     @Id

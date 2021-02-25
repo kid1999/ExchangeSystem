@@ -112,9 +112,12 @@
                                 localStorage.setItem("refresh_token",res.refresh_token);
                                 let name = jwt.decode(res.access_token).user_name;
                                 // 再请求数据
-                                get('/user/name/' + name, {headers:{Authorization:'bearer ' + res.access_token}}).then(res => {
+                                get('/user', {headers:{Authorization:'bearer ' + res.access_token}}).then(res => {
+                                    console.info( res['data'][1])
                                     this.$message.success("登录成功！");
-                                    this.$store.commit('$_setUser', {user: res['data']});
+                                    this.$store.commit('$_setUser', {user: res['data'][0]});
+                                    localStorage.setItem("address",JSON.stringify(res['data'][1]));
+                                    localStorage.setItem("contactWay",JSON.stringify(res['data'][2]));
                                     this.$router.push({name: 'GoodsList'});
                                     this.$options.methods.RefreshUser(res['data']);
                                 }).catch(e =>{
@@ -134,11 +137,13 @@
                                 localStorage.setItem("refresh_token",res.refresh_token);
                                 let name = jwt.decode(res.access_token).user_name;
                                 // 再请求数据
-                                get('/user/name/' + name, {}).then(res => {
+                                get('/user', {}).then(res => {
                                     if(res['status'] === 200) {
                                         this.$message.success("登录成功！");
                                         console.info(res['data']);
-                                        this.$store.commit('$_setUser', {user: res['data']});
+                                        this.$store.commit('$_setUser', {user: res['data'][0]});
+                                        localStorage.setItem("address",JSON.stringify(res['data'][1]));
+                                        localStorage.setItem("contactWay",JSON.stringify(res['data'][2]));
                                         this.$router.push({name: 'GoodsList'});
                                         this.$options.methods.RefreshUser(res['data']);
                                     }

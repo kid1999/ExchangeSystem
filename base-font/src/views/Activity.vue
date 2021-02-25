@@ -10,7 +10,7 @@
             <el-col :span="16"><div class="grid-content bg-purple">
                 <el-card class="box-card">
                     <div slot="header" class="clearfix">
-                        <h2>同城活动</h2>
+                        <h2>{{address.address}}的活动</h2>
                     </div>
                     <el-table
                             :data="tableData"
@@ -159,6 +159,8 @@
                 MytableData:[],
                 statusData:['筹备中','进行中','已结束'],
                 viewTableData:{},
+                address:{},
+
             }
         },
         filters:{
@@ -169,6 +171,7 @@
         created() {
             this.userId = this.$store.getters.getUser['user']['id'];
             this.addressId = this.$store.getters.getUser['user']['addressId'];
+            this.address = JSON.parse(localStorage.getItem("address"));
             get('/activity/addr/' + this.addressId, {})
                 .then(res => {
                     this.tableData = res['data'];

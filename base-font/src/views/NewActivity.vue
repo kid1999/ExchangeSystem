@@ -61,12 +61,7 @@
         },
         created() {
             this.user = this.$store.getters.getUser['user'];
-            get('/address/' + this.user.addressId, {}).then(res => {
-                if(res['status'] === 200) {
-                    console.info(res);
-                    this.address = res['data'];
-                }
-            });
+            this.address = JSON.parse(localStorage.getItem("address"));
             this.activity.createUserId = this.user.id;
             this.activity.addressId = this.user.addressId;
         },

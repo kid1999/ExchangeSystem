@@ -40,7 +40,7 @@
                         prop="username"
                         label="买家">
                     <template slot-scope="scope">
-                        <router-link :to="'/userInfo/' + scope.row.user1_id">
+                        <router-link :to="'/userInfo/' + scope.row.user2_id">
                         <el-link :underline="false">
                             <span>{{ scope.row.username }}</span>
                         </el-link>
@@ -67,11 +67,12 @@
                 <el-table-column
                         fixed="right"
                         label="操作"
-                        width="120">
+                        width="140">
                     <template slot-scope="scope">
                         <el-button @click="viewClick(scope.row)" type="text" size="small">查看</el-button>
-                        <el-button @click="acceptClick(scope.row)" type="text" size="small">允许</el-button>
-                        <el-button @click="deleteClick(scope.row)" type="text" size="small">取消</el-button>
+                        <el-button @click="acceptClick(scope.row)" type="text" size="small" v-if="scope.row.status===0">允许</el-button>
+                        <el-button @click="deleteClick(scope.row)" type="text" size="small" v-if="scope.row.status!==4 && scope.row.status!==2 ">取消</el-button>
+                        <el-button @click="filedClick(scope.row)" type="text" size="small" v-if="scope.row.status===4">拒绝原因</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -129,6 +130,11 @@
                     <h4>申请时间</h4>
                     <div class="mdui-list-item-content">{{viewTableData.create_time | timeFormat}}</div>
                 </li>
+                <li class="mdui-list-item mdui-ripple" v-if="viewTableData.status >= 2">
+                    <i class="mdui-icon material-icons">&#xe192;</i>
+                    <h4>结束时间</h4>
+                    <div class="mdui-list-item-content">{{viewTableData.end_time | timeFormat}}</div>
+                </li>
             </ul>
         </el-dialog>
     </div>
@@ -183,7 +189,7 @@
                 if(data['status'] >= 1){
                     this.$notify.error({
                         title: '错误',
-                        message: '该申请已被接受或拒绝！'
+                        message: '该交易正在进行中或已拒绝！'
                     });
                     return;
                 }
@@ -204,15 +210,29 @@
                     });
                     return;
                 }
-                data['status'] = 4;
-                put('/transRecord', data)
-                    .then(res => {
-                        this.$notify.success({
-                            title: '成功',
-                            message: '此交易已取消！'
+
+                this.$prompt('请输入拒接交易原因', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    data['status'] = 4;
+                    data['errorInfo'] = value;
+                    put('/transRecord', data)
+                        .then(res => {
+                            this.$notify.success({
+                                title: '成功',
+                                message: '此交易已取消！'
+                            });
+                            data['error_info'] = value;
                         });
-                    });
-            }
+                })
+            },
+            filedClick(data){
+                this.$notify({
+                    title: '拒绝交易原因',
+                    message: data.error_info
+                });
+            },
         }
     }
 </script>

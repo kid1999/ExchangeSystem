@@ -35,19 +35,21 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http.authorizeRequests()
                 //下边的路径放行
                 .antMatchers("/user/login","/user/register","/user/*").permitAll()
+                .antMatchers("/leavingComment/**").permitAll()
                 .antMatchers("/oauth/**").permitAll()
                 // swagger start
                 .antMatchers("/swagger-ui.html").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
                 .antMatchers("/images/**").permitAll()
                 .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/v2/api-docs").permitAll()
+                .antMatchers("/v3/api-docs").permitAll()
                 .antMatchers("/configuration/ui").permitAll()
                 .antMatchers("/configuration/security").permitAll()
-//                .anyRequest().authenticated();
+                .antMatchers("/doc.html","/doc.html#/**").permitAll()
+                .anyRequest().authenticated();
 
-                // 放行所有
-                .anyRequest().permitAll();
+//                // 放行所有
+//                .anyRequest().permitAll();
     }
 
 }

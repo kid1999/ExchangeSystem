@@ -67,10 +67,12 @@
             <el-table-column
                     fixed="right"
                     label="操作"
-                    width="100">
+                    width="150">
                 <template slot-scope="scope">
                     <el-button @click="viewClick(scope.row)" type="text" size="small">查看</el-button>
-                    <el-button @click="deleteClick(scope.row)" type="text" size="small">取消</el-button>
+                    <el-button @click="deleteClick(scope.row)" type="text" size="small" v-if="scope.row.status!==4 && scope.row.status!==2 ">取消</el-button>
+                    <el-button @click="filedClick(scope.row)" type="text" size="small" v-if="scope.row.status===4">拒绝原因</el-button>
+                    <el-button @click="successClick(scope.row)" type="text" size="small" v-if="scope.row.status===1">交易完成</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -127,6 +129,11 @@
                     <i class="mdui-icon material-icons">&#xe192;</i>
                     <h4>申请时间</h4>
                     <div class="mdui-list-item-content">{{viewTableData.create_time | timeFormat}}</div>
+                </li>
+                <li class="mdui-list-item mdui-ripple" v-if="viewTableData.status >= 2">
+                    <i class="mdui-icon material-icons">&#xe192;</i>
+                    <h4>结束时间</h4>
+                    <div class="mdui-list-item-content">{{viewTableData.end_time | timeFormat}}</div>
                 </li>
             </ul>
         </el-dialog>
@@ -187,12 +194,36 @@
                     });
                     return;
                 }
-                data['status'] = 4;
+
+                this.$prompt('请输入拒接交易原因', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    data['status'] = 4;
+                    data['errorInfo'] = value;
+                    put('/transRecord', data)
+                        .then(res => {
+                            this.$notify.success({
+                                title: '成功',
+                                message: '此交易已取消！'
+                            });
+                            data['error_info'] = value;
+                        });
+                })
+            },
+            filedClick(data){
+                this.$notify({
+                    title: '拒绝交易原因',
+                    message: data.error_info
+                });
+            },
+            successClick(data){
+                data['status'] = 2;
                 put('/transRecord', data)
                     .then(res => {
                         this.$notify.success({
                             title: '成功',
-                            message: '此交易已取消！'
+                            message: '此交易已完成！'
                         });
                     });
             }

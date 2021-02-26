@@ -33,7 +33,7 @@ public class TransRecordApi {
 
     @PostMapping("")
     @ApiOperation("创建交易信息")
-    @CachePut(value = "transRecord",key = "#transRecord.goodsId-#transRecord.exchangeGoodsId")
+    @CachePut(value = "transRecord",key = "#transRecord.id")
     public Result insertTransRecord(@RequestBody TransRecord transRecord){
         LocalDateTime time = transRecord.getDetailedDatetime();
         if(time.isBefore(LocalDateTime.now())){
@@ -50,7 +50,7 @@ public class TransRecordApi {
     @ApiOperation("修改交易信息")
     @CachePut(value = "transRecord",key = "#transRecord.id")
     public Result updateTransRecord(@RequestBody TransRecord transRecord){
-        transRecord.setCreateTime(LocalDateTime.now());
+        transRecord.setEndTime(LocalDateTime.now());
         transRecordDao.updateById(transRecord);
         log.info("修改交易信息 " + transRecord.getId());
         return new Result().success();
@@ -67,7 +67,6 @@ public class TransRecordApi {
 
     @GetMapping("")
     @ApiOperation("查询所有交易信息")
-    @Cacheable(value = "transRecord",key = "#currentPage")
     public Result getAllTransRecord(@RequestParam(value = "page_size") int pageSize,
                                     @RequestParam(value = "current_page") int currentPage){
         log.info("查询所有交易信息 ");
@@ -84,7 +83,7 @@ public class TransRecordApi {
     @ApiOperation("查询user申请的交易信息")
     Result getMinsTransRecordByUserId(@PathVariable Long id){
         log.info("查询user申请的交易信息 " + id);
-        List<HashMap<String, String>> records = transRecordDao.findAllByUser1Id(id);
+        List<HashMap<String, String>> records = transRecordDao.findAllByUser2Id(id);
         return new Result(200,"查询成功！",records);
     }
 
@@ -92,7 +91,7 @@ public class TransRecordApi {
     @ApiOperation("查询user收到的交易信息")
     Result getOthersTransRecordByUserId(@PathVariable Long id){
         log.info("查询user收到的交易信息 " + id);
-        List<HashMap<String, String>> records = transRecordDao.findAllByUser2Id(id);
+        List<HashMap<String, String>> records = transRecordDao.findAllByUser1Id(id);
         return new Result(200,"查询成功！",records);
     }
 

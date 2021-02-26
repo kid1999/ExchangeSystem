@@ -6,7 +6,7 @@ import store from '@/store/index'
 
 let loadingInstance = null;    // 加载全局的loading
 
-let jwt = 'bearer ' + localStorage.access_token;;
+let jwt = 'bearer ' + localStorage.access_token;
 let applyToken = 'Basic ' + encode('admin:123');
 
 
@@ -32,13 +32,13 @@ let httpCode = {        //这里我简单列出一些常见的http状态码信�
 // base64 encode（client-id:client-secret） 得到
 instance.interceptors.request.use(config => {
 
-    // // 如果有token就带token
-    // if(store.state.user == null || localStorage.access_token == null){
-    //     config.headers.Authorization = 'Basic ' + encode('admin:123');
-    // }
-    // else{
-    //     config.headers.Authorization = 'bearer ' + localStorage.access_token;
-    // }
+    // 如果有token就带token
+    if(localStorage.getItem('access_token') == null){
+        config.headers.Authorization = 'Basic ' + encode('admin:123');
+    }
+    else{
+        config.headers.Authorization = 'bearer ' +localStorage.getItem('access_token');
+    }
 
 
 
@@ -82,7 +82,8 @@ instance.interceptors.response.use(response => {
     } else {
         Message({
             message: response.data.message,
-            type: 'error'
+            type: 'error',
+            duration: 1
         });
         return Promise.reject(response)
     }
@@ -93,7 +94,8 @@ instance.interceptors.response.use(response => {
         let tips = error.response.status in httpCode ? httpCode[error.response.status] : error.response.data.message;
         Message({
             message: tips,
-            type: 'error'
+            type: 'error',
+            duration: 1
         })
         if (error.response.status === 401) {    // token或者登陆失效情况下跳转到登录页面，根据实际情况，在这里可以根据不同的响应错误结果，做对应的事。这里我以401判断为例
             router.push({
@@ -104,7 +106,8 @@ instance.interceptors.response.use(response => {
     } else {
         Message({
             message: '请求超时, 请刷新重试',
-            type: 'error'
+            type: 'error',
+            duration: 1
         })
         return Promise.reject(new Error('请求超时, 请刷新重试'))
     }

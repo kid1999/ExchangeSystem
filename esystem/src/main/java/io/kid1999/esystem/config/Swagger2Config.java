@@ -9,6 +9,7 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
@@ -38,7 +39,8 @@ public class Swagger2Config {
         return new ApiInfoBuilder()
                 .title("物物交换平台接口文档")
                 .description("提供各子模块的文档")
-                .termsOfServiceUrl("https://kid1999.github.io/")
+                .termsOfServiceUrl("https://github.com/kid1999/ExchangeSystem")
+                .contact(new Contact("kid1999", "https://kid1999.github.io/", "kid.1447250889@live.com"))
                 .version("0.1")
                 .build();
     }

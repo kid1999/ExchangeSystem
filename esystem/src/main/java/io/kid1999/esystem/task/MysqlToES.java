@@ -38,7 +38,8 @@ public class MysqlToES {
     @Scheduled(fixedRate = 300000)
     public void transDataToEs(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        log.info("time:{}，开始执行Mysql数据持久化到ES任务", LocalDateTime.now().format(formatter));
+        LocalDateTime startTime = LocalDateTime.now();
+        log.info("time:{}，开始执行Mysql数据持久化到ES任务", startTime.format(formatter));
         long lastTransGoodsId = 1L;
         if(redisTemplate.opsForValue().get(LAST_GOODS_ID) != null){
             String o = redisTemplate.opsForValue().get(LAST_GOODS_ID).toString();
@@ -48,12 +49,17 @@ public class MysqlToES {
         if(goodsEntryList.size() == 0){
             log.info("此次未有数据更新操作！");
         }else{
-            goodsRepository.saveAll(goodsEntryList);
+            // 分批次提交
+            for (int i = 0; i < goodsEntryList.size() ; i+= 100) {
+                List<GoodsEntry> data = goodsEntryList.subList(i,Math.min(i+100,goodsEntryList.size()));
+                goodsRepository.saveAll(data);
+            }
             lastTransGoodsId = goodsEntryList.get(goodsEntryList.size()-1).getId();
             redisTemplate.opsForValue().set(LAST_GOODS_ID,lastTransGoodsId+1);
         }
-        System.out.println(goodsEntryList);
-        log.info("time:{}，执行结束Mysql数据持久化到ES任务", LocalDateTime.now().format(formatter));
+        LocalDateTime endTime = LocalDateTime.now();
+        log.info("time:{}，执行结束Mysql数据持久化到ES任务, 共转移{}条数据，耗时: {}s",
+                endTime.format(formatter),goodsEntryList.size(),endTime.getSecond()-startTime.getSecond());
     }
 
 }

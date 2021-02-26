@@ -34,9 +34,11 @@ public class RedisToMysql {
     @Scheduled(fixedRate = 300000)
     public void saveusergoodsviewtimes2Db(){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        log.info("time:{}，开始执行Redis数据持久化到MySQL任务", LocalDateTime.now().format(formatter));
+        LocalDateTime startTime = LocalDateTime.now();
+        log.info("time:{}，开始执行Redis数据持久化到MySQL任务", startTime.format(formatter));
         Goods g = new Goods();
         Map<String, Integer> hashList = redisTemplate.opsForHash().entries(GOODS_VIEW);
+        int length = 0;
         if(hashList.size() == 0){
             log.info("time:{}，","redis中么有数据");
         }else{
@@ -47,9 +49,12 @@ public class RedisToMysql {
                 wrapper.eq("id",id);
                 wrapper.set("number_of_clicked",count);
                 goodsDao.update(g,wrapper);
+                length++;
             }
         }
-        log.info("time:{}，结束执行Redis数据持久化到MySQL任务", LocalDateTime.now().format(formatter));
+        LocalDateTime endTime = LocalDateTime.now();
+        log.info("time:{}，结束执行Redis数据持久化到MySQL任务, 共转移{}条数据，耗时: {}s",
+                endTime.format(formatter),length,endTime.getSecond()-startTime.getSecond());
     }
 
 }

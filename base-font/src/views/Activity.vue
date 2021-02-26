@@ -220,13 +220,18 @@
                     });
             },
             deleteClick(data){
-                deleted('/joinActivity/' + data.jid, {})
+                deleted('/joinActivity', {'joinId':data.jid,'activityId':data.id})
                     .then(res => {
                         this.MytableData = this.MytableData.filter(({id}) => id !== data.id);
                         this.$notify.success({
                             title: '成功',
                             message: '取消报名成功！'
                         });
+                        this.tableData.forEach(obj =>{
+                            if(obj.id === data.id){
+                                obj.numberOfJoin--;
+                            }
+                        })
                     });
             },
             joinClick(data){
@@ -251,6 +256,11 @@
                                 title: '成功',
                                 message: '报名成功！'
                             });
+                            this.tableData.forEach(obj =>{
+                                if(obj.id === data.id){
+                                    obj.numberOfJoin++;
+                                }
+                            })
                         });
                 }else{
                     this.$notify.error({

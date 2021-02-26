@@ -100,68 +100,36 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        if(!this.isVerify){
+                        if (!this.isVerify) {
                             this.$message.error("请输入验证码重试！");
                             return false;
                         }
-                        let store = this.$store.getters.getUser;
-                        let token = localStorage.getItem("access_token");
-                        if(token == null || store == null){
-                            getToken(qs.stringify(this.ruleForm)).then(res => {
-                                localStorage.setItem("access_token",res.access_token);
-                                localStorage.setItem("refresh_token",res.refresh_token);
-                                let name = jwt.decode(res.access_token).user_name;
-                                // 再请求数据
-                                get('/user', {headers:{Authorization:'bearer ' + res.access_token}}).then(res => {
-                                    console.info( res['data'][1])
-                                    this.$message.success("登录成功！");
-                                    this.$store.commit('$_setUser', {user: res['data'][0]});
-                                    localStorage.setItem("address",JSON.stringify(res['data'][1]));
-                                    localStorage.setItem("contactWay",JSON.stringify(res['data'][2]));
-                                    this.$router.push({name: 'GoodsList'});
-                                    this.$options.methods.RefreshUser(res['data']);
-                                }).catch(e =>{
-                                    console.info("test")
-                                })
+                        localStorage.removeItem("access_token");
+                        localStorage.removeItem("refresh_token");
+                        getToken(qs.stringify(this.ruleForm)).then(res => {
+                            localStorage.setItem("access_token",res.access_token);
+                            localStorage.setItem("refresh_token",res.refresh_token);
+                            // 再请求数据
+                            get('/user', {}).then(res => {
+                                console.info( res['data'])
+                                this.$message.success("登录成功！");
+                                this.$store.commit('$_setUser', {user: res['data'][0]});
+                                localStorage.setItem("address",JSON.stringify(res['data'][1]));
+                                localStorage.setItem("contactWay",JSON.stringify(res['data'][2]));
+                                this.$router.push({name: 'GoodsList'});
+                                this.$options.methods.RefreshUser(res['data']);
                             }).catch(e =>{
-                                this.$message.error("登录失败，请重试！");
-                            });
-                        } else {
-                            let name = jwt.decode(token).user_name;
-                            if(store.user.username === name){
-                                this.$message.error("该用户已登录，请勿再次尝试！");
-                                return false;
-                            }
-                            getToken(qs.stringify(this.ruleForm)).then(res => {
-                                localStorage.setItem("access_token",res.access_token);
-                                localStorage.setItem("refresh_token",res.refresh_token);
-                                let name = jwt.decode(res.access_token).user_name;
-                                // 再请求数据
-                                get('/user', {}).then(res => {
-                                    if(res['status'] === 200) {
-                                        this.$message.success("登录成功！");
-                                        console.info(res['data']);
-                                        this.$store.commit('$_setUser', {user: res['data'][0]});
-                                        localStorage.setItem("address",JSON.stringify(res['data'][1]));
-                                        localStorage.setItem("contactWay",JSON.stringify(res['data'][2]));
-                                        this.$router.push({name: 'GoodsList'});
-                                        this.$options.methods.RefreshUser(res['data']);
-                                    }
-                                });
-                            }).catch(e =>{
-                                console.info(e);
-                                this.$message.error("登录失败，请重试222！");
-                            });
-                        }
-                    } else {
-                        this.$message.error("登录失败，请重试333！");
-                        return false;
+                                console.error("获取个人信息失败！")
+                            })
+                        }).catch(e =>{
+                            this.$message.error("登录失败，账号密码错误！");
+                        });
                     }
-                });
+                })
             },
             RefreshUser(data) {
                 globalBus.$emit("RefreshUser", data);
-            }
+            },
         }
     }
 </script>

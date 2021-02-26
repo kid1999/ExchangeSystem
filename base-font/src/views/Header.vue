@@ -7,28 +7,26 @@
     <div>
         <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect" router>
             <el-menu-item index="/">Esystem</el-menu-item>
-            <el-menu-item index="/message">消息中心</el-menu-item>
-            <el-menu-item index="/transRecord">交易记录</el-menu-item>
-            <el-menu-item index="/collection">收藏夹</el-menu-item>
+            <el-menu-item index="/message"><i class="el-icon-document"></i>交易审批</el-menu-item>
             <el-menu-item index="/comments">
-                留言评论<el-badge :value="commentNum" :max="99" class="item" :hidden="commentNum === 0"></el-badge>
+                <i class="el-icon-chat-line-square"></i> 留言评论<el-badge :value="commentNum" :max="99" class="item" :hidden="commentNum === 0"></el-badge>
             </el-menu-item>
-            <el-menu-item index="/activity">同城活动</el-menu-item>
-            <el-menu-item index="/FindYourLove">猜你喜欢</el-menu-item>
-            <el-menu-item index="/NewGoods">上架商品</el-menu-item>
-            <el-menu-item index="/NewActivity">发起活动</el-menu-item>
-            <el-menu-item index="/test">测试</el-menu-item>
+            <el-menu-item index="/activity"><i class="el-icon-office-building"></i>同城活动</el-menu-item>
+            <el-menu-item index="/FindYourLove"><i class="el-icon-milk-tea"></i>猜你喜欢</el-menu-item>
+            <el-menu-item index="/NewGoods"><i class="el-icon-sell"></i>上架商品</el-menu-item>
+            <el-menu-item index="/test"><i class="el-icon-loading"></i>测试ing</el-menu-item>
             <el-submenu index="#" style="float: right; padding: 3px 0" v-if="isLogin">
                 <template slot="title">
                     <el-avatar :src="userInfo.avatarUrl"></el-avatar>
                 </template>
                 <el-menu-item>用户名： <strong>{{userInfo.username}}</strong></el-menu-item>
-                <el-menu-item :index="'/userInfo/' + this.userInfo['id']">用户信息</el-menu-item>
-                <el-menu-item index="/MyActivity">我的活动</el-menu-item>
-                <el-menu-item index="/MyGoods">我的商品</el-menu-item>
-                <el-menu-item index="/login">登录</el-menu-item>
-                <el-menu-item index="/register">注册</el-menu-item>
-                <el-menu-item  @click="logout">退出</el-menu-item>
+                <el-menu-item :index="'/userInfo/' + this.userInfo['id']"><i class="el-icon-user"></i>用户信息</el-menu-item>
+                <el-menu-item index="/NewActivity"><i class="el-icon-sunny"></i>发起活动</el-menu-item>
+                <el-menu-item index="/MyActivity"><i class="el-icon-wind-power"></i>我的活动</el-menu-item>
+                <el-menu-item index="/MyGoods"><i class="el-icon-goods"></i>我的商品</el-menu-item>
+                <el-menu-item index="/transRecord"><i class="el-icon-loading"></i>我的交易</el-menu-item>
+                <el-menu-item index="/collection"><i class="el-icon-shopping-cart-full"></i>我的收藏</el-menu-item>
+                <el-menu-item  @click="logout"><i class="el-icon-s-promotion"></i>退出登录</el-menu-item>
             </el-submenu>
 
             <el-menu-item index="/register" style="float: right; padding: 3px 0"  v-if="!isLogin">
@@ -72,6 +70,9 @@
                 this.$store.commit('$_removeUser', {});
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
+                localStorage.removeItem('address')
+                localStorage.removeItem('contactWay')
+                localStorage.removeItem('user')
                 this.$router.push({name: 'Login'});
                 this.isLogin = false;
             },
@@ -80,9 +81,12 @@
                 this.userInfo = this.$store.getters.getUser['user'];
                 if(Object.keys(this.userInfo).length === 0) this.isLogin = false;
                 else this.isLogin = true;
+                this.$forceUpdate();
             },
             getCommentNum(){
-                axios.get('/comment/num/' + this.userInfo.id,{})
+                let token = localStorage.getItem("access_token");
+                axios.get('/comment/num/' + this.userInfo.id,{
+                    headers: {'Authorization': 'bearer ' + token}})
                     .then(res =>{
                         console.info('获得未读消息数量为： ' + res['data']['data']);
                         this.commentNum = res['data']['data']

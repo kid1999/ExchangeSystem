@@ -7,7 +7,7 @@
     <div>
         <h1>猜你喜欢</h1>
 
-        <div id="list">
+        <div id="list" v-loading="loading">
             <el-row>
                 <div v-for="goods in goods_list">
                     <el-col :span="6">
@@ -188,6 +188,8 @@
                     detailedDatetime:'',
                 },
                 user:{},
+                loading:true,
+
             }
         },
         filters: {
@@ -217,11 +219,16 @@
         },
         created() {
             this.user = this.$store.getters.getUser['user'];
-            // 获取user收藏的所有的物品
+            this.$notify.info({
+                title: '提示',
+                message: '由于服务器运算性能问题，初次加载可能会失败！'
+            });
+            // 获取为user推荐的所有的物品
             get('/goods/recommendation/' + this.user.id,{})
                 .then(res => {
                     console.info(res);
                     this.goods_list = res['data'];
+                    this.loading = false;
                 });
 
             // 获取user的物品

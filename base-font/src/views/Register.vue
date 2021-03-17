@@ -42,7 +42,7 @@
 
 
             <el-form-item label="邮箱" prop="email">
-                <el-input type="text" v-model="ruleForm.email" autocomplete="off"></el-input>
+                <el-input type="text" v-model="ruleForm.email" autocomplete="off" @blur="checkEmail"></el-input>
             </el-form-item>
 
             <el-form-item label="QQ" prop="qq">
@@ -134,10 +134,25 @@
                     callback(new Error('请输入所在区域'));
                 } callback();
             };
+            const validateEmail = (rule, value, callback) => {
+                const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+                if (value === '') {
+                    callback(new Error('请输入邮箱'));
+                }
+                if (mailReg.test(value)) {
+                    callback()
+                } else {
+                    callback(new Error('请输入正确的邮箱格式'))
+                }
+                callback();
+            };
             return {
                 dialogImageUrl: '',
                 dialogVisible: false,
-
+                checkemail:false,
+                checkCode:'asd3wz',
+                lastTime: new Date(1111),
+                ourCode:'',
                 options: regionData,
                 addressOptions: [],
                 email:'',
@@ -171,6 +186,9 @@
                     address: [
                         { required: true, validator: validateAddr, trigger: 'blur' }
                     ],
+                    email: [
+                        { required: true, validator: validateEmail,trigger: ['blur', 'change']}
+                    ],
                 }
             };
         },
@@ -187,12 +205,20 @@
             submitForm(formName) {
                 let data = this.ruleForm;
                 console.info(data);
+                if(this.ourCode !== this.checkCode) {
+                    this.$notify.error({
+                        title: '错误',
+                        message: '验证码错误！'
+                    });
+                    return;
+                }
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         post('/user/register', this.ruleForm).then(res => {
                             if(res['status'] === 200) {
                                 this.$message.success("注册成功！");
                             }
+                            this.$router.push({name: 'Login'});
                         });
                     } else {
                         this.$message.error("注册失败!");
@@ -218,6 +244,55 @@
                 this.$message.success("图片上传成功！");
                 this.ruleForm.avatarUrl = response['data']['fileName'];
                 console.info(this.ruleForm);
+            },
+            checkEmail(){
+                const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+                if (this.ruleForm.email === '') {
+                    this.$message.error('请输入邮箱！');
+                    return;
+                }
+                if (!mailReg.test(this.ruleForm.email)) {
+                    this.$message.error('邮箱格式不对！');
+                    return;
+                }
+                if(new Date().valueOf() - this.lastTime.valueOf() > 100000){
+                    this.lastTime = new Date();
+                    post('/user/sendCode', this.ruleForm).then(res => {
+                        this.checkCode = res.data;
+                        this.$notify.success({
+                            title: '成功',
+                            message: '验证码已发送本账号绑定的邮箱中，请注意查收！'
+                        });
+                    }).catch(e =>{
+                        this.$notify.error({
+                            title: '错误',
+                            message: '邮件发送失败！'
+                        });
+                    })
+                }
+                this.$prompt('请输入邮箱验证码', '提示', {
+                    confirmButtonText: '确定',
+                    showCancelButton: true,
+                    distinguishCancelAndClose: false,
+                    showClose: false,
+                    closeOnClickModal:false,
+                    closeOnPressEscape:false,
+                    cancelButtonText: '取消',
+                    inputErrorMessage: '邮箱格式不正确'
+                }).then(({ value }) => {
+                    this.ourCode = value;
+                    if(value !== this.checkCode) {
+                        this.$notify.error({
+                            title: '错误',
+                            message: '验证码错误！'
+                        });
+                    }else{
+                        this.$notify.success({
+                            title: '恭喜',
+                            message: '验证成功！'
+                        });
+                    }
+                })
             }
         }
     }

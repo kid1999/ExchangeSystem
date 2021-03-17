@@ -106,6 +106,10 @@
         },
         methods: {
             verifyed() {
+                if(this.ruleForm.username === '' || this.ruleForm.password === ''){
+                    this.$message.error('请输入用户名密码后再试！');
+                    return;
+                }
                 this.isVerify = true;
                 post('/user/sendCheckCode', this.ruleForm).then(res => {
                     this.$notify.success({

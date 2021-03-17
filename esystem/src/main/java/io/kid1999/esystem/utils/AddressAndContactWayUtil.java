@@ -106,9 +106,46 @@ public class AddressAndContactWayUtil {
     /**
      *
      */
+
+    /**  返回user对象
+     * {"gists_url":"https://api.github.com/users/kid1999/gists{/gist_id}",
+     * "repos_url":"https://api.github.com/users/kid1999/repos",
+     * "following_url":"https://api.github.com/users/kid1999/following{/other_user}",
+     * "twitter_username":null,
+     * "bio":null,
+     * "created_at":"2018-10-20T17:23:34Z",
+     * "login":"kid1999",
+     * "type":"User",
+     * "blog":"",
+     * "subscriptions_url":"https://api.github.com/users/kid1999/subscriptions",
+     * "updated_at":"2021-03-05T15:13:05Z",
+     * "site_admin":false,
+     * "company":null,
+     * "id":44324159,
+     * "public_repos":21,
+     * "gravatar_id":"",
+     * "email":null,
+     * "organizations_url":"https://api.github.com/users/kid1999/orgs",
+     * "hireable":null,
+     * "starred_url":"https://api.github.com/users/kid1999/starred{/owner}{/repo}",
+     * "followers_url":"https://api.github.com/users/kid1999/followers",
+     * "public_gists":0,
+     * "url":"https://api.github.com/users/kid1999",
+     * "received_events_url":"https://api.github.com/users/kid1999/received_events",
+     * "followers":2,
+     * "avatar_url":"https://avatars.githubusercontent.com/u/44324159?v=4",
+     * "events_url":"https://api.github.com/users/kid1999/events{/privacy}",
+     * "html_url":"https://github.com/kid1999",
+     * "following":0,
+     * "name":"hell Xy",
+     * "location":null,
+     * "node_id":"MDQ6VXNlcjQ0MzI0MTU5"}
+     */
     public Long findGithubOrSave(JSONObject jsonObject){
-        System.out.println(jsonObject.get("avatar"));
-        System.out.println(jsonObject.get("uuid"));
+        System.out.println(jsonObject.get("avatar_url"));
+        System.out.println(jsonObject.get("name"));
+        System.out.println(jsonObject.get("email"));
+        System.out.println(jsonObject.get("id"));
         return 0L;
     }
 

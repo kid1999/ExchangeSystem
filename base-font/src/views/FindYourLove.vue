@@ -198,7 +198,7 @@
             },
             filterTitle(title){
                 if(typeof title === 'undefined'){
-                    return "不想让你知道哦"
+                    return "暂时不知道你的喜好呢"
                 }
                 if(title.length < 12){
                     return title
@@ -229,7 +229,10 @@
                     console.info(res);
                     this.goods_list = res['data'];
                     this.loading = false;
-                });
+                }).catch(errpr =>{
+                this.$message.error("暂无你的推荐！");
+                this.loading = false;
+            });
 
             // 获取user的物品
             get('/goods/user/' + this.user['id'],{})

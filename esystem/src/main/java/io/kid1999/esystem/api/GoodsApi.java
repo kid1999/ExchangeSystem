@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -131,7 +132,13 @@ public class GoodsApi {
     @ApiOperation("实时推荐")
     public Result findYourLove(@PathVariable Long userId){
         log.info("实时推荐 " + userId);
-        List<Goods> goods = goodsService.findYourLove(userId);
+        List<Goods> goods = new ArrayList<>();
+        try {
+            goods = goodsService.findYourLove(userId);
+        }catch (Exception e){
+            log.info("实时推荐error");
+            return new Result(400,"获取数据失败！");
+        }
         return new Result(200,"获取数据成功！",goods);
     }
 

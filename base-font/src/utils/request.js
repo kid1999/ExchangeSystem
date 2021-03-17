@@ -199,3 +199,20 @@ export const getToken = ( data, config = {}) => {
         })
     })
 };
+
+/* 统一封装post请求  */
+export const postGithub = ( data, config = {}) => {
+    return new Promise((resolve, reject) => {
+        instance({
+            method: 'post',
+            url:'/oauth/login/github',
+            data,
+            headers:{'Authorization':applyToken},
+            ...config
+        }).then(response => {
+            resolve(response)
+        }).catch(error => {
+            reject(error)
+        })
+    })
+};

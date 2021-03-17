@@ -46,9 +46,9 @@ public class Constants {
 	/**
 	 * github oauth
 	 */
-	public static final String GITHUB_CLIENT_ID = "a6fd02d5fee1728dfee2";
-	public static final String GITHUB_CLIENT_SECRET = "60752c69673019967d49819fc2c353cc31f5199a";
-	public static final String GITHUB_CALLBACK_URL = "http://localhost:8080/api/oauth/callback";
+	public static final String GITHUB_CLIENT_ID = "Iv1.72e9ce18fb4a7044";
+	public static final String GITHUB_CLIENT_SECRET = "adb93db57e9cff65e1dfb0fc2d633d099ecee8b2";
+	public static final String GITHUB_CALLBACK_URL = "http://localhost:12000/api/oauth/callback";
 
 	/**
 	 * minio 桶

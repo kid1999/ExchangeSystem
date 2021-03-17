@@ -143,7 +143,12 @@ public class CommentApi {
     @ApiOperation("获取user未读留言数量")
     Result getUserCommentNum(@PathVariable Long userId){
         log.info("获取user未读留言数量 " + userId);
-        int msgNum = commentService.getUsersMsg(userId);
+        int msgNum = 0;
+        try{
+            msgNum = commentService.getUsersMsg(userId);
+        }catch (Exception e){
+            log.error("获取留言失败");
+        }
         return new Result().success(msgNum);
     }
 }

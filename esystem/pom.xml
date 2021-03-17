@@ -139,15 +139,15 @@
         </dependency>
 
         <dependency>
-            <groupId>me.zhyd.oauth</groupId>
-            <artifactId>JustAuth</artifactId>
-            <version>1.15.8</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.13.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.53</version>
         </dependency>
 
         <dependency>

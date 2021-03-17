@@ -20,7 +20,7 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title;
   }
   // 注册放行
-  if(to.path === "/register" || to.path === "/login" || to.path === '/test') {
+  if(to.path === "/register" || to.path === "/login" || to.path === '/test' || to.path==='/ChangePassword') {
     next();
   }
   //vuex里面的user是否已经存在，不然就直接跳转到登录页面

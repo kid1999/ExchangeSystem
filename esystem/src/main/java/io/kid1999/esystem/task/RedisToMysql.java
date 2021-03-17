@@ -53,7 +53,7 @@ public class RedisToMysql {
             }
         }
         LocalDateTime endTime = LocalDateTime.now();
-        log.info("time:{}，结束执行Redis数据持久化到MySQL任务, 共转移{}条数据，耗时: {}s",
+        log.info("time:{}，结束执行Redis数据持久化到MySQL任务, 共更新{}条数据，耗时: {}s",
                 endTime.format(formatter),length,endTime.getSecond()-startTime.getSecond());
     }
 

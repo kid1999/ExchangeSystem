@@ -23,9 +23,11 @@
                         </el-form-item>
                         <el-form-item>
                             <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button> |
-                            <el-button @click="postGithub">Github登录</el-button> |
+                            <router-link to="https://github.com/login/oauth/authorize?client_id=Iv1.72e9ce18fb4a7044&redirect_uri=http://localhost:12000/api/oauth/callback&scope=user&state=1">
+                            <el-button>Github登录</el-button>
+                            </router-link> |
                             <router-link to="ChangePassword">
-                            <el-link href="/forgetPass" :underline="false">
+                            <el-link href="/ChangePassword" :underline="false">
                                 忘记密码？
                             </el-link>
                             </router-link>
@@ -37,7 +39,7 @@
     </el-row>
 </template>
 <script>
-    import { get, post,put,getToken } from '@/utils/request'
+    import { get, post,put,getToken,postGithub } from '@/utils/request'
     import Verify from 'vue2-verify'
     import qs from 'qs';
     import jwt from 'jsonwebtoken';
@@ -88,14 +90,12 @@
                 this.$message.success("验证成功")
             },
             postGithub(){
-                post('/oauth/login/github', this.ruleForm).then(res => {
-                    if(res['status'] === 200) {
-                        this.$message.success("登录成功！");
-                        console.info(res['data']);
-                        this.$store.commit('$_setUser', {user: res['data']});
-                        this.$router.push({name: 'GoodsList'});
-                    }
-                });
+                postGithub(this.ruleForm).then(res =>{
+                    this.$message.success("登录成功！");
+                    console.info(res['data']);
+                    this.$store.commit('$_setUser', {user: res['data']});
+                    this.$router.push({name: 'GoodsList'});
+                })
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {

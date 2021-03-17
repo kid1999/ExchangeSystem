@@ -58,23 +58,29 @@ public class UserApi {
     @ApiOperation("注册新用户")
     public Result register(@RequestBody HashMap<String,String> map) {
         log.info("注册新用户 " + map.get("username"));
-        Long addressId = addressUtil.checkAndSaveAddress(map);
-        Long contactWayId = addressUtil.saveContactWay(map);
-        String avatarUrl = map.get("avatarUrl");
-        if(StrUtil.isEmpty(avatarUrl)){
-            avatarUrl = DEFAULT_AVATAR_URL;
+        try {
+            Long addressId = addressUtil.checkAndSaveAddress(map);
+            Long contactWayId = addressUtil.saveContactWay(map);
+            String avatarUrl = map.get("avatarUrl");
+            if (StrUtil.isEmpty(avatarUrl)) {
+                avatarUrl = DEFAULT_AVATAR_URL;
+            }
+            User user = new User();
+            user.setAddressId(addressId);
+            user.setContactWayId(contactWayId);
+            user.setAvatarUrl(avatarUrl);
+            user.setUsername(map.get("username"));
+            user.setPassword(passwordEncoder.encode(map.get("userPwd")));
+            user.setSignature(map.get("signature"));
+            user.setCreateTime(LocalDateTime.now());
+            user.setLastLoginTime(LocalDateTime.now());
+            user.setRole("ROLE_user");
+            user.setLoginTimes(0L);
+            userDao.insert(user);
+        }catch (Exception e){
+            log.error(e.toString());
+            return new Result<>().failed("注册失败！");
         }
-        User user = new User();
-        user.setAddressId(addressId);
-        user.setContactWayId(contactWayId);
-        user.setAvatarUrl(avatarUrl);
-        user.setUsername(map.get("username"));
-        user.setPassword(passwordEncoder.encode(map.get("password")));
-        user.setSignature(map.get("signature"));
-        user.setCreateTime(LocalDateTime.now());
-        user.setLastLoginTime(LocalDateTime.now());
-        user.setLoginTimes(0L);
-        userDao.insert(user);
         return new Result<>().success("注册成功！");
     }
 
@@ -189,7 +195,7 @@ public class UserApi {
     private final static String CHECK_CODE = "CheckCode::";
 
     @PostMapping("/sendCheckCode")
-    @ApiOperation("获取邮件验证码")
+    @ApiOperation("获取改密邮件验证码")
     Result sendCheckCode(@RequestBody HashMap<String,String> map) {
         log.info("获取邮件验证码 " + map.get("username"));
         String username = map.get("username");
@@ -201,7 +207,23 @@ public class UserApi {
             String checkCode = RandomUtil.randomString(6);
             redisUtil.setStringKey(CHECK_CODE + username,checkCode,CHECKCODE_EXPIRE_DATE);
             emailUtil.sendMailCode(email,"Esystem的验证码",checkCode);
-            return new Result().success();
+            return new Result().success(checkCode);
+        }
+    }
+
+    @PostMapping("/sendCode")
+    @ApiOperation("获取注册邮件验证码")
+    Result sendCode(@RequestBody HashMap<String,String> map) {
+        log.info("获取邮件验证码 " + map.get("username"));
+        String username = map.get("username");
+        String email = map.get("email");
+        if(StrUtil.equals("",email)){
+            return new Result().failed("该账户未绑定邮箱，无法修改密码！");
+        }else{
+            String checkCode = RandomUtil.randomString(6);
+            redisUtil.setStringKey(CHECK_CODE + username,checkCode,CHECKCODE_EXPIRE_DATE);
+            emailUtil.sendMailCode(email,"Esystem的验证码",checkCode);
+            return new Result().success(checkCode);
         }
     }
 
